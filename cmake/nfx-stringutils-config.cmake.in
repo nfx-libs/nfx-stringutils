@@ -1,0 +1,42 @@
+#==============================================================================
+# nfx-stringutils - CMake Package Configuration
+#==============================================================================
+# This file provides CMake targets for the nfx-stringutils library.
+# 
+# Usage:
+#   find_package(nfx-stringutils REQUIRED)
+#   target_link_libraries(your_target PRIVATE nfx-stringutils::nfx-stringutils)  # Header-only interface library
+#
+# Available target:
+#   nfx-stringutils::nfx-stringutils - Header-only interface library (string utilities and validation)
+#==============================================================================
+
+@PACKAGE_INIT@
+
+# Version information
+set(NFX_STRINGUTILS_VERSION "@PROJECT_VERSION@")
+set(NFX_STRINGUTILS_VERSION_MAJOR "@PROJECT_VERSION_MAJOR@")
+set(NFX_STRINGUTILS_VERSION_MINOR "@PROJECT_VERSION_MINOR@")
+set(NFX_STRINGUTILS_VERSION_PATCH "@PROJECT_VERSION_PATCH@")
+
+# Installation paths (for reference)
+set_and_check(NFX_STRINGUTILS_INCLUDE_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@")
+set_and_check(NFX_STRINGUTILS_LIB_DIR "@PACKAGE_CMAKE_INSTALL_LIBDIR@")
+
+# Our library dependencies (none - self-contained library)
+
+# Include the targets file
+include("${CMAKE_CURRENT_LIST_DIR}/nfx-stringutils-targets.cmake")
+
+# For multi-config generators, include config-specific targets if available
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/nfx-stringutils-targets-${CMAKE_BUILD_TYPE}.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/nfx-stringutils-targets-${CMAKE_BUILD_TYPE}.cmake")
+endif()
+
+# Verify that the expected targets are available
+if(NOT TARGET nfx-stringutils::nfx-stringutils)
+    message(FATAL_ERROR "nfx-stringutils installation is broken: interface library target not found")
+endif()
+
+# Check that the requested components are available
+check_required_components(nfx-stringutils)
