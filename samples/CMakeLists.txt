@@ -15,9 +15,9 @@ endif()
 # Samples source files
 #----------------------------------------------
 
-set(SAMPLE_SOURCES)
+set(sample_sources)
 
-list(APPEND SAMPLE_SOURCES
+list(APPEND sample_sources
 	Sample_Network.cpp
 	Sample_StringSplitter.cpp
 	Sample_StringBasics.cpp
@@ -32,7 +32,7 @@ list(APPEND SAMPLE_SOURCES
 # Configure samples executables
 #----------------------------------------------
 
-foreach(sample_source ${SAMPLE_SOURCES})
+foreach(sample_source ${sample_sources})
 	get_filename_component(sample_target_name ${sample_source} NAME_WE)
 
 	if(NOT TARGET ${sample_target_name})
@@ -44,15 +44,6 @@ foreach(sample_source ${SAMPLE_SOURCES})
 
 		target_link_libraries(${sample_target_name} PRIVATE
 			nfx-stringutils::nfx-stringutils
-		)
-
-		#----------------------------------------------
-		# Enable specific CPU features
-		#----------------------------------------------
-
-		target_compile_options(${sample_target_name} PRIVATE
-			$<$<CXX_COMPILER_ID:MSVC>:/arch:AVX2>
-			$<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-msse4.2>
 		)
 
 		#----------------------------------------------

@@ -179,7 +179,7 @@ The complete API documentation is available online at:
 cmake .. -DCMAKE_BUILD_TYPE=Release -DNFX_STRINGUTILS_BUILD_DOCUMENTATION=ON
 
 # Build the documentation
-cmake --build . --target documentation
+cmake --build . --target nfx-stringutils-documentation
 ```
 
 #### Requirements
