@@ -630,6 +630,7 @@ namespace nfx::string
 	//----------------------------------------------
 	// String parsing
 	//----------------------------------------------
+
 	// Note: fromString<T> templates are defined in Utils.inl
 
 	//----------------------------------------------
@@ -863,7 +864,6 @@ namespace nfx::string
 	 * @return Negative if lhs < rhs, 0 if equal, positive if lhs > rhs
 	 * @details Performs case-insensitive comparison similar to strcasecmp.
 	 *          Returns -1/0/+1 for ordering. ASCII-only conversion.
-	 *          Does not allocate memory.
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr int compareIgnoreCase( std::string_view lhs, std::string_view rhs ) noexcept;
@@ -876,7 +876,6 @@ namespace nfx::string
 	 * @details Compares strings naturally, treating embedded numbers as integers.
 	 *          Example: "file2.txt" < "file10.txt" (not "file10.txt" < "file2.txt").
 	 *          Useful for sorting filenames, version numbers, etc.
-	 *          Does not allocate memory.
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr int naturalCompare( std::string_view lhs, std::string_view rhs ) noexcept;
@@ -888,7 +887,6 @@ namespace nfx::string
 	 * @return View of the common prefix substring
 	 * @details Returns a string_view pointing to the beginning of lhs that matches rhs.
 	 *          If no common prefix, returns empty string_view.
-	 *          Does not allocate memory. Zero-copy operation.
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr std::string_view commonPrefix( std::string_view lhs, std::string_view rhs ) noexcept;
@@ -900,7 +898,6 @@ namespace nfx::string
 	 * @return View of the common suffix substring
 	 * @details Returns a string_view pointing to the end of lhs that matches rhs.
 	 *          If no common suffix, returns empty string_view.
-	 *          Does not allocate memory. Zero-copy operation.
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr std::string_view commonSuffix( std::string_view lhs, std::string_view rhs ) noexcept;
@@ -914,7 +911,6 @@ namespace nfx::string
 	 * @param str String to validate
 	 * @return True if string is a valid IPv4 address (e.g., "192.168.1.1")
 	 * @details Validates dotted-decimal notation with four octets (0-255 each).
-	 *          Does not allocate memory. Examples: "127.0.0.1", "192.168.0.1"
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr bool isIPv4Address( std::string_view str ) noexcept;
@@ -923,8 +919,7 @@ namespace nfx::string
 	 * @brief Validate IPv6 address format (RFC 4291, RFC 5952)
 	 * @param str String to validate
 	 * @return True if string is a valid IPv6 address
-	 * @details Validates standard and compressed notation. Supports :: compression.
-	 *          Examples: "2001:db8::1", "::1", "fe80::1%eth0"
+	 * @details Validates standard and compressed notation.
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr bool isIPv6Address( std::string_view str ) noexcept;
@@ -986,6 +981,129 @@ namespace nfx::string
 	[[nodiscard]] inline bool tryParseEndpoint( std::string_view endpoint,
 		std::string_view& host,
 		uint16_t& port ) noexcept;
+
+	//-----------------------------
+	// Date and Time validation (RFC 3339)
+	//-----------------------------
+
+	/**
+	 * @brief Validate RFC 3339 date-time format
+	 * @param str String to validate
+	 * @return True if string is a valid date-time (e.g., "2025-11-29T14:30:00Z")
+	 * @details Validates YYYY-MM-DDTHH:MM:SS with optional fractional seconds and timezone.
+	 *          Timezone can be 'Z' or ±HH:MM offset. Does not allocate memory.
+	 * @see https://datatracker.ietf.org/doc/html/rfc3339
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isDateTime( std::string_view str ) noexcept;
+
+	/**
+	 * @brief Validate RFC 3339 full-date format
+	 * @param str String to validate
+	 * @return True if string is a valid date (e.g., "2025-11-29")
+	 * @details Validates YYYY-MM-DD format with proper month/day ranges.
+	 * @see https://datatracker.ietf.org/doc/html/rfc3339
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isDate( std::string_view str ) noexcept;
+
+	/**
+	 * @brief Validate RFC 3339 full-time format
+	 * @param str String to validate
+	 * @return True if string is a valid time (e.g., "14:30:00Z")
+	 * @details Validates HH:MM:SS with optional fractional seconds and required timezone.
+	 * @see https://datatracker.ietf.org/doc/html/rfc3339
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isTime( std::string_view str ) noexcept;
+
+	/**
+	 * @brief Validate ISO 8601 duration format
+	 * @param str String to validate
+	 * @return True if string is a valid duration (e.g., "P1Y2M3DT4H5M6S")
+	 * @details Validates P[n]Y[n]M[n]DT[n]H[n]M[n]S or P[n]W format.
+	 * @see https://en.wikipedia.org/wiki/ISO_8601#Durations
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isDuration( std::string_view str ) noexcept;
+
+	//-----------------------------
+	// Email validation (RFC 5321)
+	//-----------------------------
+
+	/**
+	 * @brief Validate email address format (RFC 5321)
+	 * @param str String to validate
+	 * @return True if string is a valid email address
+	 * @details Validates basic email format: local-part followed by at-sign and domain.
+	 *          Not exhaustive per RFC 5321.
+	 * @see https://datatracker.ietf.org/doc/html/rfc5321
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isEmail( std::string_view str ) noexcept;
+
+	//-----------------------------
+	// UUID validation (RFC 4122)
+	//-----------------------------
+
+	/**
+	 * @brief Validate UUID format (RFC 4122)
+	 * @param str String to validate
+	 * @return True if string is a valid UUID (e.g., "550e8400-e29b-41d4-a716-446655440000")
+	 * @details Validates 8-4-4-4-12 hexadecimal digit format with hyphens.
+	 * @see https://datatracker.ietf.org/doc/html/rfc4122
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isUUID( std::string_view str ) noexcept;
+
+	//-----------------------------
+	// URI validation (RFC 3986)
+	//-----------------------------
+
+	/**
+	 * @brief Validate URI format (RFC 3986)
+	 * @param str String to validate
+	 * @return True if string is a valid URI (e.g., "https://example.com/path")
+	 * @details Validates scheme://authority/path?query#fragment format.
+	 * @see https://datatracker.ietf.org/doc/html/rfc3986
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isURI( std::string_view str ) noexcept;
+
+	/**
+	 * @brief Validate URI-reference format (RFC 3986)
+	 * @param str String to validate
+	 * @return True if string is a valid URI or relative-reference
+	 * @details Validates URI or relative-reference (scheme optional).
+	 * @see https://datatracker.ietf.org/doc/html/rfc3986
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isURIReference( std::string_view str ) noexcept;
+
+	//-----------------------------
+	// JSON Pointer validation (RFC 6901)
+	//-----------------------------
+
+	/**
+	 * @brief Validate JSON Pointer format (RFC 6901)
+	 * @param str String to validate
+	 * @return True if string is a valid JSON Pointer (e.g., "/foo/bar/0")
+	 * @details Validates empty string or sequence of /reference-token.
+	 *          Escape sequences ~0 and ~1 are validated.
+	 * @see https://datatracker.ietf.org/doc/html/rfc6901
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isJSONPointer( std::string_view str ) noexcept;
+
+	/**
+	 * @brief Validate relative JSON Pointer format
+	 * @param str String to validate
+	 * @return True if string is a valid relative JSON Pointer (e.g., "1/foo")
+	 * @details Validates non-negative integer followed by either # or JSON Pointer.
+	 * @see https://datatracker.ietf.org/doc/html/draft-handrews-relative-json-pointer
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isRelativeJSONPointer( std::string_view str ) noexcept;
 } // namespace nfx::string
 
 #include "nfx/detail/string/Utils.inl"

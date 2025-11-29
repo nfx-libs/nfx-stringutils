@@ -4344,4 +4344,334 @@ namespace nfx::string::test
 		EXPECT_EQ( "ello", commonSuffix( "Hello", "hello" ) );		 // Case matters: 'H' != 'h', but "ello" matches
 		EXPECT_EQ( "esting", commonSuffix( "Testing", "testing" ) ); // 'T' != 't', but "esting" matches
 	}
+
+	//----------------------------------------------
+	// Date validation (RFC 3339)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsDate, ValidDates )
+	{
+		EXPECT_TRUE( isDate( "2025-11-29" ) );
+		EXPECT_TRUE( isDate( "2000-01-01" ) );
+		EXPECT_TRUE( isDate( "1999-12-31" ) );
+		EXPECT_TRUE( isDate( "2024-02-29" ) ); // Leap year (basic check, not validating leap year logic)
+		EXPECT_TRUE( isDate( "2023-02-28" ) );
+		EXPECT_TRUE( isDate( "0001-01-01" ) );
+		EXPECT_TRUE( isDate( "9999-12-31" ) );
+	}
+
+	TEST( StringUtilsIsDate, InvalidDates )
+	{
+		EXPECT_FALSE( isDate( "" ) );
+		EXPECT_FALSE( isDate( "2025-13-01" ) );	 // Invalid month
+		EXPECT_FALSE( isDate( "2025-00-01" ) );	 // Invalid month
+		EXPECT_FALSE( isDate( "2025-01-32" ) );	 // Invalid day
+		EXPECT_FALSE( isDate( "2025-01-00" ) );	 // Invalid day
+		EXPECT_FALSE( isDate( "2025-04-31" ) );	 // April has 30 days
+		EXPECT_FALSE( isDate( "2025-06-31" ) );	 // June has 30 days
+		EXPECT_FALSE( isDate( "25-11-29" ) );	 // Wrong year format
+		EXPECT_FALSE( isDate( "2025/11/29" ) );	 // Wrong separator
+		EXPECT_FALSE( isDate( "2025-1-29" ) );	 // Missing leading zero
+		EXPECT_FALSE( isDate( "2025-11-9" ) );	 // Missing leading zero
+		EXPECT_FALSE( isDate( "20251129" ) );	 // No separators
+		EXPECT_FALSE( isDate( "2025-11-29T" ) ); // Extra character
+	}
+
+	//----------------------------------------------
+	// Time validation (RFC 3339)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsTime, ValidTimes )
+	{
+		EXPECT_TRUE( isTime( "14:30:00Z" ) );
+		EXPECT_TRUE( isTime( "00:00:00Z" ) );
+		EXPECT_TRUE( isTime( "23:59:59Z" ) );
+		EXPECT_TRUE( isTime( "12:00:00z" ) ); // Lowercase z
+		EXPECT_TRUE( isTime( "14:30:00+00:00" ) );
+		EXPECT_TRUE( isTime( "14:30:00-05:00" ) );
+		EXPECT_TRUE( isTime( "14:30:00+12:00" ) );
+		EXPECT_TRUE( isTime( "14:30:00.123Z" ) );		// Fractional seconds
+		EXPECT_TRUE( isTime( "14:30:00.123456789Z" ) ); // Many fractional digits
+		EXPECT_TRUE( isTime( "23:59:60Z" ) );			// Leap second
+	}
+
+	TEST( StringUtilsIsTime, InvalidTimes )
+	{
+		EXPECT_FALSE( isTime( "" ) );
+		EXPECT_FALSE( isTime( "24:00:00Z" ) );		// Invalid hour
+		EXPECT_FALSE( isTime( "14:60:00Z" ) );		// Invalid minute
+		EXPECT_FALSE( isTime( "14:30:61Z" ) );		// Invalid second (>60)
+		EXPECT_FALSE( isTime( "14:30:00" ) );		// Missing timezone
+		EXPECT_FALSE( isTime( "14:30:00+" ) );		// Incomplete timezone
+		EXPECT_FALSE( isTime( "14:30:00+25:00" ) ); // Invalid tz hour
+		EXPECT_FALSE( isTime( "14:30:00+00:60" ) ); // Invalid tz minute
+		EXPECT_FALSE( isTime( "14:30Z" ) );			// Missing seconds
+		EXPECT_FALSE( isTime( "14:30:00.Z" ) );		// Empty fractional
+		EXPECT_FALSE( isTime( "1:30:00Z" ) );		// Missing leading zero
+	}
+
+	//----------------------------------------------
+	// DateTime validation (RFC 3339)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsDateTime, ValidDateTimes )
+	{
+		EXPECT_TRUE( isDateTime( "2025-11-29T14:30:00Z" ) );
+		EXPECT_TRUE( isDateTime( "2025-11-29t14:30:00z" ) ); // Lowercase
+		EXPECT_TRUE( isDateTime( "2000-01-01T00:00:00Z" ) );
+		EXPECT_TRUE( isDateTime( "2025-12-31T23:59:59Z" ) );
+		EXPECT_TRUE( isDateTime( "2025-11-29T14:30:00+05:30" ) );
+		EXPECT_TRUE( isDateTime( "2025-11-29T14:30:00-08:00" ) );
+		EXPECT_TRUE( isDateTime( "2025-11-29T14:30:00.123Z" ) );
+		EXPECT_TRUE( isDateTime( "2025-11-29T14:30:00.123456+00:00" ) );
+	}
+
+	TEST( StringUtilsIsDateTime, InvalidDateTimes )
+	{
+		EXPECT_FALSE( isDateTime( "" ) );
+		EXPECT_FALSE( isDateTime( "2025-11-29" ) );			  // Date only
+		EXPECT_FALSE( isDateTime( "14:30:00Z" ) );			  // Time only
+		EXPECT_FALSE( isDateTime( "2025-11-29 14:30:00Z" ) ); // Space instead of T
+		EXPECT_FALSE( isDateTime( "2025-13-29T14:30:00Z" ) ); // Invalid month
+		EXPECT_FALSE( isDateTime( "2025-11-29T25:30:00Z" ) ); // Invalid hour
+		EXPECT_FALSE( isDateTime( "2025-11-29T14:30:00" ) );  // Missing timezone
+		EXPECT_FALSE( isDateTime( "2025/11/29T14:30:00Z" ) ); // Wrong date separator
+	}
+
+	//----------------------------------------------
+	// Duration validation (ISO 8601)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsDuration, ValidDurations )
+	{
+		EXPECT_TRUE( isDuration( "P1Y" ) );
+		EXPECT_TRUE( isDuration( "P1M" ) );
+		EXPECT_TRUE( isDuration( "P1D" ) );
+		EXPECT_TRUE( isDuration( "PT1H" ) );
+		EXPECT_TRUE( isDuration( "PT1M" ) );
+		EXPECT_TRUE( isDuration( "PT1S" ) );
+		EXPECT_TRUE( isDuration( "P1Y2M3D" ) );
+		EXPECT_TRUE( isDuration( "PT1H2M3S" ) );
+		EXPECT_TRUE( isDuration( "P1Y2M3DT4H5M6S" ) );
+		EXPECT_TRUE( isDuration( "P1W" ) ); // Week format
+		EXPECT_TRUE( isDuration( "P52W" ) );
+		EXPECT_TRUE( isDuration( "PT0.5S" ) ); // Fractional seconds
+		EXPECT_TRUE( isDuration( "PT1.123S" ) );
+	}
+
+	TEST( StringUtilsIsDuration, InvalidDurations )
+	{
+		EXPECT_FALSE( isDuration( "" ) );
+		EXPECT_FALSE( isDuration( "P" ) );		  // P alone
+		EXPECT_FALSE( isDuration( "1Y" ) );		  // Missing P
+		EXPECT_FALSE( isDuration( "PT" ) );		  // T without time
+		EXPECT_FALSE( isDuration( "P1H" ) );	  // H without T
+		EXPECT_FALSE( isDuration( "P1Y2M3DT" ) ); // T without time parts
+		EXPECT_FALSE( isDuration( "P1WT1H" ) );	  // Week with other parts
+		EXPECT_FALSE( isDuration( "P.5S" ) );	  // Decimal without integer
+	}
+
+	//----------------------------------------------
+	// Email validation (RFC 5321)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsEmail, ValidEmails )
+	{
+		EXPECT_TRUE( isEmail( "user@example.com" ) );
+		EXPECT_TRUE( isEmail( "user.name@example.com" ) );
+		EXPECT_TRUE( isEmail( "user+tag@example.com" ) );
+		EXPECT_TRUE( isEmail( "user@sub.example.com" ) );
+		EXPECT_TRUE( isEmail( "user@example.co.uk" ) );
+		EXPECT_TRUE( isEmail( "a@b.co" ) );
+		EXPECT_TRUE( isEmail( "user123@example123.com" ) );
+		EXPECT_TRUE( isEmail( "user_name@example.com" ) );
+		EXPECT_TRUE( isEmail( "user-name@example.com" ) );
+		EXPECT_TRUE( isEmail( "user!def@example.com" ) ); // Special chars allowed in local
+	}
+
+	TEST( StringUtilsIsEmail, InvalidEmails )
+	{
+		EXPECT_FALSE( isEmail( "" ) );
+		EXPECT_FALSE( isEmail( "user" ) );							   // No @
+		EXPECT_FALSE( isEmail( "@example.com" ) );					   // No local part
+		EXPECT_FALSE( isEmail( "user@" ) );							   // No domain
+		EXPECT_FALSE( isEmail( "user@.com" ) );						   // Domain starts with dot
+		EXPECT_FALSE( isEmail( "user@example" ) );					   // No TLD (single label)
+		EXPECT_FALSE( isEmail( ".user@example.com" ) );				   // Local starts with dot
+		EXPECT_FALSE( isEmail( "user.@example.com" ) );				   // Local ends with dot
+		EXPECT_FALSE( isEmail( "user..name@example.com" ) );		   // Consecutive dots
+		EXPECT_FALSE( isEmail( "user name@example.com" ) );			   // Space in local
+		EXPECT_FALSE( isEmail( std::string( 255, 'a' ) + "@b.com" ) ); // Too long
+	}
+
+	//----------------------------------------------
+	// UUID validation (RFC 4122)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsUUID, ValidUUIDs )
+	{
+		EXPECT_TRUE( isUUID( "550e8400-e29b-41d4-a716-446655440000" ) );
+		EXPECT_TRUE( isUUID( "00000000-0000-0000-0000-000000000000" ) );
+		EXPECT_TRUE( isUUID( "ffffffff-ffff-ffff-ffff-ffffffffffff" ) );
+		EXPECT_TRUE( isUUID( "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF" ) ); // Uppercase
+		EXPECT_TRUE( isUUID( "123e4567-e89b-12d3-a456-426614174000" ) );
+		EXPECT_TRUE( isUUID( "a1b2c3d4-e5f6-7890-abcd-ef1234567890" ) );
+	}
+
+	TEST( StringUtilsIsUUID, InvalidUUIDs )
+	{
+		EXPECT_FALSE( isUUID( "" ) );
+		EXPECT_FALSE( isUUID( "550e8400-e29b-41d4-a716-44665544000" ) );   // Too short
+		EXPECT_FALSE( isUUID( "550e8400-e29b-41d4-a716-4466554400000" ) ); // Too long
+		EXPECT_FALSE( isUUID( "550e8400e29b41d4a716446655440000" ) );	   // No hyphens
+		EXPECT_FALSE( isUUID( "550e8400-e29b-41d4-a716446655440000" ) );   // Missing hyphen
+		EXPECT_FALSE( isUUID( "550g8400-e29b-41d4-a716-446655440000" ) );  // Invalid hex 'g'
+		EXPECT_FALSE( isUUID( "550e8400-e29b-41d4-a716-44665544000z" ) );  // Invalid char 'z'
+		EXPECT_FALSE( isUUID( "550e8400_e29b_41d4_a716_446655440000" ) );  // Underscores
+	}
+
+	//----------------------------------------------
+	// URI validation (RFC 3986)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsURI, ValidURIs )
+	{
+		EXPECT_TRUE( isURI( "http://example.com" ) );
+		EXPECT_TRUE( isURI( "https://example.com/path" ) );
+		EXPECT_TRUE( isURI( "ftp://ftp.example.com/file.txt" ) );
+		EXPECT_TRUE( isURI( "mailto:user@example.com" ) );
+		EXPECT_TRUE( isURI( "file:///path/to/file" ) );
+		EXPECT_TRUE( isURI( "custom-scheme://host/path" ) );
+		EXPECT_TRUE( isURI( "scheme+sub://host" ) );
+		EXPECT_TRUE( isURI( "scheme.sub://host" ) );
+		EXPECT_TRUE( isURI( "urn:isbn:0451450523" ) );
+		EXPECT_TRUE( isURI( "tel:+1-816-555-1212" ) );
+	}
+
+	TEST( StringUtilsIsURI, InvalidURIs )
+	{
+		EXPECT_FALSE( isURI( "" ) );
+		EXPECT_FALSE( isURI( "example.com" ) );			// No scheme
+		EXPECT_FALSE( isURI( "://example.com" ) );		// Empty scheme
+		EXPECT_FALSE( isURI( "1http://example.com" ) ); // Scheme starts with digit
+		EXPECT_FALSE( isURI( "-http://example.com" ) ); // Scheme starts with hyphen
+		EXPECT_FALSE( isURI( "http ://example.com" ) ); // Space in URI
+		EXPECT_FALSE( isURI( "http://example .com" ) ); // Space in URI
+	}
+
+	//----------------------------------------------
+	// URI Reference validation (RFC 3986)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsURIReference, ValidURIReferences )
+	{
+		// Absolute URIs
+		EXPECT_TRUE( isURIReference( "http://example.com" ) );
+		EXPECT_TRUE( isURIReference( "https://example.com/path" ) );
+
+		// Relative references
+		EXPECT_TRUE( isURIReference( "/path/to/resource" ) );
+		EXPECT_TRUE( isURIReference( "relative/path" ) );
+		EXPECT_TRUE( isURIReference( "../parent/path" ) );
+		EXPECT_TRUE( isURIReference( "./current/path" ) );
+		EXPECT_TRUE( isURIReference( "?query=value" ) );
+		EXPECT_TRUE( isURIReference( "#fragment" ) );
+		EXPECT_TRUE( isURIReference( "" ) ); // Empty is valid
+	}
+
+	TEST( StringUtilsIsURIReference, InvalidURIReferences )
+	{
+		EXPECT_FALSE( isURIReference( "path with spaces" ) );
+		EXPECT_FALSE( isURIReference( "http://example .com" ) );
+		EXPECT_FALSE( isURIReference( "/path\twith\ttabs" ) );
+	}
+
+	//----------------------------------------------
+	// JSON Pointer validation (RFC 6901)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsJSONPointer, ValidPointers )
+	{
+		EXPECT_TRUE( isJSONPointer( "" ) );	 // Root document
+		EXPECT_TRUE( isJSONPointer( "/" ) ); // Empty key
+		EXPECT_TRUE( isJSONPointer( "/foo" ) );
+		EXPECT_TRUE( isJSONPointer( "/foo/bar" ) );
+		EXPECT_TRUE( isJSONPointer( "/foo/0" ) ); // Array index
+		EXPECT_TRUE( isJSONPointer( "/a~1b" ) );  // Escaped /
+		EXPECT_TRUE( isJSONPointer( "/c%d" ) );	  // % is allowed
+		EXPECT_TRUE( isJSONPointer( "/e^f" ) );	  // ^ is allowed
+		EXPECT_TRUE( isJSONPointer( "/m~0n" ) );  // Escaped ~
+		EXPECT_TRUE( isJSONPointer( "/foo/bar/baz/0/qux" ) );
+	}
+
+	TEST( StringUtilsIsJSONPointer, InvalidPointers )
+	{
+		EXPECT_FALSE( isJSONPointer( "foo" ) );		// Missing leading /
+		EXPECT_FALSE( isJSONPointer( "foo/bar" ) ); // Missing leading /
+		EXPECT_FALSE( isJSONPointer( "/foo~" ) );	// ~ at end
+		EXPECT_FALSE( isJSONPointer( "/foo~2" ) );	// Invalid escape ~2
+		EXPECT_FALSE( isJSONPointer( "/foo~a" ) );	// Invalid escape ~a
+	}
+
+	//----------------------------------------------
+	// Relative JSON Pointer validation
+	//----------------------------------------------
+
+	TEST( StringUtilsIsRelativeJSONPointer, ValidPointers )
+	{
+		EXPECT_TRUE( isRelativeJSONPointer( "0#" ) );		 // Current + name
+		EXPECT_TRUE( isRelativeJSONPointer( "1#" ) );		 // Parent + name
+		EXPECT_TRUE( isRelativeJSONPointer( "0/foo" ) );	 // Current + path
+		EXPECT_TRUE( isRelativeJSONPointer( "1/foo/bar" ) ); // Parent + path
+		EXPECT_TRUE( isRelativeJSONPointer( "2/0" ) );		 // Grandparent + index
+		EXPECT_TRUE( isRelativeJSONPointer( "0/" ) );		 // Empty token
+		EXPECT_TRUE( isRelativeJSONPointer( "10/foo" ) );	 // Multi-digit
+		EXPECT_TRUE( isRelativeJSONPointer( "0/a~0b" ) );	 // With escape
+	}
+
+	TEST( StringUtilsIsRelativeJSONPointer, InvalidPointers )
+	{
+		EXPECT_FALSE( isRelativeJSONPointer( "" ) );	   // Empty
+		EXPECT_FALSE( isRelativeJSONPointer( "#" ) );	   // Missing number
+		EXPECT_FALSE( isRelativeJSONPointer( "/foo" ) );   // Absolute pointer
+		EXPECT_FALSE( isRelativeJSONPointer( "01/foo" ) ); // Leading zero
+		EXPECT_FALSE( isRelativeJSONPointer( "1" ) );	   // Number only (no # or /)
+		EXPECT_FALSE( isRelativeJSONPointer( "-1/foo" ) ); // Negative
+		EXPECT_FALSE( isRelativeJSONPointer( "a/foo" ) );  // Non-digit start
+		EXPECT_FALSE( isRelativeJSONPointer( "0#foo" ) );  // # not at end
+	}
+
+	//----------------------------------------------
+	// Constexpr validation tests
+	//----------------------------------------------
+
+	TEST( StringUtilsConstexpr, DateTimeValidation )
+	{
+		constexpr bool validDate = isDate( "2025-11-29" );
+		constexpr bool invalidDate = isDate( "invalid" );
+		constexpr bool validTime = isTime( "14:30:00Z" );
+		constexpr bool validDateTime = isDateTime( "2025-11-29T14:30:00Z" );
+		constexpr bool validDuration = isDuration( "P1Y2M3D" );
+
+		EXPECT_TRUE( validDate );
+		EXPECT_FALSE( invalidDate );
+		EXPECT_TRUE( validTime );
+		EXPECT_TRUE( validDateTime );
+		EXPECT_TRUE( validDuration );
+	}
+
+	TEST( StringUtilsConstexpr, FormatValidation )
+	{
+		constexpr bool validUUID = isUUID( "550e8400-e29b-41d4-a716-446655440000" );
+		constexpr bool validURI = isURI( "https://example.com" );
+		constexpr bool validURIRef = isURIReference( "/path" );
+		constexpr bool validJSONPtr = isJSONPointer( "/foo/bar" );
+		constexpr bool validRelPtr = isRelativeJSONPointer( "1/foo" );
+
+		EXPECT_TRUE( validUUID );
+		EXPECT_TRUE( validURI );
+		EXPECT_TRUE( validURIRef );
+		EXPECT_TRUE( validJSONPtr );
+		EXPECT_TRUE( validRelPtr );
+	}
 } // namespace nfx::string::test

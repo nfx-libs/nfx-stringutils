@@ -426,5 +426,219 @@ int main()
 		std::cout << "\n";
 	}
 
+	//=====================================================================
+	// 11. Date/Time validation (RFC 3339)
+	//=====================================================================
+	{
+		std::cout << "11. Date/Time validation (RFC 3339)\n";
+		std::cout << "--------------------------------------\n";
+
+		std::cout << "  Dates:\n";
+		const std::string_view dateExamples[]{
+			"2025-11-29",
+			"2000-01-01",
+			"2025-13-01", // Invalid month
+			"2025-02-30", // Invalid day
+		};
+
+		for ( const auto& date : dateExamples )
+		{
+			std::cout << "    " << date << std::string( 20 - date.length(), ' ' )
+					  << " -> " << ( isDate( date ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		}
+
+		std::cout << "\n  Times:\n";
+		const std::string_view timeExamples[]{
+			"14:30:00Z",
+			"23:59:59+05:30",
+			"14:30:00.123Z",
+			"14:30:00", // Missing timezone
+		};
+
+		for ( const auto& time : timeExamples )
+		{
+			std::cout << "    " << time << std::string( 20 - time.length(), ' ' )
+					  << " -> " << ( isTime( time ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		}
+
+		std::cout << "\n  DateTimes:\n";
+		const std::string_view dateTimeExamples[]{
+			"2025-11-29T14:30:00Z",
+			"2025-11-29T14:30:00+05:30",
+			"2025-11-29 14:30:00Z", // Space instead of T
+		};
+
+		for ( const auto& dt : dateTimeExamples )
+		{
+			std::cout << "    " << dt << std::string( 30 - dt.length(), ' ' )
+					  << " -> " << ( isDateTime( dt ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		}
+
+		std::cout << "\n";
+	}
+
+	//=====================================================================
+	// 12. Duration validation (ISO 8601)
+	//=====================================================================
+	{
+		std::cout << "12. Duration validation (ISO 8601)\n";
+		std::cout << "-------------------------------------\n";
+
+		const std::string_view durationExamples[]{
+			"P1Y",
+			"P1Y2M3D",
+			"PT1H30M",
+			"P1Y2M3DT4H5M6S",
+			"P2W",
+			"PT0.5S",
+			"P",	// Invalid
+			"1Y2M", // Missing P
+		};
+
+		for ( const auto& dur : durationExamples )
+		{
+			std::cout << "  " << dur << std::string( 20 - dur.length(), ' ' )
+					  << " -> " << ( isDuration( dur ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		}
+
+		std::cout << "\n";
+	}
+
+	//=====================================================================
+	// 13. Email validation (RFC 5321)
+	//=====================================================================
+	{
+		std::cout << "13. Email validation (RFC 5321)\n";
+		std::cout << "----------------------------------\n";
+
+		const std::string_view emailExamples[]{
+			"user@example.com",
+			"user.name+tag@example.co.uk",
+			"admin@localhost",	// Invalid (no TLD)
+			"@example.com",		// Invalid (no local)
+			"user@.com",		// Invalid
+			"user..name@x.com", // Invalid (consecutive dots)
+		};
+
+		for ( const auto& email : emailExamples )
+		{
+			std::cout << "  " << email << std::string( 35 - email.length(), ' ' )
+					  << " -> " << ( isEmail( email ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		}
+
+		std::cout << "\n";
+	}
+
+	//=====================================================================
+	// 14. UUID validation (RFC 4122)
+	//=====================================================================
+	{
+		std::cout << "14. UUID validation (RFC 4122)\n";
+		std::cout << "---------------------------------\n";
+
+		const std::string_view uuidExamples[]{
+			"550e8400-e29b-41d4-a716-446655440000",
+			"00000000-0000-0000-0000-000000000000",
+			"FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF",
+			"550e8400e29b41d4a716446655440000",		// Missing hyphens
+			"550e8400-e29b-41d4-a716",				// Too short
+			"550g8400-e29b-41d4-a716-446655440000", // Invalid hex
+		};
+
+		for ( const auto& uuid : uuidExamples )
+		{
+			std::cout << "  " << uuid << std::string( 40 - uuid.length(), ' ' )
+					  << " -> " << ( isUUID( uuid ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		}
+
+		std::cout << "\n";
+	}
+
+	//=====================================================================
+	// 15. URI validation (RFC 3986)
+	//=====================================================================
+	{
+		std::cout << "15. URI validation (RFC 3986)\n";
+		std::cout << "--------------------------------\n";
+
+		const std::string_view uriExamples[]{
+			"https://example.com",
+			"http://example.com/path?query=1#frag",
+			"mailto:user@example.com",
+			"file:///path/to/file",
+			"urn:isbn:0451450523",
+			"example.com",	  // Invalid (no scheme)
+			"://example.com", // Invalid (empty scheme)
+		};
+
+		for ( const auto& uri : uriExamples )
+		{
+			std::cout << "  " << uri << std::string( 40 - uri.length(), ' ' )
+					  << " -> " << ( isURI( uri ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		}
+
+		std::cout << "\n  URI References (includes relative):\n";
+		const std::string_view uriRefExamples[]{
+			"/path/to/resource",
+			"../parent/path",
+			"?query=value",
+			"#fragment",
+		};
+
+		for ( const auto& ref : uriRefExamples )
+		{
+			std::cout << "    " << ref << std::string( 25 - ref.length(), ' ' )
+					  << " -> " << ( isURIReference( ref ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		}
+
+		std::cout << "\n";
+	}
+
+	//=====================================================================
+	// 16. JSON Pointer validation (RFC 6901)
+	//=====================================================================
+	{
+		std::cout << "16. JSON Pointer validation (RFC 6901)\n";
+		std::cout << "-----------------------------------------\n";
+
+		std::cout << "  JSON Pointers:\n";
+		const std::string_view jsonPtrExamples[]{
+			"", // Root document
+			"/foo",
+			"/foo/bar/0",
+			"/a~1b", // Escaped /
+			"/m~0n", // Escaped ~
+			"foo",	 // Invalid (no leading /)
+			"/foo~", // Invalid (incomplete escape)
+		};
+
+		for ( const auto& ptr : jsonPtrExamples )
+		{
+			const std::string display = ptr.empty() ? "(empty)" : std::string( ptr );
+			std::cout << "    " << display << std::string( 20 - display.length(), ' ' )
+					  << " -> " << ( isJSONPointer( ptr ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		}
+
+		std::cout << "\n  Relative JSON Pointers:\n";
+		const std::string_view relPtrExamples[]{
+			"0#",
+			"1/foo",
+			"2/foo/bar",
+			"0/a~0b",
+			"",		  // Invalid
+			"/foo",	  // Invalid (absolute)
+			"01/foo", // Invalid (leading zero)
+		};
+
+		for ( const auto& ptr : relPtrExamples )
+		{
+			const std::string display = ptr.empty() ? "(empty)" : std::string( ptr );
+			std::cout << "    " << display << std::string( 20 - display.length(), ' ' )
+					  << " -> " << ( isRelativeJSONPointer( ptr ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		}
+
+		std::cout << "\n";
+	}
+
 	return 0;
 }

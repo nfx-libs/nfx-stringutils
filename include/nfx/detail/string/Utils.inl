@@ -2378,4 +2378,588 @@ namespace nfx::string
 
 		return isValidHostname( host );
 	}
+
+	//-----------------------------
+	// Date and Time validation (RFC 3339)
+	//-----------------------------
+
+	inline constexpr bool isDate( std::string_view str ) noexcept
+	{
+		// Format: YYYY-MM-DD (10 characters)
+		if ( str.size() != 10 )
+		{
+			return false;
+		}
+
+		// Check format: YYYY-MM-DD
+		if ( str[4] != '-' || str[7] != '-' )
+		{
+			return false;
+		}
+
+		// Validate year (4 digits)
+		for ( int i = 0; i < 4; ++i )
+		{
+			if ( !isDigit( str[i] ) )
+			{
+				return false;
+			}
+		}
+
+		// Validate month (01-12)
+		if ( !isDigit( str[5] ) || !isDigit( str[6] ) )
+		{
+			return false;
+		}
+		const int month = ( str[5] - '0' ) * 10 + ( str[6] - '0' );
+		if ( month < 1 || month > 12 )
+		{
+			return false;
+		}
+
+		// Validate day (01-31)
+		if ( !isDigit( str[8] ) || !isDigit( str[9] ) )
+		{
+			return false;
+		}
+		const int day = ( str[8] - '0' ) * 10 + ( str[9] - '0' );
+		if ( day < 1 || day > 31 )
+		{
+			return false;
+		}
+
+		// Basic month/day validation (not checking leap years for simplicity)
+		constexpr int daysInMonth[] = { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		if ( day > daysInMonth[month] )
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	inline constexpr bool isTime( std::string_view str ) noexcept
+	{
+		// Minimum format: HH:MM:SSZ (9 characters)
+		if ( str.size() < 9 )
+		{
+			return false;
+		}
+
+		// Validate hours (00-23)
+		if ( !isDigit( str[0] ) || !isDigit( str[1] ) )
+		{
+			return false;
+		}
+		const int hour = ( str[0] - '0' ) * 10 + ( str[1] - '0' );
+		if ( hour > 23 )
+		{
+			return false;
+		}
+
+		if ( str[2] != ':' )
+		{
+			return false;
+		}
+
+		// Validate minutes (00-59)
+		if ( !isDigit( str[3] ) || !isDigit( str[4] ) )
+		{
+			return false;
+		}
+		const int minute = ( str[3] - '0' ) * 10 + ( str[4] - '0' );
+		if ( minute > 59 )
+		{
+			return false;
+		}
+
+		if ( str[5] != ':' )
+		{
+			return false;
+		}
+
+		// Validate seconds (00-59, allowing 60 for leap seconds)
+		if ( !isDigit( str[6] ) || !isDigit( str[7] ) )
+		{
+			return false;
+		}
+		const int second = ( str[6] - '0' ) * 10 + ( str[7] - '0' );
+		if ( second > 60 )
+		{
+			return false;
+		}
+
+		std::size_t pos = 8;
+
+		// Optional fractional seconds
+		if ( pos < str.size() && str[pos] == '.' )
+		{
+			++pos;
+			if ( pos >= str.size() || !isDigit( str[pos] ) )
+			{
+				return false;
+			}
+			while ( pos < str.size() && isDigit( str[pos] ) )
+			{
+				++pos;
+			}
+		}
+
+		// Timezone required: Z or ±HH:MM
+		if ( pos >= str.size() )
+		{
+			return false;
+		}
+
+		if ( str[pos] == 'Z' || str[pos] == 'z' )
+		{
+			return pos + 1 == str.size();
+		}
+
+		if ( str[pos] != '+' && str[pos] != '-' )
+		{
+			return false;
+		}
+		++pos;
+
+		// Validate timezone offset HH:MM
+		if ( pos + 5 != str.size() )
+		{
+			return false;
+		}
+
+		// Timezone hours (00-23)
+		if ( !isDigit( str[pos] ) || !isDigit( str[pos + 1] ) )
+		{
+			return false;
+		}
+		const int tzHour = ( str[pos] - '0' ) * 10 + ( str[pos + 1] - '0' );
+		if ( tzHour > 23 )
+		{
+			return false;
+		}
+
+		if ( str[pos + 2] != ':' )
+		{
+			return false;
+		}
+
+		// Timezone minutes (00-59)
+		if ( !isDigit( str[pos + 3] ) || !isDigit( str[pos + 4] ) )
+		{
+			return false;
+		}
+		const int tzMinute = ( str[pos + 3] - '0' ) * 10 + ( str[pos + 4] - '0' );
+		if ( tzMinute > 59 )
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	inline constexpr bool isDateTime( std::string_view str ) noexcept
+	{
+		// Minimum format: YYYY-MM-DDTHH:MM:SSZ (20 characters)
+		if ( str.size() < 20 )
+		{
+			return false;
+		}
+
+		// Check separator (T or t)
+		if ( str[10] != 'T' && str[10] != 't' )
+		{
+			return false;
+		}
+
+		// Validate date part
+		if ( !isDate( str.substr( 0, 10 ) ) )
+		{
+			return false;
+		}
+
+		// Validate time part
+		return isTime( str.substr( 11 ) );
+	}
+
+	inline constexpr bool isDuration( std::string_view str ) noexcept
+	{
+		// Minimum: P followed by at least one designator
+		if ( str.size() < 2 || str[0] != 'P' )
+		{
+			return false;
+		}
+
+		std::size_t pos = 1;
+		bool hasDatePart = false;
+		bool hasTimePart = false;
+		bool inTimePart = false;
+
+		// Check for week format: P[n]W
+		if ( pos < str.size() && isDigit( str[pos] ) )
+		{
+			while ( pos < str.size() && isDigit( str[pos] ) )
+			{
+				++pos;
+			}
+			if ( pos < str.size() && str[pos] == 'W' )
+			{
+				return pos + 1 == str.size(); // Week format must be alone
+			}
+			// Reset for non-week format
+			pos = 1;
+		}
+
+		while ( pos < str.size() )
+		{
+			if ( str[pos] == 'T' )
+			{
+				if ( inTimePart )
+				{
+					return false; // Duplicate T
+				}
+				inTimePart = true;
+				++pos;
+				continue;
+			}
+
+			// Parse number
+			if ( !isDigit( str[pos] ) )
+			{
+				return false;
+			}
+
+			while ( pos < str.size() && isDigit( str[pos] ) )
+			{
+				++pos;
+			}
+
+			// Handle decimal in seconds
+			if ( pos < str.size() && str[pos] == '.' )
+			{
+				++pos;
+				if ( pos >= str.size() || !isDigit( str[pos] ) )
+				{
+					return false;
+				}
+				while ( pos < str.size() && isDigit( str[pos] ) )
+				{
+					++pos;
+				}
+			}
+
+			if ( pos >= str.size() )
+			{
+				return false; // Number without designator
+			}
+
+			const char designator = str[pos];
+			++pos;
+
+			if ( inTimePart )
+			{
+				if ( designator != 'H' && designator != 'M' && designator != 'S' )
+				{
+					return false;
+				}
+				hasTimePart = true;
+			}
+			else
+			{
+				if ( designator != 'Y' && designator != 'M' && designator != 'D' )
+				{
+					return false;
+				}
+				hasDatePart = true;
+			}
+		}
+
+		// If T was present, must have time parts
+		if ( inTimePart && !hasTimePart )
+		{
+			return false;
+		}
+
+		return hasDatePart || hasTimePart;
+	}
+
+	//-----------------------------
+	// Email validation (RFC 5321)
+	//-----------------------------
+
+	inline constexpr bool isEmail( std::string_view str ) noexcept
+	{
+		if ( str.empty() || str.size() > 254 )
+		{
+			return false;
+		}
+
+		// Find @ symbol
+		std::size_t atPos = str.find( '@' );
+		if ( atPos == std::string_view::npos || atPos == 0 || atPos == str.size() - 1 )
+		{
+			return false;
+		}
+
+		const std::string_view localPart = str.substr( 0, atPos );
+		const std::string_view domain = str.substr( atPos + 1 );
+
+		// Local part validation (simplified)
+		if ( localPart.empty() || localPart.size() > 64 )
+		{
+			return false;
+		}
+
+		// Local part: alphanumeric and special chars .!#$%&'*+/=?^_`{|}~-
+		// Cannot start or end with dot, no consecutive dots
+		bool prevDot = true; // Treat start as after dot to catch leading dot
+		for ( char c : localPart )
+		{
+			if ( c == '.' )
+			{
+				if ( prevDot )
+				{
+					return false; // Consecutive dots or leading dot
+				}
+				prevDot = true;
+			}
+			else
+			{
+				if ( !isAlphaNumeric( c ) && c != '!' && c != '#' && c != '$' && c != '%' &&
+					 c != '&' && c != '\'' && c != '*' && c != '+' && c != '/' && c != '=' &&
+					 c != '?' && c != '^' && c != '_' && c != '`' && c != '{' && c != '|' &&
+					 c != '}' && c != '~' && c != '-' )
+				{
+					return false;
+				}
+				prevDot = false;
+			}
+		}
+		if ( prevDot )
+		{
+			return false; // Trailing dot
+		}
+
+		// Domain validation: must be valid domain name (hostname with at least one dot)
+		return isDomainName( domain );
+	}
+
+	//-----------------------------
+	// UUID validation (RFC 4122)
+	//-----------------------------
+
+	inline constexpr bool isUUID( std::string_view str ) noexcept
+	{
+		// Format: 8-4-4-4-12 = 36 characters
+		if ( str.size() != 36 )
+		{
+			return false;
+		}
+
+		// Check hyphens at positions 8, 13, 18, 23
+		if ( str[8] != '-' || str[13] != '-' || str[18] != '-' || str[23] != '-' )
+		{
+			return false;
+		}
+
+		// Validate hex digits
+		auto isHexDigit = []( char c ) constexpr noexcept {
+			return isDigit( c ) || ( c >= 'a' && c <= 'f' ) || ( c >= 'A' && c <= 'F' );
+		};
+
+		for ( std::size_t i = 0; i < str.size(); ++i )
+		{
+			if ( i == 8 || i == 13 || i == 18 || i == 23 )
+			{
+				continue; // Skip hyphens
+			}
+			if ( !isHexDigit( str[i] ) )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	//-----------------------------
+	// URI validation (RFC 3986)
+	//-----------------------------
+
+	inline constexpr bool isURI( std::string_view str ) noexcept
+	{
+		if ( str.empty() )
+		{
+			return false;
+		}
+
+		// Scheme must start with letter
+		if ( !isAlpha( str[0] ) )
+		{
+			return false;
+		}
+
+		// Find scheme separator ':'
+		std::size_t colonPos = 0;
+		for ( std::size_t i = 1; i < str.size(); ++i )
+		{
+			const char c = str[i];
+			if ( c == ':' )
+			{
+				colonPos = i;
+				break;
+			}
+			// Scheme: ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+			if ( !isAlphaNumeric( c ) && c != '+' && c != '-' && c != '.' )
+			{
+				return false;
+			}
+		}
+
+		if ( colonPos == 0 )
+		{
+			return false; // No scheme
+		}
+
+		// After scheme, must have something (could be empty path, but typically has content)
+		// Basic validation: no whitespace allowed
+		for ( std::size_t i = colonPos + 1; i < str.size(); ++i )
+		{
+			if ( isWhitespace( str[i] ) )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	inline constexpr bool isURIReference( std::string_view str ) noexcept
+	{
+		if ( str.empty() )
+		{
+			return true; // Empty string is valid relative-reference
+		}
+
+		// Check if it's a URI (has scheme)
+		for ( std::size_t i = 0; i < str.size(); ++i )
+		{
+			const char c = str[i];
+			if ( c == ':' )
+			{
+				// Has scheme, validate as URI
+				if ( i > 0 && isAlpha( str[0] ) )
+				{
+					return isURI( str );
+				}
+				break;
+			}
+			if ( c == '/' || c == '?' || c == '#' )
+			{
+				break; // Relative reference
+			}
+			if ( i == 0 && !isAlpha( c ) )
+			{
+				break; // Can't be scheme
+			}
+			if ( !isAlphaNumeric( c ) && c != '+' && c != '-' && c != '.' )
+			{
+				break; // Invalid scheme char
+			}
+		}
+
+		// Relative reference: no whitespace allowed
+		for ( char c : str )
+		{
+			if ( isWhitespace( c ) )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	//-----------------------------
+	// JSON Pointer validation (RFC 6901)
+	//-----------------------------
+
+	inline constexpr bool isJSONPointer( std::string_view str ) noexcept
+	{
+		// Empty string is valid (references whole document)
+		if ( str.empty() )
+		{
+			return true;
+		}
+
+		// Must start with '/'
+		if ( str[0] != '/' )
+		{
+			return false;
+		}
+
+		// Validate reference tokens
+		for ( std::size_t i = 1; i < str.size(); ++i )
+		{
+			const char c = str[i];
+
+			// Check escape sequences
+			if ( c == '~' )
+			{
+				// Must be followed by 0 or 1
+				if ( i + 1 >= str.size() )
+				{
+					return false;
+				}
+				const char next = str[i + 1];
+				if ( next != '0' && next != '1' )
+				{
+					return false;
+				}
+				++i; // Skip the escaped character
+			}
+			// '/' starts new token (always valid)
+		}
+
+		return true;
+	}
+
+	inline constexpr bool isRelativeJSONPointer( std::string_view str ) noexcept
+	{
+		if ( str.empty() )
+		{
+			return false;
+		}
+
+		// Must start with non-negative integer
+		if ( !isDigit( str[0] ) )
+		{
+			return false;
+		}
+
+		// Leading zeros not allowed (except "0" alone)
+		if ( str[0] == '0' && str.size() > 1 && isDigit( str[1] ) )
+		{
+			return false;
+		}
+
+		std::size_t pos = 0;
+		while ( pos < str.size() && isDigit( str[pos] ) )
+		{
+			++pos;
+		}
+
+		if ( pos == str.size() )
+		{
+			return false; // Must have # or JSON Pointer after
+		}
+
+		if ( str[pos] == '#' )
+		{
+			return pos + 1 == str.size(); // # must be at end
+		}
+
+		// Rest must be valid JSON Pointer (starting with /)
+		return isJSONPointer( str.substr( pos ) );
+	}
 } // namespace nfx::string

@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- NIL
+- **Format Validation**: Constexpr RFC-compliant validators (~54x faster than regex)
+  - `isDate()`, `isTime()`, `isDateTime()` - RFC 3339 date/time validation
+  - `isDuration()` - ISO 8601 duration format (P1Y2M3DT4H5M6S, P1W)
+  - `isEmail()` - RFC 5321 email validation
+  - `isUUID()` - RFC 4122 UUID format (8-4-4-4-12)
+  - `isURI()`, `isURIReference()` - RFC 3986 URI validation
+  - `isJSONPointer()`, `isRelativeJSONPointer()` - RFC 6901 JSON Pointer
 
 ### Changed
 
