@@ -4,7 +4,8 @@ Project roadmap and task tracking for the nfx-stringutils library.
 
 ### Todo
 
-- NIL
+- [ ] UTF-8 utilities (validation, codepoint counting, safe truncation)
+- [ ] Expand benchmark coverage (validators, encoding, formatting)
 
 ### In Progress
 
