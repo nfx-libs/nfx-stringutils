@@ -541,6 +541,71 @@ namespace nfx::string::test
 	}
 
 	//-----------------------------
+	// URI Template validation (RFC 6570)
+	//-----------------------------
+
+	TEST( StringUtilsIsURITemplate, ValidTemplates )
+	{
+		// Level 1: Simple variable expansion
+		EXPECT_TRUE( isUriTemplate( "/users/{id}" ) );
+		EXPECT_TRUE( isUriTemplate( "/{username}" ) );
+		EXPECT_TRUE( isUriTemplate( "/search/{term}/results" ) );
+
+		// Level 2: Reserved character expansion
+		EXPECT_TRUE( isUriTemplate( "/path{+path}" ) );
+		EXPECT_TRUE( isUriTemplate( "/x{#fragment}" ) );
+
+		// Level 3: Multiple variables
+		EXPECT_TRUE( isUriTemplate( "/search{?q,page,limit}" ) );
+		EXPECT_TRUE( isUriTemplate( "/map{?x,y,z}" ) );
+		EXPECT_TRUE( isUriTemplate( "/path{;x,y}" ) );
+		EXPECT_TRUE( isUriTemplate( "/list{.ext}" ) );
+		EXPECT_TRUE( isUriTemplate( "/user/{id}/profile" ) );
+
+		// Level 4: Value modifiers
+		EXPECT_TRUE( isUriTemplate( "/search{?query*}" ) ); // Explode modifier
+		EXPECT_TRUE( isUriTemplate( "/items{?fields*}" ) );
+		EXPECT_TRUE( isUriTemplate( "/data{?list*,value}" ) );
+
+		// Complex templates
+		EXPECT_TRUE( isUriTemplate( "https://api.example.com/v1/users/{userId}/posts{?sort,limit}" ) );
+		EXPECT_TRUE( isUriTemplate( "/api/{version}/{resource}{/id}{?filter*}" ) );
+		EXPECT_TRUE( isUriTemplate( "{scheme}://{host}{/path*}{?query*}{#fragment}" ) );
+
+		// Edge cases
+		EXPECT_TRUE( isUriTemplate( "" ) );				// Empty template
+		EXPECT_TRUE( isUriTemplate( "/static/path" ) ); // No variables
+		EXPECT_TRUE( isUriTemplate( "/{a}/{b}/{c}" ) ); // Multiple simple variables
+	}
+
+	TEST( StringUtilsIsURITemplate, InvalidTemplates )
+	{
+		// Malformed expressions
+		EXPECT_FALSE( isUriTemplate( "/path/{" ) );		 // Unclosed brace
+		EXPECT_FALSE( isUriTemplate( "/path/}" ) );		 // Unmatched closing brace
+		EXPECT_FALSE( isUriTemplate( "/path/{id" ) );	 // Missing closing brace
+		EXPECT_FALSE( isUriTemplate( "/path/id}" ) );	 // Missing opening brace
+		EXPECT_FALSE( isUriTemplate( "/path/{}" ) );	 // Empty expression
+		EXPECT_FALSE( isUriTemplate( "/path/{{id}}" ) ); // Double braces
+
+		// Invalid variable names
+		EXPECT_FALSE( isUriTemplate( "/path/{ id }" ) ); // Spaces in variable name
+		EXPECT_FALSE( isUriTemplate( "/path/{id!}" ) );	 // Invalid character
+		EXPECT_FALSE( isUriTemplate( "/path/{id@}" ) );	 // Invalid character
+
+		// Invalid operators
+		EXPECT_FALSE( isUriTemplate( "/path/{$id}" ) ); // Invalid operator
+		EXPECT_FALSE( isUriTemplate( "/path/{%id}" ) ); // Invalid operator
+		EXPECT_FALSE( isUriTemplate( "/path/{^id}" ) ); // Invalid operator
+
+		// Control characters
+		EXPECT_FALSE( isUriTemplate( "/path\n/{id}" ) ); // Newline
+		EXPECT_FALSE( isUriTemplate( "/path\r/{id}" ) ); // Carriage return
+		constexpr char nullTemplate[] = "/path\0/{id}";
+		EXPECT_FALSE( isUriTemplate( std::string_view( nullTemplate, sizeof( nullTemplate ) - 1 ) ) ); // Null character
+	}
+
+	//-----------------------------
 	// IP address validation
 	//-----------------------------
 
@@ -4788,12 +4853,11 @@ namespace nfx::string::test
 	{
 		EXPECT_FALSE( isIriReference( "/path\nwith\nnewlines" ) ); // Control characters
 		EXPECT_FALSE( isIriReference( "/path\rwith\rcarriage" ) ); // Control characters
-		EXPECT_FALSE( isIriReference( "path\0with\0nulls" ) );	   // Null characters
-		EXPECT_FALSE( isIriReference( "http://example.com\n" ) );  // Newline in IRI
-	}
+		constexpr char nullIri[] = "path\0with\0nulls";
+		EXPECT_FALSE( isIriReference( std::string_view( nullIri, sizeof( nullIri ) - 1 ) ) ); // Null characters
+		EXPECT_FALSE( isIriReference( "http://example.com\n" ) );							  // Newline in IRI
+	} //----------------------------------------------	// JSON Pointer validation (RFC 6901)
 
-	//----------------------------------------------
-	// JSON Pointer validation (RFC 6901)
 	//----------------------------------------------
 
 	TEST( StringUtilsIsJSONPointer, ValidPointers )

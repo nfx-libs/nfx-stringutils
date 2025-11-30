@@ -105,6 +105,11 @@ namespace nfx::string
 		return isAlpha( c ) || isDigit( c );
 	}
 
+	inline constexpr bool isHexDigit( char c ) noexcept
+	{
+		return isDigit( c ) || ( c >= 'a' && c <= 'f' ) || ( c >= 'A' && c <= 'F' );
+	}
+
 	//----------------------------------------------
 	// String operations
 	//----------------------------------------------
@@ -2287,7 +2292,9 @@ namespace nfx::string
 					{
 						char c = label[j];
 						if ( !isAlphaNumeric( c ) && c != '-' )
+						{
 							return false;
+						}
 					}
 				}
 				else
@@ -2959,11 +2966,6 @@ namespace nfx::string
 			return false;
 		}
 
-		// Validate hex digits
-		auto isHexDigit = []( char c ) constexpr noexcept {
-			return isDigit( c ) || ( c >= 'a' && c <= 'f' ) || ( c >= 'A' && c <= 'F' );
-		};
-
 		for ( std::size_t i = 0; i < str.size(); ++i )
 		{
 			if ( i == 8 || i == 13 || i == 18 || i == 23 )
@@ -3070,6 +3072,182 @@ namespace nfx::string
 			if ( isWhitespace( c ) )
 			{
 				return false;
+			}
+		}
+
+		return true;
+	}
+
+	inline constexpr bool isUriTemplate( std::string_view str ) noexcept
+	{
+		// RFC 6570 URI Template
+		// Template = *( literals / expression )
+		// expression = "{" [ operator ] variable-list "}"
+		// operator = op-level2 / op-level3 / op-reserve
+		// op-level2 = "+" / "#"
+		// op-level3 = "." / "/" / ";" / "?" / "&"
+		// variable-list = varspec *( "," varspec )
+		// varspec = varname [ modifier-level4 ]
+		// varname = varchar *( ["."] varchar )
+		// varchar = ALPHA / DIGIT / "_" / pct-encoded
+		// modifier-level4 = prefix / explode
+		// prefix = ":" max-length
+		// explode = "*"
+
+		for ( std::size_t i = 0; i < str.size(); ++i )
+		{
+			const char c = str[i];
+
+			// Control characters not allowed in literals
+			if ( static_cast<unsigned char>( c ) < 0x21 )
+			{
+				return false;
+			}
+
+			if ( c == '{' )
+			{
+				// Find matching closing brace
+				std::size_t exprStart = i + 1;
+				std::size_t exprEnd = str.find( '}', exprStart );
+
+				if ( exprEnd == std::string_view::npos )
+				{
+					return false; // Unclosed brace
+				}
+
+				std::string_view expr = str.substr( exprStart, exprEnd - exprStart );
+
+				if ( expr.empty() )
+				{
+					return false; // Empty expression not allowed
+				}
+
+				// Check for nested opening brace
+				if ( expr.find( '{' ) != std::string_view::npos )
+				{
+					return false; // Nested braces not allowed
+				}
+
+				std::size_t pos = 0;
+
+			// Check for operator prefix
+			if ( !expr.empty() )
+			{
+				char op = expr[0];
+				if ( op == '+' || op == '#' || op == '.' || op == '/' || op == ';' || op == '?' || op == '&' )
+				{
+					pos = 1;
+					if ( pos >= expr.size() )
+					{
+						return false; // Operator with no variable
+					}
+				}
+				else if ( !isAlpha( op ) && !isDigit( op ) && op != '_' && op != '%' )
+				{
+					// First char must be valid operator or valid variable name start
+					// Valid varname starts: ALPHA / DIGIT / "_" / pct-encoded ("%")
+					return false;
+				}
+			}				// Validate variable-list: varspec *( "," varspec )
+				while ( pos < expr.size() )
+				{
+					// Parse varname: varchar *( ["."] varchar )
+					// varchar = ALPHA / DIGIT / "_" / pct-encoded
+					bool hasVarChar = false;
+
+					while ( pos < expr.size() )
+					{
+						char vc = expr[pos];
+
+						if ( isAlpha( vc ) || isDigit( vc ) || vc == '_' )
+						{
+							hasVarChar = true;
+							++pos;
+						}
+						else if ( vc == '%' )
+						{
+							// pct-encoded: "%" HEXDIG HEXDIG
+							if ( pos + 2 >= expr.size() )
+							{
+								return false;
+							}
+							if ( !isHexDigit( expr[pos + 1] ) || !isHexDigit( expr[pos + 2] ) )
+							{
+								return false;
+							}
+							hasVarChar = true;
+							pos += 3;
+						}
+						else if ( vc == '.' && hasVarChar )
+						{
+							// Dot separator within varname
+							++pos;
+							if ( pos >= expr.size() || ( !isAlpha( expr[pos] ) && !isDigit( expr[pos] ) && expr[pos] != '_' && expr[pos] != '%' ) )
+							{
+								return false; // Dot must be followed by varchar
+							}
+						}
+						else
+						{
+							break;
+						}
+					}
+
+					if ( !hasVarChar )
+					{
+						return false; // Variable name required
+					}
+
+					// Check for modifier-level4
+					if ( pos < expr.size() )
+					{
+						char mod = expr[pos];
+
+						if ( mod == '*' )
+						{
+							// Explode modifier
+							++pos;
+						}
+						else if ( mod == ':' )
+						{
+							// Prefix modifier: ":" max-length (1-4 digits, value 1-9999)
+							++pos;
+							if ( pos >= expr.size() || !isDigit( expr[pos] ) )
+							{
+								return false; // Prefix requires digits
+							}
+							std::size_t digitCount = 0;
+							while ( pos < expr.size() && isDigit( expr[pos] ) && digitCount < 4 )
+							{
+								++pos;
+								++digitCount;
+							}
+						}
+					}
+
+					// Check for comma separator
+					if ( pos < expr.size() )
+					{
+						if ( expr[pos] == ',' )
+						{
+							++pos;
+							if ( pos >= expr.size() )
+							{
+								return false; // Trailing comma
+							}
+						}
+						else
+						{
+							return false; // Invalid character in expression
+						}
+					}
+				}
+
+				i = exprEnd; // Skip to end of expression
+			}
+			else if ( c == '}' )
+			{
+				return false; // Unmatched closing brace
 			}
 		}
 

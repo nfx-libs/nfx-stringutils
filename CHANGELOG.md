@@ -9,23 +9,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Character Classification**: Additional character validation utilities
+
+  - `isHexDigit()` - Check if character is hexadecimal digit (0-9, a-f, A-F) - `constexpr` and `noexcept`
+
 - **Internationalization Support**: IDN (Internationalized Domain Names) validation
+
   - `isIdnHostname()` - Validate hostnames with Unicode characters or Punycode encoding (xn--)
   - `isIdnEmail()` - Validate email addresses with Unicode in local-part or domain (EAI/SMTPUTF8)
+
 - **IRI Support**: Internationalized Resource Identifier validation (RFC 3987)
-  - `isIri()` - Validate IRI format with Unicode characters (e.g., "https://example.com/路径")
-  - `isIriReference()` - Validate IRI or relative IRI-reference with Unicode support
+
+  - `isIri()` - Validate IRI format with Unicode characters (e.g., "https://example.com/路径", "http://例え.jp/テスト")
+  - `isIriReference()` - Validate IRI or relative IRI-reference with Unicode support (e.g., "/路径/to/resource", "../über/münchen")
+  - Supports Unicode in paths, queries, and fragments while maintaining strict scheme validation
+  - Rejects control characters (null bytes, newlines, carriage returns) for security
+
 - **URI Template Support**: URI Template validation (RFC 6570)
-  - `isUriTemplate()` - Validate URI Template format with {expression} syntax
+
+  - `isUriTemplate()` - Validate URI Template format with variable expansion syntax
+  - Supports simple variables (`{id}`), reserved expansion (`{+path}`), query parameters (`{?q,page}`)
+  - Validates operators (+ # . / ; ? &), modifiers (explode `*`, prefix `:max`), and variable names
+  - Comprehensive validation: rejects malformed expressions, invalid operators, and control characters
 
 ### Changed
 
 - **BREAKING**: Standardized acronym capitalization in function names (camelCase convention)
+
   - URI functions: `isURIReserved()` → `isUriReserved()`, `isURIUnreserved()` → `isUriUnreserved()`, `isURI()` → `isUri()`, `isURIReference()` → `isUriReference()`
   - IP functions: `isIPv4Address()` → `isIpv4Address()`, `isIPv6Address()` → `isIpv6Address()`
   - UUID: `isUUID()` → `isUuid()`
   - JSON Pointer: `isJSONPointer()` → `isJsonPointer()`, `isRelativeJSONPointer()` → `isRelativeJsonPointer()`
+
 - **BREAKING**: Renamed validation functions for clarity and consistency
+
   - `isValidHostname()` → `isHostname()`
   - `isValidIdnHostname()` → `isIdnHostname()`
   - `isValidPort()` → `isPortNumber()`

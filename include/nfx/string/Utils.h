@@ -117,6 +117,14 @@ namespace nfx::string
 	 */
 	[[nodiscard]] inline constexpr bool isAlphaNumeric( char c ) noexcept;
 
+	/**
+	 * @brief Check if character is ASCII hexadecimal digit
+	 * @param c Character to check
+	 * @return True if character is 0-9, a-f, or A-F
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isHexDigit( char c ) noexcept;
+
 	//----------------------------------------------
 	// String operations
 	//----------------------------------------------
@@ -1097,6 +1105,18 @@ namespace nfx::string
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr bool isUriReference( std::string_view str ) noexcept;
+
+	/**
+	 * @brief Validate URI Template format (RFC 6570)
+	 * @param str String to validate
+	 * @return True if string is a valid URI Template (e.g., "https://example.com/{user}/repos")
+	 * @details Validates URI templates with {expression} syntax. Expressions may contain
+	 *          operator prefixes (+, #, ., /, ;, ?, &) and variable names.
+	 *          No whitespace allowed. Braces must be balanced.
+	 * @see https://datatracker.ietf.org/doc/html/rfc6570
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isUriTemplate( std::string_view str ) noexcept;
 
 	//-----------------------------
 	// IRI validation (RFC 3987)
