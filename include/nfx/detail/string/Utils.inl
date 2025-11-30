@@ -2478,7 +2478,7 @@ namespace nfx::string
 			return false;
 		}
 
-		// Validate seconds (00-59, allowing 60 for leap seconds)
+		// Validate seconds (00-60, where 60 is for leap seconds)
 		if ( !isDigit( str[6] ) || !isDigit( str[7] ) )
 		{
 			return false;
@@ -2579,7 +2579,32 @@ namespace nfx::string
 		}
 
 		// Validate time part
-		return isTime( str.substr( 11 ) );
+		if ( !isTime( str.substr( 11 ) ) )
+		{
+			return false;
+		}
+
+		// Special validation for leap seconds (60 seconds only valid at 23:59:60 on June 30 or December 31)
+		// Check if time has :60 seconds
+		if ( str.size() >= 19 && str[17] == '6' && str[18] == '0' )
+		{
+			// Must be 23:59:60
+			if ( str[11] != '2' || str[12] != '3' || str[14] != '5' || str[15] != '9' )
+			{
+				return false;
+			}
+
+			// Must be June 30 (06-30) or December 31 (12-31)
+			const bool isJune30 = ( str[5] == '0' && str[6] == '6' && str[8] == '3' && str[9] == '0' );
+			const bool isDec31 = ( str[5] == '1' && str[6] == '2' && str[8] == '3' && str[9] == '1' );
+
+			if ( !isJune30 && !isDec31 )
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	inline constexpr bool isDuration( std::string_view str ) noexcept
@@ -2951,7 +2976,7 @@ namespace nfx::string
 
 		if ( pos == str.size() )
 		{
-			return false; // Must have # or JSON Pointer after
+			return true; // Just a non-negative integer is valid
 		}
 
 		if ( str[pos] == '#' )

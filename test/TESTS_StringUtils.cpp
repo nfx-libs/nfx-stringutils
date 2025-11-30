@@ -4392,7 +4392,10 @@ namespace nfx::string::test
 		EXPECT_TRUE( isTime( "14:30:00+12:00" ) );
 		EXPECT_TRUE( isTime( "14:30:00.123Z" ) );		// Fractional seconds
 		EXPECT_TRUE( isTime( "14:30:00.123456789Z" ) ); // Many fractional digits
-		EXPECT_TRUE( isTime( "23:59:60Z" ) );			// Leap second
+		EXPECT_TRUE( isTime( "23:59:60Z" ) );			// Leap second (standard case)
+		EXPECT_TRUE( isTime( "00:00:60Z" ) );			// Leap second (boundary test)
+		EXPECT_TRUE( isTime( "12:30:60+00:00" ) );		// Leap second with offset
+		EXPECT_TRUE( isTime( "23:59:60.999Z" ) );		// Leap second with fractional
 	}
 
 	TEST( StringUtilsIsTime, InvalidTimes )
@@ -4400,7 +4403,9 @@ namespace nfx::string::test
 		EXPECT_FALSE( isTime( "" ) );
 		EXPECT_FALSE( isTime( "24:00:00Z" ) );		// Invalid hour
 		EXPECT_FALSE( isTime( "14:60:00Z" ) );		// Invalid minute
-		EXPECT_FALSE( isTime( "14:30:61Z" ) );		// Invalid second (>60)
+		EXPECT_FALSE( isTime( "14:30:61Z" ) );		// Invalid second (61 > 60)
+		EXPECT_FALSE( isTime( "14:30:62Z" ) );		// Invalid second (62 > 60)
+		EXPECT_FALSE( isTime( "14:30:99Z" ) );		// Invalid second (way over)
 		EXPECT_FALSE( isTime( "14:30:00" ) );		// Missing timezone
 		EXPECT_FALSE( isTime( "14:30:00+" ) );		// Incomplete timezone
 		EXPECT_FALSE( isTime( "14:30:00+25:00" ) ); // Invalid tz hour
@@ -4619,6 +4624,13 @@ namespace nfx::string::test
 
 	TEST( StringUtilsIsRelativeJSONPointer, ValidPointers )
 	{
+		// Bare integers are valid per RFC 6901
+		EXPECT_TRUE( isRelativeJSONPointer( "0" ) );   // Just zero (valid!)
+		EXPECT_TRUE( isRelativeJSONPointer( "1" ) );   // Just integer (valid!)
+		EXPECT_TRUE( isRelativeJSONPointer( "42" ) );  // Just integer (valid!)
+		EXPECT_TRUE( isRelativeJSONPointer( "100" ) ); // Multi-digit integer (valid!)
+
+		// Integer with # or path
 		EXPECT_TRUE( isRelativeJSONPointer( "0#" ) );		 // Current + name
 		EXPECT_TRUE( isRelativeJSONPointer( "1#" ) );		 // Parent + name
 		EXPECT_TRUE( isRelativeJSONPointer( "0/foo" ) );	 // Current + path
@@ -4634,11 +4646,14 @@ namespace nfx::string::test
 		EXPECT_FALSE( isRelativeJSONPointer( "" ) );	   // Empty
 		EXPECT_FALSE( isRelativeJSONPointer( "#" ) );	   // Missing number
 		EXPECT_FALSE( isRelativeJSONPointer( "/foo" ) );   // Absolute pointer
-		EXPECT_FALSE( isRelativeJSONPointer( "01/foo" ) ); // Leading zero
-		EXPECT_FALSE( isRelativeJSONPointer( "1" ) );	   // Number only (no # or /)
+		EXPECT_FALSE( isRelativeJSONPointer( "01/foo" ) ); // Leading zero (with path)
+		EXPECT_FALSE( isRelativeJSONPointer( "01" ) );	   // Leading zero (bare)
+		EXPECT_FALSE( isRelativeJSONPointer( "01#" ) );	   // Leading zero (with #)
 		EXPECT_FALSE( isRelativeJSONPointer( "-1/foo" ) ); // Negative
+		EXPECT_FALSE( isRelativeJSONPointer( "-1" ) );	   // Negative bare
 		EXPECT_FALSE( isRelativeJSONPointer( "a/foo" ) );  // Non-digit start
 		EXPECT_FALSE( isRelativeJSONPointer( "0#foo" ) );  // # not at end
+		EXPECT_FALSE( isRelativeJSONPointer( "1#2" ) );	   // # in middle
 	}
 
 	//----------------------------------------------

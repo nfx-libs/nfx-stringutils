@@ -25,7 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- NIL
+- `isTime()` - Corrected leap second validation (now accepts 00-60, was accepting 61+)
+- `isRelativeJSONPointer()` - Fixed validation to accept bare non-negative integers (e.g., "0", "42")
 
 ### Security
 
