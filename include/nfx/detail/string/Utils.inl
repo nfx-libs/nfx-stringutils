@@ -2259,7 +2259,6 @@ namespace nfx::string
 
 		size_t labelStart = 0;
 		size_t labelLength = 0;
-		bool hasNonAscii = false;
 
 		for ( size_t i = 0; i <= str.size(); ++i )
 		{
@@ -2300,8 +2299,6 @@ namespace nfx::string
 				else
 				{
 					// Regular label - can contain Unicode or ASCII
-					bool labelHasNonAscii = false;
-
 					for ( size_t j = 0; j < labelLength; ++j )
 					{
 						unsigned char c = static_cast<unsigned char>( label[j] );
@@ -2309,8 +2306,6 @@ namespace nfx::string
 						// Unicode character (>127) is allowed in IDN
 						if ( c > 127 )
 						{
-							labelHasNonAscii = true;
-							hasNonAscii = true;
 							continue;
 						}
 
