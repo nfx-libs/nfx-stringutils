@@ -2244,7 +2244,7 @@ namespace nfx::string
 		return !prevWasDot && labelLength > 0 && str[str.size() - 1] != '-';
 	}
 
-	inline constexpr bool nfx::string::isIdnHostname( std::string_view str ) noexcept
+	inline constexpr bool isIdnHostname( std::string_view str ) noexcept
 	{
 		// Check basic constraints
 		if ( str.empty() || str.size() > 253 )
@@ -2872,7 +2872,7 @@ namespace nfx::string
 		return isDomainName( domain );
 	}
 
-	inline constexpr bool nfx::string::isIdnEmail( std::string_view str ) noexcept
+	inline constexpr bool isIdnEmail( std::string_view str ) noexcept
 	{
 		// Internationalized email addresses (EAI/SMTPUTF8) allow Unicode in both local-part and domain
 		if ( str.empty() || str.size() > 254 )
@@ -3130,25 +3130,27 @@ namespace nfx::string
 
 				std::size_t pos = 0;
 
-			// Check for operator prefix
-			if ( !expr.empty() )
-			{
-				char op = expr[0];
-				if ( op == '+' || op == '#' || op == '.' || op == '/' || op == ';' || op == '?' || op == '&' )
+				// Check for operator prefix
+				if ( !expr.empty() )
 				{
-					pos = 1;
-					if ( pos >= expr.size() )
+					char op = expr[0];
+					if ( op == '+' || op == '#' || op == '.' || op == '/' || op == ';' || op == '?' || op == '&' )
 					{
-						return false; // Operator with no variable
+						pos = 1;
+						if ( pos >= expr.size() )
+						{
+							return false; // Operator with no variable
+						}
+					}
+					else if ( !isAlpha( op ) && !isDigit( op ) && op != '_' && op != '%' )
+					{
+						// First char must be valid operator or valid variable name start
+						// Valid varname starts: ALPHA / DIGIT / "_" / pct-encoded ("%")
+						return false;
 					}
 				}
-				else if ( !isAlpha( op ) && !isDigit( op ) && op != '_' && op != '%' )
-				{
-					// First char must be valid operator or valid variable name start
-					// Valid varname starts: ALPHA / DIGIT / "_" / pct-encoded ("%")
-					return false;
-				}
-			}				// Validate variable-list: varspec *( "," varspec )
+
+				// Validate variable-list: varspec *( "," varspec )
 				while ( pos < expr.size() )
 				{
 					// Parse varname: varchar *( ["."] varchar )

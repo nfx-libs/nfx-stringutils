@@ -23,9 +23,8 @@
  */
 
 /**
- * @file TESTS_Splitter.cpp
- * @brief Comprehensive tests for Splitter zero-allocation string splitting
- * @details Tests covering construction, iteration, edge cases, and performance validation
+ * @file TESTS_StringSplitter.cpp
+ * @brief Unit tests for StringUtils string library
  */
 
 #include <gtest/gtest.h>
@@ -50,7 +49,7 @@ namespace nfx::string::test
 	// Construction
 	//----------------------------------------------
 
-	TEST( SplitterConstruction, BasicConstruction )
+	TEST( StringSplitterConstruction, BasicConstruction )
 	{
 		const std::string_view str{ "hello,world,test" };
 		const char delimiter{ ',' };
@@ -61,7 +60,7 @@ namespace nfx::string::test
 		EXPECT_NO_THROW( splitter.end() );
 	}
 
-	TEST( SplitterConstruction, StringConstruction )
+	TEST( StringSplitterConstruction, StringConstruction )
 	{
 		const std::string str{ "apple,banana,cherry" };
 		const char delimiter{ ',' };
@@ -80,7 +79,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[2], "cherry" );
 	}
 
-	TEST( SplitterConstruction, CStringConstruction )
+	TEST( StringSplitterConstruction, CStringConstruction )
 	{
 		const char* str{ "red,green,blue" };
 		const char delimiter{ ',' };
@@ -99,7 +98,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[2], "blue" );
 	}
 
-	TEST( SplitterConstruction, EmptyString )
+	TEST( StringSplitterConstruction, EmptyString )
 	{
 		const std::string_view str{ "" };
 		const char delimiter{ ',' };
@@ -112,7 +111,7 @@ namespace nfx::string::test
 		EXPECT_EQ( begin_it, end_it );
 	}
 
-	TEST( SplitterConstruction, SingleCharacter )
+	TEST( StringSplitterConstruction, SingleCharacter )
 	{
 		const std::string_view str{ "a" };
 		const char delimiter{ ',' };
@@ -126,7 +125,7 @@ namespace nfx::string::test
 		EXPECT_EQ( *begin_it, "a" );
 	}
 
-	TEST( SplitterConstruction, FactoryFunction )
+	TEST( StringSplitterConstruction, FactoryFunction )
 	{
 		const std::string_view str{ "hello,world" };
 		const char delimiter{ ',' };
@@ -149,7 +148,7 @@ namespace nfx::string::test
 	// Basic iteration
 	//----------------------------------------------
 
-	TEST( SplitterIteration, BasicSplitting )
+	TEST( StringSplitterIteration, BasicSplitting )
 	{
 		const std::string_view str{ "hello,world,test" };
 		auto splitter{ string::splitView( str, ',' ) };
@@ -166,7 +165,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[2], "test" );
 	}
 
-	TEST( SplitterIteration, NoDelimiter )
+	TEST( StringSplitterIteration, NoDelimiter )
 	{
 		const std::string_view str{ "hello_world_test" };
 		auto splitter{ string::splitView( str, ',' ) };
@@ -181,7 +180,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[0], "hello_world_test" );
 	}
 
-	TEST( SplitterIteration, TrailingDelimiter )
+	TEST( StringSplitterIteration, TrailingDelimiter )
 	{
 		const std::string_view str{ "hello,world," };
 		auto splitter{ string::splitView( str, ',' ) };
@@ -198,7 +197,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[2], "" ); // Empty segment after trailing delimiter
 	}
 
-	TEST( SplitterIteration, LeadingDelimiter )
+	TEST( StringSplitterIteration, LeadingDelimiter )
 	{
 		const std::string_view str{ ",hello,world" };
 		auto splitter{ string::splitView( str, ',' ) };
@@ -215,7 +214,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[2], "world" );
 	}
 
-	TEST( SplitterIteration, ConsecutiveDelimiters )
+	TEST( StringSplitterIteration, ConsecutiveDelimiters )
 	{
 		const std::string_view str{ "hello,,world" };
 		auto splitter{ string::splitView( str, ',' ) };
@@ -232,7 +231,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[2], "world" );
 	}
 
-	TEST( SplitterIteration, OnlyDelimiters )
+	TEST( StringSplitterIteration, OnlyDelimiters )
 	{
 		const std::string_view str{ ",,," };
 		auto splitter{ string::splitView( str, ',' ) };
@@ -254,7 +253,7 @@ namespace nfx::string::test
 	// Iterator behavior
 	//----------------------------------------------
 
-	TEST( SplitterIterator, ManualIteration )
+	TEST( StringSplitterIterator, ManualIteration )
 	{
 		const std::string_view str{ "a,b,c" };
 		auto splitter{ string::splitView( str, ',' ) };
@@ -277,7 +276,7 @@ namespace nfx::string::test
 		EXPECT_EQ( it, end );
 	}
 
-	TEST( SplitterIterator, BeginEndComparison )
+	TEST( StringSplitterIterator, BeginEndComparison )
 	{
 		const std::string_view str{ "hello,world" };
 		auto splitter{ string::splitView( str, ',' ) };
@@ -295,7 +294,7 @@ namespace nfx::string::test
 		EXPECT_EQ( begin_it, end_it );
 	}
 
-	TEST( SplitterIterator, MultipleBeginCalls )
+	TEST( StringSplitterIterator, MultipleBeginCalls )
 	{
 		const std::string_view str{ "hello,world" };
 		auto splitter{ string::splitView( str, ',' ) };
@@ -312,7 +311,7 @@ namespace nfx::string::test
 	// Different delimiters
 	//----------------------------------------------
 
-	TEST( SplitterDelimiters, SpaceDelimiter )
+	TEST( StringSplitterDelimiters, SpaceDelimiter )
 	{
 		const std::string_view str{ "hello world test" };
 		auto splitter{ string::splitView( str, ' ' ) };
@@ -329,7 +328,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[2], "test" );
 	}
 
-	TEST( SplitterDelimiters, SemicolonDelimiter )
+	TEST( StringSplitterDelimiters, SemicolonDelimiter )
 	{
 		const std::string_view str{ "name=John;age=30;city=NYC" };
 		auto splitter{ string::splitView( str, ';' ) };
@@ -346,7 +345,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[2], "city=NYC" );
 	}
 
-	TEST( SplitterDelimiters, NewlineDelimiter )
+	TEST( StringSplitterDelimiters, NewlineDelimiter )
 	{
 		const std::string_view str{ "line1\nline2\nline3" };
 		auto splitter{ string::splitView( str, '\n' ) };
@@ -363,7 +362,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[2], "line3" );
 	}
 
-	TEST( SplitterDelimiters, TabDelimiter )
+	TEST( StringSplitterDelimiters, TabDelimiter )
 	{
 		const std::string_view str{ "col1\tcol2\tcol3" };
 		auto splitter{ string::splitView( str, '\t' ) };
@@ -384,7 +383,7 @@ namespace nfx::string::test
 	// Edge cases
 	//----------------------------------------------
 
-	TEST( SplitterEdgeCases, EmptyStringWithDelimiter )
+	TEST( StringSplitterEdgeCases, EmptyStringWithDelimiter )
 	{
 		const std::string_view str = "";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -398,7 +397,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments.size(), 0 );
 	}
 
-	TEST( SplitterEdgeCases, SingleDelimiter )
+	TEST( StringSplitterEdgeCases, SingleDelimiter )
 	{
 		const std::string_view str = ",";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -414,7 +413,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[1], "" );
 	}
 
-	TEST( SplitterEdgeCases, LongString )
+	TEST( StringSplitterEdgeCases, LongString )
 	{
 		// Test with a longer string to ensure no issues with larger data
 		std::string long_str;
@@ -438,7 +437,7 @@ namespace nfx::string::test
 		EXPECT_EQ( segments[999], "item999" );
 	}
 
-	TEST( SplitterEdgeCases, UnicodeCharacters )
+	TEST( StringSplitterEdgeCases, UnicodeCharacters )
 	{
 		const std::string_view str = "héllo,wørld,tëst";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -459,7 +458,7 @@ namespace nfx::string::test
 	// Real-world use cases
 	//----------------------------------------------
 
-	TEST( SplitterUseCases, CSVParsing )
+	TEST( StringSplitterUseCases, CSVParsing )
 	{
 		const std::string_view csvLine = "John,Doe,30,Engineer,NewYork";
 		auto splitter{ string::splitView( csvLine, ',' ) };
@@ -478,7 +477,7 @@ namespace nfx::string::test
 		EXPECT_EQ( fields[4], "NewYork" );
 	}
 
-	TEST( SplitterUseCases, ConfigurationParsing )
+	TEST( StringSplitterUseCases, ConfigurationParsing )
 	{
 		const std::string_view config = "debug=true;timeout=30;host=localhost;port=8080";
 		auto splitter{ string::splitView( config, ';' ) };
@@ -496,7 +495,7 @@ namespace nfx::string::test
 		EXPECT_EQ( settings[3], "port=8080" );
 	}
 
-	TEST( SplitterUseCases, LogParsing )
+	TEST( StringSplitterUseCases, LogParsing )
 	{
 		const std::string_view logEntry = "2025-08-31 14:30:15 INFO Application started successfully";
 		auto splitter{ string::splitView( logEntry, ' ' ) };
@@ -515,7 +514,7 @@ namespace nfx::string::test
 		EXPECT_EQ( parts[4], "started" );
 	}
 
-	TEST( SplitterUseCases, PathSplitting )
+	TEST( StringSplitterUseCases, PathSplitting )
 	{
 		const std::string_view path = "/usr/local/bin/myapp";
 		auto splitter{ string::splitView( path, '/' ) };
@@ -538,7 +537,7 @@ namespace nfx::string::test
 	// C++20 Iterator Traits & STL Compatibility
 	//----------------------------------------------
 
-	TEST( SplitterIteratorTraits, HasRequiredTypedefs )
+	TEST( StringSplitterIteratorTraits, HasRequiredTypedefs )
 	{
 		using Iterator = string::Splitter::Iterator;
 
@@ -559,7 +558,7 @@ namespace nfx::string::test
 		SUCCEED();
 	}
 
-	TEST( SplitterIteratorTraits, StdIteratorTraitsCompatibility )
+	TEST( StringSplitterIteratorTraits, StdIteratorTraitsCompatibility )
 	{
 		using Iterator = string::Splitter::Iterator;
 		using Traits = std::iterator_traits<Iterator>;
@@ -574,7 +573,7 @@ namespace nfx::string::test
 		SUCCEED();
 	}
 
-	TEST( SplitterIteratorTraits, ForwardIteratorConcept )
+	TEST( StringSplitterIteratorTraits, ForwardIteratorConcept )
 	{
 		using Iterator = string::Splitter::Iterator;
 
@@ -585,7 +584,7 @@ namespace nfx::string::test
 		SUCCEED();
 	}
 
-	TEST( SplitterSTLAlgorithms, StdDistance )
+	TEST( StringSplitterSTLAlgorithms, StdDistance )
 	{
 		const std::string_view str = "a,b,c,d,e";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -595,7 +594,7 @@ namespace nfx::string::test
 		EXPECT_EQ( count, 5 );
 	}
 
-	TEST( SplitterSTLAlgorithms, StdAdvance )
+	TEST( StringSplitterSTLAlgorithms, StdAdvance )
 	{
 		const std::string_view str = "a,b,c,d,e";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -606,7 +605,7 @@ namespace nfx::string::test
 		EXPECT_EQ( *it, "c" );
 	}
 
-	TEST( SplitterSTLAlgorithms, StdNext )
+	TEST( StringSplitterSTLAlgorithms, StdNext )
 	{
 		const std::string_view str = "a,b,c,d,e";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -622,7 +621,7 @@ namespace nfx::string::test
 		EXPECT_EQ( *third, "c" );
 	}
 
-	TEST( SplitterSTLAlgorithms, StdFind )
+	TEST( StringSplitterSTLAlgorithms, StdFind )
 	{
 		const std::string_view str = "apple,banana,cherry,date";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -634,7 +633,7 @@ namespace nfx::string::test
 		EXPECT_EQ( *it, "cherry" );
 	}
 
-	TEST( SplitterSTLAlgorithms, StdCount )
+	TEST( StringSplitterSTLAlgorithms, StdCount )
 	{
 		const std::string_view str = "a,b,a,c,a,d";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -645,7 +644,7 @@ namespace nfx::string::test
 		EXPECT_EQ( count, 3 );
 	}
 
-	TEST( SplitterSTLAlgorithms, StdForEach )
+	TEST( StringSplitterSTLAlgorithms, StdForEach )
 	{
 		const std::string_view str = "1,2,3,4,5";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -663,7 +662,7 @@ namespace nfx::string::test
 		EXPECT_EQ( sum, 15 ); // 1+2+3+4+5 = 15
 	}
 
-	TEST( SplitterSTLAlgorithms, StdAllOf )
+	TEST( StringSplitterSTLAlgorithms, StdAllOf )
 	{
 		const std::string_view str = "123,456,789";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -676,7 +675,7 @@ namespace nfx::string::test
 		EXPECT_TRUE( all_digits );
 	}
 
-	TEST( SplitterSTLAlgorithms, StdAnyOf )
+	TEST( StringSplitterSTLAlgorithms, StdAnyOf )
 	{
 		const std::string_view str = "abc,123,def";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -689,7 +688,7 @@ namespace nfx::string::test
 		EXPECT_TRUE( has_digits ); // "123" contains only digits
 	}
 
-	TEST( SplitterSTLAlgorithms, StdNoneOf )
+	TEST( StringSplitterSTLAlgorithms, StdNoneOf )
 	{
 		const std::string_view str = "abc,def,ghi";
 		auto splitter{ string::splitView( str, ',' ) };
@@ -706,7 +705,7 @@ namespace nfx::string::test
 	// Performance characteristics
 	//----------------------------------------------
 
-	TEST( SplitterPerformance, ZeroAllocation )
+	TEST( StringSplitterPerformance, ZeroAllocation )
 	{
 		// This test verifies that no heap allocations occur during splitting
 		const std::string_view str = "a,b,c,d,e,f,g,h,i,j";
@@ -723,7 +722,7 @@ namespace nfx::string::test
 		EXPECT_EQ( count, 10 );
 	}
 
-	TEST( SplitterPerformance, StringViewPreservation )
+	TEST( StringSplitterPerformance, StringViewPreservation )
 	{
 		// Verify that returned stringViews point to original string data
 		const std::string original = "hello,world,test";

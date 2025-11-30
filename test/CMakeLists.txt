@@ -38,8 +38,21 @@ endif()
 set(test_sources)
 
 list(APPEND test_sources
+	TESTS_CharacterClassification.cpp
+	TESTS_CharacterRemoval.cpp
+	TESTS_EdgeCases.cpp
+	TESTS_EscapeUnescape.cpp
+	TESTS_FormatValidation.cpp
+	TESTS_NetworkValidation.cpp
+	TESTS_PredicateOperations.cpp
+	TESTS_StringComparison.cpp
+	TESTS_StringFormatting.cpp
+	TESTS_StringNumericParsing.cpp
+	TESTS_StringOperations.cpp
 	TESTS_StringSplitter.cpp
-	TESTS_StringUtils.cpp
+	TESTS_StringValidation.cpp
+	TESTS_SubstringExtraction.cpp
+	TESTS_UrlEncoding.cpp
 )
 
 #----------------------------------------------
