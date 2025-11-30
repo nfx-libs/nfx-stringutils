@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Internationalization Support**: IDN (Internationalized Domain Names) validation
   - `isIdnHostname()` - Validate hostnames with Unicode characters or Punycode encoding (xn--)
   - `isIdnEmail()` - Validate email addresses with Unicode in local-part or domain (EAI/SMTPUTF8)
+- **IRI Support**: Internationalized Resource Identifier validation (RFC 3987)
+  - `isIri()` - Validate IRI format with Unicode characters (e.g., "https://example.com/路径")
+  - `isIriReference()` - Validate IRI or relative IRI-reference with Unicode support
+- **URI Template Support**: URI Template validation (RFC 6570)
+  - `isUriTemplate()` - Validate URI Template format with {expression} syntax
 
 ### Changed
 

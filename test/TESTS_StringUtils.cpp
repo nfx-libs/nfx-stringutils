@@ -4718,6 +4718,81 @@ namespace nfx::string::test
 	}
 
 	//----------------------------------------------
+	// IRI validation (RFC 3987)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsIRI, ValidIRIs )
+	{
+		// ASCII IRIs (same as URIs)
+		EXPECT_TRUE( isIri( "http://example.com" ) );
+		EXPECT_TRUE( isIri( "https://example.com/path" ) );
+		EXPECT_TRUE( isIri( "ftp://ftp.example.com/file.txt" ) );
+		EXPECT_TRUE( isIri( "mailto:user@example.com" ) );
+		EXPECT_TRUE( isIri( "file:///path/to/file" ) );
+
+		// IRIs with Unicode characters
+		EXPECT_TRUE( isIri( "https://example.com/路径" ) );
+		EXPECT_TRUE( isIri( "https://münchen.de/über" ) );
+		EXPECT_TRUE( isIri( "http://例え.jp/テスト" ) );
+		EXPECT_TRUE( isIri( "https://test.com/путь" ) );
+		EXPECT_TRUE( isIri( "ftp://server.com/文件" ) );
+
+		// Custom schemes with Unicode
+		EXPECT_TRUE( isIri( "custom-scheme://host/路径" ) );
+		EXPECT_TRUE( isIri( "scheme+sub://münchen.de" ) );
+		EXPECT_TRUE( isIri( "scheme.sub://host/中文" ) );
+	}
+
+	TEST( StringUtilsIsIRI, InvalidIRIs )
+	{
+		EXPECT_FALSE( isIri( "" ) );					 // Empty
+		EXPECT_FALSE( isIri( "example.com" ) );			 // No scheme
+		EXPECT_FALSE( isIri( "://example.com" ) );		 // Empty scheme
+		EXPECT_FALSE( isIri( "1http://example.com" ) );	 // Scheme starts with digit
+		EXPECT_FALSE( isIri( "-http://example.com" ) );	 // Scheme starts with hyphen
+		EXPECT_FALSE( isIri( "http://example.com\n" ) ); // Control character
+		EXPECT_FALSE( isIri( "http://example.com\r" ) ); // Control character
+	}
+
+	//----------------------------------------------
+	// IRI Reference validation (RFC 3987)
+	//----------------------------------------------
+
+	TEST( StringUtilsIsIRIReference, ValidIRIReferences )
+	{
+		// Absolute IRIs
+		EXPECT_TRUE( isIriReference( "http://example.com" ) );
+		EXPECT_TRUE( isIriReference( "https://example.com/path" ) );
+		EXPECT_TRUE( isIriReference( "https://例え.jp/テスト" ) );
+
+		// Relative references with ASCII
+		EXPECT_TRUE( isIriReference( "/path/to/resource" ) );
+		EXPECT_TRUE( isIriReference( "relative/path" ) );
+		EXPECT_TRUE( isIriReference( "../parent/path" ) );
+		EXPECT_TRUE( isIriReference( "./current/path" ) );
+		EXPECT_TRUE( isIriReference( "?query=value" ) );
+		EXPECT_TRUE( isIriReference( "#fragment" ) );
+		EXPECT_TRUE( isIriReference( "" ) ); // Empty is valid
+
+		// Relative references with Unicode
+		EXPECT_TRUE( isIriReference( "/路径/到/资源" ) );
+		EXPECT_TRUE( isIriReference( "相对/路径" ) );
+		EXPECT_TRUE( isIriReference( "../родитель/путь" ) );
+		EXPECT_TRUE( isIriReference( "?запрос=значение" ) );
+		EXPECT_TRUE( isIriReference( "#фрагмент" ) );
+		EXPECT_TRUE( isIriReference( "über/uns" ) );
+		EXPECT_TRUE( isIriReference( "ファイル.txt" ) );
+	}
+
+	TEST( StringUtilsIsIRIReference, InvalidIRIReferences )
+	{
+		EXPECT_FALSE( isIriReference( "/path\nwith\nnewlines" ) ); // Control characters
+		EXPECT_FALSE( isIriReference( "/path\rwith\rcarriage" ) ); // Control characters
+		EXPECT_FALSE( isIriReference( "path\0with\0nulls" ) );	   // Null characters
+		EXPECT_FALSE( isIriReference( "http://example.com\n" ) );  // Newline in IRI
+	}
+
+	//----------------------------------------------
 	// JSON Pointer validation (RFC 6901)
 	//----------------------------------------------
 

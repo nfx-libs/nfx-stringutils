@@ -3018,13 +3018,12 @@ namespace nfx::string
 			return false; // No scheme
 		}
 
-		// After scheme, must have something (could be empty path, but typically has content)
-		// Basic validation: no whitespace allowed
 		for ( std::size_t i = colonPos + 1; i < str.size(); ++i )
 		{
-			if ( isWhitespace( str[i] ) )
+			const char c = str[i];
+			if ( isWhitespace( c ) )
 			{
-				return false;
+				return false; // Whitespace not allowed
 			}
 		}
 
@@ -3071,6 +3070,98 @@ namespace nfx::string
 			if ( isWhitespace( c ) )
 			{
 				return false;
+			}
+		}
+
+		return true;
+	}
+
+	//-----------------------------
+	// IRI validation (RFC 3987)
+	//-----------------------------
+
+	inline constexpr bool isIri( std::string_view str ) noexcept
+	{
+		// RFC 3987 IRI = scheme ":" ihier-part [ "?" iquery ] [ "#" ifragment ]
+		// IRI is like URI but allows Unicode characters (ucschar)
+		if ( str.empty() )
+		{
+			return false;
+		}
+
+		// Find scheme separator
+		std::size_t colonPos = str.find( ':' );
+		if ( colonPos == std::string_view::npos || colonPos == 0 )
+		{
+			return false; // No scheme or empty scheme
+		}
+
+		// Validate scheme: ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+		if ( !isAlpha( str[0] ) )
+		{
+			return false;
+		}
+
+		for ( std::size_t i = 1; i < colonPos; ++i )
+		{
+			const char c = str[i];
+			if ( !isAlphaNumeric( c ) && c != '+' && c != '-' && c != '.' )
+			{
+				return false;
+			}
+		}
+
+		// After scheme, check for whitespace (not allowed in IRI)
+		for ( std::size_t i = colonPos + 1; i < str.size(); ++i )
+		{
+			if ( isWhitespace( str[i] ) )
+			{
+				return false;
+			}
+		}
+
+		return true; // Basic validation: has valid scheme and no whitespace
+	}
+
+	inline constexpr bool isIriReference( std::string_view str ) noexcept
+	{
+		// RFC 3987 IRI-reference = IRI / irelative-ref
+		// irelative-ref doesn't require a scheme
+		if ( str.empty() )
+		{
+			return true; // Empty string is valid relative reference
+		}
+
+		// Check if it's an IRI (has scheme)
+		std::size_t colonPos = std::string_view::npos;
+		for ( std::size_t i = 0; i < str.size(); ++i )
+		{
+			const char c = str[i];
+			if ( c == ':' )
+			{
+				colonPos = i;
+				break;
+			}
+			if ( c == '/' || c == '?' || c == '#' )
+			{
+				break; // These come before scheme separator in relative refs
+			}
+		}
+
+		if ( colonPos != std::string_view::npos && colonPos > 0 )
+		{
+			// Has potential scheme, validate as IRI
+			if ( isAlpha( str[0] ) )
+			{
+				return isIri( str );
+			}
+		}
+
+		for ( char c : str )
+		{
+			if ( c == '\0' || c == '\r' || c == '\n' || c == ' ' || c == '\t' )
+			{
+				return false; // Invalid control/whitespace characters
 			}
 		}
 

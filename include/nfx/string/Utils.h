@@ -1099,6 +1099,30 @@ namespace nfx::string
 	[[nodiscard]] inline constexpr bool isUriReference( std::string_view str ) noexcept;
 
 	//-----------------------------
+	// IRI validation (RFC 3987)
+	//-----------------------------
+
+	/**
+	 * @brief Validate IRI format (RFC 3987)
+	 * @param str String to validate
+	 * @return True if string is a valid IRI (e.g., "https://example.com/路径")
+	 * @details Validates Internationalized Resource Identifier with Unicode characters.
+	 * @see https://datatracker.ietf.org/doc/html/rfc3987
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isIri( std::string_view str ) noexcept;
+
+	/**
+	 * @brief Validate IRI-reference format (RFC 3987)
+	 * @param str String to validate
+	 * @return True if string is a valid IRI or relative IRI-reference
+	 * @details Validates IRI or relative-reference with Unicode support (scheme optional).
+	 * @see https://datatracker.ietf.org/doc/html/rfc3987
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isIriReference( std::string_view str ) noexcept;
+
+	//-----------------------------
 	// JSON Pointer validation (RFC 6901)
 	//-----------------------------
 
