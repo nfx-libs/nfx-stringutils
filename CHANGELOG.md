@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- NIL
+- **Internationalization Support**: IDN (Internationalized Domain Names) validation
+  - `isValidIdnHostname()` - Validate hostnames with Unicode characters or Punycode encoding (xn--)
+  - `isIdnEmail()` - Validate email addresses with Unicode in local-part or domain (EAI/SMTPUTF8)
 
 ### Changed
 

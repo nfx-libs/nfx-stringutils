@@ -2239,6 +2239,102 @@ namespace nfx::string
 		return !prevWasDot && labelLength > 0 && str[str.size() - 1] != '-';
 	}
 
+	inline constexpr bool nfx::string::isValidIdnHostname( std::string_view str ) noexcept
+	{
+		// Check basic constraints
+		if ( str.empty() || str.size() > 253 )
+			return false;
+
+		// IDN hostnames can contain Unicode or Punycode (xn--) encoded labels
+		// We need to validate:
+		// 1. Each label is max 63 characters
+		// 2. Labels are separated by dots
+		// 3. Labels can contain Unicode characters (> 127) or be Punycode
+		// 4. ASCII labels follow standard hostname rules
+
+		size_t labelStart = 0;
+		size_t labelLength = 0;
+		bool hasNonAscii = false;
+
+		for ( size_t i = 0; i <= str.size(); ++i )
+		{
+			// Check if we're at a dot or end of string
+			if ( i == str.size() || str[i] == '.' )
+			{
+				// Empty label is invalid (consecutive dots or leading/trailing dot)
+				if ( labelLength == 0 )
+					return false;
+
+				// Label too long
+				if ( labelLength > 63 )
+					return false;
+
+				// Get the label
+				std::string_view label = str.substr( labelStart, labelLength );
+
+				// Check if it's a Punycode label (starts with "xn--")
+				bool isPunycode = labelLength >= 4 && label[0] == 'x' && label[1] == 'n' &&
+								  label[2] == '-' && label[3] == '-';
+
+				if ( isPunycode )
+				{
+					// Punycode labels must have content after "xn--" (at least 1 character)
+					if ( labelLength == 4 )
+						return false; // Just "xn--" is invalid
+
+					// Punycode labels must contain only ASCII alphanumeric and hyphens after "xn--"
+					for ( size_t j = 4; j < labelLength; ++j )
+					{
+						char c = label[j];
+						if ( !isAlphaNumeric( c ) && c != '-' )
+							return false;
+					}
+				}
+				else
+				{
+					// Regular label - can contain Unicode or ASCII
+					bool labelHasNonAscii = false;
+
+					for ( size_t j = 0; j < labelLength; ++j )
+					{
+						unsigned char c = static_cast<unsigned char>( label[j] );
+
+						// Unicode character (>127) is allowed in IDN
+						if ( c > 127 )
+						{
+							labelHasNonAscii = true;
+							hasNonAscii = true;
+							continue;
+						}
+
+						// ASCII characters must follow hostname rules
+						// Label can't start or end with hyphen
+						if ( c == '-' )
+						{
+							if ( j == 0 || j == labelLength - 1 )
+								return false;
+						}
+						else if ( !isAlphaNumeric( static_cast<char>( c ) ) )
+						{
+							return false;
+						}
+					}
+				}
+
+				// Reset for next label
+				labelStart = i + 1;
+				labelLength = 0;
+			}
+			else
+			{
+				labelLength++;
+			}
+		}
+
+		// Valid IDN hostname must have at least one label
+		return true;
+	}
+
 	inline constexpr bool isDomainName( std::string_view str ) noexcept
 	{
 		// Must be valid hostname AND contain at least one dot
@@ -2767,6 +2863,82 @@ namespace nfx::string
 
 		// Domain validation: must be valid domain name (hostname with at least one dot)
 		return isDomainName( domain );
+	}
+
+	inline constexpr bool nfx::string::isIdnEmail( std::string_view str ) noexcept
+	{
+		// Internationalized email addresses (EAI/SMTPUTF8) allow Unicode in both local-part and domain
+		if ( str.empty() || str.size() > 254 )
+		{
+			return false;
+		}
+
+		// Find @ symbol
+		std::size_t atPos = str.find( '@' );
+		if ( atPos == std::string_view::npos || atPos == 0 || atPos == str.size() - 1 )
+		{
+			return false;
+		}
+
+		const std::string_view localPart = str.substr( 0, atPos );
+		const std::string_view domain = str.substr( atPos + 1 );
+
+		// Local part validation (with Unicode support)
+		if ( localPart.empty() || localPart.size() > 64 )
+		{
+			return false;
+		}
+
+		// Local part: can contain Unicode (>127) or standard ASCII chars
+		// Cannot start or end with dot, no consecutive dots
+		bool prevDot = true; // Treat start as after dot to catch leading dot
+		for ( size_t i = 0; i < localPart.size(); ++i )
+		{
+			unsigned char c = static_cast<unsigned char>( localPart[i] );
+
+			if ( c == '.' )
+			{
+				if ( prevDot )
+				{
+					return false; // Consecutive dots or leading dot
+				}
+				prevDot = true;
+			}
+			else if ( c > 127 )
+			{
+				// Unicode character - allowed in IDN email local-part
+				prevDot = false;
+			}
+			else
+			{
+				// ASCII character - must be alphanumeric or special char
+				char asciiChar = static_cast<char>( c );
+				if ( !isAlphaNumeric( asciiChar ) && asciiChar != '!' && asciiChar != '#' &&
+					 asciiChar != '$' && asciiChar != '%' && asciiChar != '&' && asciiChar != '\'' &&
+					 asciiChar != '*' && asciiChar != '+' && asciiChar != '/' && asciiChar != '=' &&
+					 asciiChar != '?' && asciiChar != '^' && asciiChar != '_' && asciiChar != '`' &&
+					 asciiChar != '{' && asciiChar != '|' && asciiChar != '}' && asciiChar != '~' &&
+					 asciiChar != '-' )
+				{
+					return false;
+				}
+				prevDot = false;
+			}
+		}
+		if ( prevDot )
+		{
+			return false; // Trailing dot
+		}
+
+		// Domain validation: use IDN hostname validation (allows Unicode domains)
+		// IDN domains can be single label or FQDN, so we use isValidIdnHostname instead of isDomainName
+		// But we should require at least one dot for proper email domains
+		if ( domain.find( '.' ) == std::string_view::npos )
+		{
+			return false; // Email domains should have at least one dot
+		}
+
+		return isValidIdnHostname( domain );
 	}
 
 	//-----------------------------

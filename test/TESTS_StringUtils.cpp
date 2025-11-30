@@ -692,6 +692,69 @@ namespace nfx::string::test
 		EXPECT_FALSE( isValidHostname( "example/path" ) ); // Slash
 	}
 
+	TEST( StringUtilsNetworkValidation, IsValidIdnHostname )
+	{
+		// Valid ASCII hostnames (should still work)
+		EXPECT_TRUE( isValidIdnHostname( "localhost" ) );
+		EXPECT_TRUE( isValidIdnHostname( "example.com" ) );
+		EXPECT_TRUE( isValidIdnHostname( "www.example.com" ) );
+		EXPECT_TRUE( isValidIdnHostname( "my-server-01" ) );
+
+		// Valid Punycode hostnames (xn-- prefix)
+		EXPECT_TRUE( isValidIdnHostname( "xn--e1afmkfd.ru" ) );			  // пример.ru
+		EXPECT_TRUE( isValidIdnHostname( "xn--n3h.com" ) );				  // ☃.com (snowman)
+		EXPECT_TRUE( isValidIdnHostname( "xn--80akhbyknj4f.xn--p1ai" ) ); // испытание.рф
+		EXPECT_TRUE( isValidIdnHostname( "example.xn--fiqs8s" ) );		  // example.中国
+
+		// Valid Unicode hostnames (direct Unicode, not Punycode)
+		EXPECT_TRUE( isValidIdnHostname( "münchen.de" ) ); // German umlaut
+		EXPECT_TRUE( isValidIdnHostname( "zürich.ch" ) );  // Swiss city
+		EXPECT_TRUE( isValidIdnHostname( "россия.рф" ) );  // Russia in Cyrillic
+		EXPECT_TRUE( isValidIdnHostname( "中国.cn" ) );	   // China in Chinese
+		EXPECT_TRUE( isValidIdnHostname( "日本.jp" ) );	   // Japan in Japanese
+		EXPECT_TRUE( isValidIdnHostname( "مصر.eg" ) );	   // Egypt in Arabic
+		EXPECT_TRUE( isValidIdnHostname( "ελλάδα.gr" ) );  // Greece in Greek
+		EXPECT_TRUE( isValidIdnHostname( "españa.es" ) );  // Spain with ñ
+		EXPECT_TRUE( isValidIdnHostname( "café.fr" ) );	   // French café
+		EXPECT_TRUE( isValidIdnHostname( "naïve.com" ) );  // Diaeresis
+
+		// Mixed ASCII and Unicode
+		EXPECT_TRUE( isValidIdnHostname( "www.münchen.de" ) );
+		EXPECT_TRUE( isValidIdnHostname( "test.中国.com" ) );
+
+		// Valid hostnames - length constraints
+		const std::string label63( 63, 'a' );
+		EXPECT_TRUE( isValidIdnHostname( label63 ) );
+		EXPECT_TRUE( isValidIdnHostname( label63 + ".com" ) );
+
+		// Invalid hostnames - empty
+		EXPECT_FALSE( isValidIdnHostname( "" ) );
+
+		// Invalid hostnames - too long
+		const std::string label64( 64, 'a' );
+		EXPECT_FALSE( isValidIdnHostname( label64 ) );
+		const std::string hostname254( 254, 'a' );
+		EXPECT_FALSE( isValidIdnHostname( hostname254 ) );
+
+		// Invalid hostnames - starts/ends with hyphen
+		EXPECT_FALSE( isValidIdnHostname( "-server" ) );
+		EXPECT_FALSE( isValidIdnHostname( "server-" ) );
+		EXPECT_FALSE( isValidIdnHostname( "test.-example" ) );
+		EXPECT_FALSE( isValidIdnHostname( "test.example-" ) );
+
+		// Invalid hostnames - starts/ends with dot
+		EXPECT_FALSE( isValidIdnHostname( ".example.com" ) );
+		EXPECT_FALSE( isValidIdnHostname( "example.com." ) );
+
+		// Invalid hostnames - consecutive dots
+		EXPECT_FALSE( isValidIdnHostname( "example..com" ) );
+
+		// Invalid Punycode (malformed)
+		EXPECT_FALSE( isValidIdnHostname( "xn--" ) );			 // Just prefix
+		EXPECT_FALSE( isValidIdnHostname( "xn--.com" ) );		 // Empty after prefix
+		EXPECT_FALSE( isValidIdnHostname( "xn--abc!def.com" ) ); // Invalid char in Punycode
+	}
+
 	TEST( StringUtilsNetworkValidation, IsDomainName )
 	{
 		// Valid domain names
@@ -4507,6 +4570,69 @@ namespace nfx::string::test
 		EXPECT_FALSE( isEmail( "user..name@example.com" ) );		   // Consecutive dots
 		EXPECT_FALSE( isEmail( "user name@example.com" ) );			   // Space in local
 		EXPECT_FALSE( isEmail( std::string( 255, 'a' ) + "@b.com" ) ); // Too long
+	}
+
+	TEST( StringUtilsIsIdnEmail, ValidIdnEmails )
+	{
+		// Valid ASCII emails (should still work)
+		EXPECT_TRUE( isIdnEmail( "user@example.com" ) );
+		EXPECT_TRUE( isIdnEmail( "user.name@example.com" ) );
+		EXPECT_TRUE( isIdnEmail( "user+tag@sub.example.com" ) );
+		EXPECT_TRUE( isIdnEmail( "test123@test.co.uk" ) );
+
+		// Valid Punycode domain emails
+		EXPECT_TRUE( isIdnEmail( "user@xn--e1afmkfd.ru" ) );		   // user@пример.ru
+		EXPECT_TRUE( isIdnEmail( "test@xn--n3h.com" ) );			   // test@☃.com
+		EXPECT_TRUE( isIdnEmail( "info@xn--80akhbyknj4f.xn--p1ai" ) ); // info@испытание.рф
+		EXPECT_TRUE( isIdnEmail( "admin@example.xn--fiqs8s" ) );	   // admin@example.中国
+
+		// Valid Unicode domain emails
+		EXPECT_TRUE( isIdnEmail( "user@münchen.de" ) ); // German
+		EXPECT_TRUE( isIdnEmail( "admin@zürich.ch" ) ); // Swiss
+		EXPECT_TRUE( isIdnEmail( "info@россия.рф" ) );	// Russian
+		EXPECT_TRUE( isIdnEmail( "test@中国.cn" ) );	// Chinese
+		EXPECT_TRUE( isIdnEmail( "user@日本.jp" ) );	// Japanese
+		EXPECT_TRUE( isIdnEmail( "contact@مصر.eg" ) );	// Arabic
+		EXPECT_TRUE( isIdnEmail( "hello@ελλάδα.gr" ) ); // Greek
+		EXPECT_TRUE( isIdnEmail( "info@españa.es" ) );	// Spanish
+		EXPECT_TRUE( isIdnEmail( "contact@café.fr" ) ); // French
+		EXPECT_TRUE( isIdnEmail( "test@naïve.com" ) );	// Diaeresis
+
+		// Valid Unicode local-part emails (EAI/SMTPUTF8)
+		EXPECT_TRUE( isIdnEmail( "用户@example.com" ) );	   // Chinese user
+		EXPECT_TRUE( isIdnEmail( "José@example.com" ) );	   // Spanish name
+		EXPECT_TRUE( isIdnEmail( "françois@café.fr" ) );	   // French name and domain
+		EXPECT_TRUE( isIdnEmail( "müller@münchen.de" ) );	   // German name and domain
+		EXPECT_TRUE( isIdnEmail( "пользователь@россия.рф" ) ); // Russian name and domain
+		EXPECT_TRUE( isIdnEmail( "用户@中国.cn" ) );		   // Chinese name and domain
+
+		// Mixed Unicode and ASCII
+		EXPECT_TRUE( isIdnEmail( "user@test.münchen.de" ) );
+		EXPECT_TRUE( isIdnEmail( "josé.garcía@example.com" ) );
+	}
+
+	TEST( StringUtilsIsIdnEmail, InvalidIdnEmails )
+	{
+		// Invalid - basic validation
+		EXPECT_FALSE( isIdnEmail( "" ) );
+		EXPECT_FALSE( isIdnEmail( "user" ) );		  // No @
+		EXPECT_FALSE( isIdnEmail( "@example.com" ) ); // No local part
+		EXPECT_FALSE( isIdnEmail( "user@" ) );		  // No domain
+		EXPECT_FALSE( isIdnEmail( "user@example" ) ); // No TLD (single label)
+
+		// Invalid - dot handling
+		EXPECT_FALSE( isIdnEmail( ".user@example.com" ) );		// Local starts with dot
+		EXPECT_FALSE( isIdnEmail( "user.@example.com" ) );		// Local ends with dot
+		EXPECT_FALSE( isIdnEmail( "user..name@example.com" ) ); // Consecutive dots
+		EXPECT_FALSE( isIdnEmail( "user@.münchen.de" ) );		// Domain starts with dot
+
+		// Invalid - length constraints
+		EXPECT_FALSE( isIdnEmail( std::string( 255, 'a' ) + "@example.com" ) ); // Too long total
+		EXPECT_FALSE( isIdnEmail( std::string( 65, 'a' ) + "@example.com" ) );	// Local-part too long
+
+		// Invalid - malformed Punycode
+		EXPECT_FALSE( isIdnEmail( "user@xn--.com" ) );	   // Empty Punycode
+		EXPECT_FALSE( isIdnEmail( "user@xn--!abc.com" ) ); // Invalid char in Punycode
 	}
 
 	//----------------------------------------------

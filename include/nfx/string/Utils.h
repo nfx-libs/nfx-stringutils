@@ -940,6 +940,15 @@ namespace nfx::string
 	[[nodiscard]] inline constexpr bool isValidHostname( std::string_view str ) noexcept;
 
 	/**
+	 * @brief Validate Internationalized Domain Name (IDN) hostname format
+	 * @param str String to validate
+	 * @return True if string is a valid IDN hostname
+	 * @details Validates hostnames containing Unicode characters (IDN).
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isValidIdnHostname( std::string_view str ) noexcept;
+
+	/**
 	 * @brief Validate domain name format (RFC 1035)
 	 * @param str String to validate
 	 * @return True if string is a valid domain name
@@ -1041,6 +1050,15 @@ namespace nfx::string
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr bool isEmail( std::string_view str ) noexcept;
+
+	/**
+	 * @brief Validate Internationalized email address format (EAI/SMTPUTF8)
+	 * @param str String to validate
+	 * @return True if string is a valid internationalized email address
+	 * @details Validates email addresses containing Unicode characters in the local-part or domain.
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool isIdnEmail( std::string_view str ) noexcept;
 
 	//-----------------------------
 	// UUID validation (RFC 4122)
