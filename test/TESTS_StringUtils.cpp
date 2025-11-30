@@ -289,255 +289,255 @@ namespace nfx::string::test
 	{
 		// RFC 3986 Section 2.2 - Reserved Characters
 		// gen-delims: : / ? # [ ] @
-		EXPECT_TRUE( isURIReserved( ':' ) );
-		EXPECT_TRUE( isURIReserved( '/' ) );
-		EXPECT_TRUE( isURIReserved( '?' ) );
-		EXPECT_TRUE( isURIReserved( '#' ) );
-		EXPECT_TRUE( isURIReserved( '[' ) );
-		EXPECT_TRUE( isURIReserved( ']' ) );
-		EXPECT_TRUE( isURIReserved( '@' ) );
+		EXPECT_TRUE( isUriReserved( ':' ) );
+		EXPECT_TRUE( isUriReserved( '/' ) );
+		EXPECT_TRUE( isUriReserved( '?' ) );
+		EXPECT_TRUE( isUriReserved( '#' ) );
+		EXPECT_TRUE( isUriReserved( '[' ) );
+		EXPECT_TRUE( isUriReserved( ']' ) );
+		EXPECT_TRUE( isUriReserved( '@' ) );
 
 		// sub-delims: ! $ & ' ( ) * + , ; =
-		EXPECT_TRUE( isURIReserved( '!' ) );
-		EXPECT_TRUE( isURIReserved( '$' ) );
-		EXPECT_TRUE( isURIReserved( '&' ) );
-		EXPECT_TRUE( isURIReserved( '\'' ) );
-		EXPECT_TRUE( isURIReserved( '(' ) );
-		EXPECT_TRUE( isURIReserved( ')' ) );
-		EXPECT_TRUE( isURIReserved( '*' ) );
-		EXPECT_TRUE( isURIReserved( '+' ) );
-		EXPECT_TRUE( isURIReserved( ',' ) );
-		EXPECT_TRUE( isURIReserved( ';' ) );
-		EXPECT_TRUE( isURIReserved( '=' ) );
+		EXPECT_TRUE( isUriReserved( '!' ) );
+		EXPECT_TRUE( isUriReserved( '$' ) );
+		EXPECT_TRUE( isUriReserved( '&' ) );
+		EXPECT_TRUE( isUriReserved( '\'' ) );
+		EXPECT_TRUE( isUriReserved( '(' ) );
+		EXPECT_TRUE( isUriReserved( ')' ) );
+		EXPECT_TRUE( isUriReserved( '*' ) );
+		EXPECT_TRUE( isUriReserved( '+' ) );
+		EXPECT_TRUE( isUriReserved( ',' ) );
+		EXPECT_TRUE( isUriReserved( ';' ) );
+		EXPECT_TRUE( isUriReserved( '=' ) );
 
 		// Non-reserved characters
-		EXPECT_FALSE( isURIReserved( 'a' ) );
-		EXPECT_FALSE( isURIReserved( 'Z' ) );
-		EXPECT_FALSE( isURIReserved( '0' ) );
-		EXPECT_FALSE( isURIReserved( '9' ) );
-		EXPECT_FALSE( isURIReserved( '-' ) );
-		EXPECT_FALSE( isURIReserved( '.' ) );
-		EXPECT_FALSE( isURIReserved( '_' ) );
-		EXPECT_FALSE( isURIReserved( '~' ) );
-		EXPECT_FALSE( isURIReserved( ' ' ) );
-		EXPECT_FALSE( isURIReserved( '\t' ) );
-		EXPECT_FALSE( isURIReserved( '\n' ) );
-		EXPECT_FALSE( isURIReserved( '\0' ) );
+		EXPECT_FALSE( isUriReserved( 'a' ) );
+		EXPECT_FALSE( isUriReserved( 'Z' ) );
+		EXPECT_FALSE( isUriReserved( '0' ) );
+		EXPECT_FALSE( isUriReserved( '9' ) );
+		EXPECT_FALSE( isUriReserved( '-' ) );
+		EXPECT_FALSE( isUriReserved( '.' ) );
+		EXPECT_FALSE( isUriReserved( '_' ) );
+		EXPECT_FALSE( isUriReserved( '~' ) );
+		EXPECT_FALSE( isUriReserved( ' ' ) );
+		EXPECT_FALSE( isUriReserved( '\t' ) );
+		EXPECT_FALSE( isUriReserved( '\n' ) );
+		EXPECT_FALSE( isUriReserved( '\0' ) );
 
 		// Edge ASCII characters
-		EXPECT_FALSE( isURIReserved( '"' ) );  // ASCII 34
-		EXPECT_FALSE( isURIReserved( '%' ) );  // ASCII 37
-		EXPECT_FALSE( isURIReserved( '<' ) );  // ASCII 60
-		EXPECT_FALSE( isURIReserved( '>' ) );  // ASCII 62
-		EXPECT_FALSE( isURIReserved( '\\' ) ); // ASCII 92
-		EXPECT_FALSE( isURIReserved( '^' ) );  // ASCII 94
-		EXPECT_FALSE( isURIReserved( '`' ) );  // ASCII 96
-		EXPECT_FALSE( isURIReserved( '|' ) );  // ASCII 124
+		EXPECT_FALSE( isUriReserved( '"' ) );  // ASCII 34
+		EXPECT_FALSE( isUriReserved( '%' ) );  // ASCII 37
+		EXPECT_FALSE( isUriReserved( '<' ) );  // ASCII 60
+		EXPECT_FALSE( isUriReserved( '>' ) );  // ASCII 62
+		EXPECT_FALSE( isUriReserved( '\\' ) ); // ASCII 92
+		EXPECT_FALSE( isUriReserved( '^' ) );  // ASCII 94
+		EXPECT_FALSE( isUriReserved( '`' ) );  // ASCII 96
+		EXPECT_FALSE( isUriReserved( '|' ) );  // ASCII 124
 	}
 
 	TEST( StringUtilsCharacterClassification, isURIReserved_string )
 	{
 		// Valid reserved character strings
-		EXPECT_TRUE( isURIReserved( ":" ) );
-		EXPECT_TRUE( isURIReserved( "/" ) );
-		EXPECT_TRUE( isURIReserved( "?" ) );
-		EXPECT_TRUE( isURIReserved( "#" ) );
-		EXPECT_TRUE( isURIReserved( "[]" ) );
-		EXPECT_TRUE( isURIReserved( "@" ) );
-		EXPECT_TRUE( isURIReserved( "!$&'()*+,;=" ) );
-		EXPECT_TRUE( isURIReserved( ":/?#[]@" ) );
-		EXPECT_TRUE( isURIReserved( "!$&'()*+,;=" ) );
-		EXPECT_TRUE( isURIReserved( ":/?#[]@!$&'()*+,;=" ) ); // All reserved characters
+		EXPECT_TRUE( isUriReserved( ":" ) );
+		EXPECT_TRUE( isUriReserved( "/" ) );
+		EXPECT_TRUE( isUriReserved( "?" ) );
+		EXPECT_TRUE( isUriReserved( "#" ) );
+		EXPECT_TRUE( isUriReserved( "[]" ) );
+		EXPECT_TRUE( isUriReserved( "@" ) );
+		EXPECT_TRUE( isUriReserved( "!$&'()*+,;=" ) );
+		EXPECT_TRUE( isUriReserved( ":/?#[]@" ) );
+		EXPECT_TRUE( isUriReserved( "!$&'()*+,;=" ) );
+		EXPECT_TRUE( isUriReserved( ":/?#[]@!$&'()*+,;=" ) ); // All reserved characters
 
 		// Mixed strings with reserved and unreserved characters
-		EXPECT_FALSE( isURIReserved( ":a" ) );
-		EXPECT_FALSE( isURIReserved( "a:" ) );
-		EXPECT_FALSE( isURIReserved( ":a:" ) );
-		EXPECT_FALSE( isURIReserved( ":a?" ) );				// Contains unreserved char 'a'
-		EXPECT_FALSE( isURIReserved( "test:" ) );			// Text + reserved
-		EXPECT_FALSE( isURIReserved( ":test" ) );			// Reserved + text
-		EXPECT_FALSE( isURIReserved( "test:123" ) );		// Text + reserved + digits
-		EXPECT_FALSE( isURIReserved( "a/b" ) );				// Unreserved + reserved + unreserved
-		EXPECT_FALSE( isURIReserved( "hello@world.com" ) ); // Mixed realistic scenario
-		EXPECT_FALSE( isURIReserved( "user:pass" ) );		// Common auth format
-		EXPECT_FALSE( isURIReserved( "file.txt" ) );		// Filename with unreserved chars
-		EXPECT_FALSE( isURIReserved( "test" ) );
-		EXPECT_FALSE( isURIReserved( "123" ) );
-		EXPECT_FALSE( isURIReserved( "abc123" ) );
+		EXPECT_FALSE( isUriReserved( ":a" ) );
+		EXPECT_FALSE( isUriReserved( "a:" ) );
+		EXPECT_FALSE( isUriReserved( ":a:" ) );
+		EXPECT_FALSE( isUriReserved( ":a?" ) );				// Contains unreserved char 'a'
+		EXPECT_FALSE( isUriReserved( "test:" ) );			// Text + reserved
+		EXPECT_FALSE( isUriReserved( ":test" ) );			// Reserved + text
+		EXPECT_FALSE( isUriReserved( "test:123" ) );		// Text + reserved + digits
+		EXPECT_FALSE( isUriReserved( "a/b" ) );				// Unreserved + reserved + unreserved
+		EXPECT_FALSE( isUriReserved( "hello@world.com" ) ); // Mixed realistic scenario
+		EXPECT_FALSE( isUriReserved( "user:pass" ) );		// Common auth format
+		EXPECT_FALSE( isUriReserved( "file.txt" ) );		// Filename with unreserved chars
+		EXPECT_FALSE( isUriReserved( "test" ) );
+		EXPECT_FALSE( isUriReserved( "123" ) );
+		EXPECT_FALSE( isUriReserved( "abc123" ) );
 
 		// Invalid cases - empty string
-		EXPECT_FALSE( isURIReserved( "" ) );
-		EXPECT_FALSE( isURIReserved( std::string_view{} ) );
+		EXPECT_FALSE( isUriReserved( "" ) );
+		EXPECT_FALSE( isUriReserved( std::string_view{} ) );
 
 		// Strings with only unreserved characters
-		EXPECT_FALSE( isURIReserved( "abcdefghijklmnopqrstuvwxyz" ) );
-		EXPECT_FALSE( isURIReserved( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) );
-		EXPECT_FALSE( isURIReserved( "0123456789" ) );
-		EXPECT_FALSE( isURIReserved( "-._~" ) );
-		EXPECT_FALSE( isURIReserved( "abc123-._~XYZ" ) );
+		EXPECT_FALSE( isUriReserved( "abcdefghijklmnopqrstuvwxyz" ) );
+		EXPECT_FALSE( isUriReserved( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) );
+		EXPECT_FALSE( isUriReserved( "0123456789" ) );
+		EXPECT_FALSE( isUriReserved( "-._~" ) );
+		EXPECT_FALSE( isUriReserved( "abc123-._~XYZ" ) );
 
 		// Strings with whitespace and control characters
-		EXPECT_FALSE( isURIReserved( " " ) );
-		EXPECT_FALSE( isURIReserved( "\t\n\r" ) );
-		EXPECT_FALSE( isURIReserved( ": " ) ); // Contains space
+		EXPECT_FALSE( isUriReserved( " " ) );
+		EXPECT_FALSE( isUriReserved( "\t\n\r" ) );
+		EXPECT_FALSE( isUriReserved( ": " ) ); // Contains space
 
 		// Large string tests
 		const std::string largeReserved( 1000, ':' );
-		EXPECT_TRUE( isURIReserved( largeReserved ) );
+		EXPECT_TRUE( isUriReserved( largeReserved ) );
 
 		const std::string largeMixed = std::string( 999, ':' ) + "a";
-		EXPECT_FALSE( isURIReserved( largeMixed ) );
+		EXPECT_FALSE( isUriReserved( largeMixed ) );
 	}
 
 	TEST( StringUtilsCharacterClassification, isURIUnreserved_char )
 	{
 		// RFC 3986 Section 2.3 - Unreserved Characters
 		// ALPHA (uppercase)
-		EXPECT_TRUE( isURIUnreserved( 'A' ) );
-		EXPECT_TRUE( isURIUnreserved( 'M' ) );
-		EXPECT_TRUE( isURIUnreserved( 'Z' ) );
+		EXPECT_TRUE( isUriUnreserved( 'A' ) );
+		EXPECT_TRUE( isUriUnreserved( 'M' ) );
+		EXPECT_TRUE( isUriUnreserved( 'Z' ) );
 
 		// ALPHA (lowercase)
-		EXPECT_TRUE( isURIUnreserved( 'a' ) );
-		EXPECT_TRUE( isURIUnreserved( 'm' ) );
-		EXPECT_TRUE( isURIUnreserved( 'z' ) );
+		EXPECT_TRUE( isUriUnreserved( 'a' ) );
+		EXPECT_TRUE( isUriUnreserved( 'm' ) );
+		EXPECT_TRUE( isUriUnreserved( 'z' ) );
 
 		// DIGIT
-		EXPECT_TRUE( isURIUnreserved( '0' ) );
-		EXPECT_TRUE( isURIUnreserved( '5' ) );
-		EXPECT_TRUE( isURIUnreserved( '9' ) );
+		EXPECT_TRUE( isUriUnreserved( '0' ) );
+		EXPECT_TRUE( isUriUnreserved( '5' ) );
+		EXPECT_TRUE( isUriUnreserved( '9' ) );
 
 		// Special unreserved characters: - . _ ~
-		EXPECT_TRUE( isURIUnreserved( '-' ) );
-		EXPECT_TRUE( isURIUnreserved( '.' ) );
-		EXPECT_TRUE( isURIUnreserved( '_' ) );
-		EXPECT_TRUE( isURIUnreserved( '~' ) );
+		EXPECT_TRUE( isUriUnreserved( '-' ) );
+		EXPECT_TRUE( isUriUnreserved( '.' ) );
+		EXPECT_TRUE( isUriUnreserved( '_' ) );
+		EXPECT_TRUE( isUriUnreserved( '~' ) );
 
 		// Reserved characters should return false
-		EXPECT_FALSE( isURIUnreserved( ':' ) );
-		EXPECT_FALSE( isURIUnreserved( '/' ) );
-		EXPECT_FALSE( isURIUnreserved( '?' ) );
-		EXPECT_FALSE( isURIUnreserved( '#' ) );
-		EXPECT_FALSE( isURIUnreserved( '[' ) );
-		EXPECT_FALSE( isURIUnreserved( ']' ) );
-		EXPECT_FALSE( isURIUnreserved( '@' ) );
-		EXPECT_FALSE( isURIUnreserved( '!' ) );
-		EXPECT_FALSE( isURIUnreserved( '$' ) );
-		EXPECT_FALSE( isURIUnreserved( '&' ) );
-		EXPECT_FALSE( isURIUnreserved( '\'' ) );
-		EXPECT_FALSE( isURIUnreserved( '(' ) );
-		EXPECT_FALSE( isURIUnreserved( ')' ) );
-		EXPECT_FALSE( isURIUnreserved( '*' ) );
-		EXPECT_FALSE( isURIUnreserved( '+' ) );
-		EXPECT_FALSE( isURIUnreserved( ',' ) );
-		EXPECT_FALSE( isURIUnreserved( ';' ) );
-		EXPECT_FALSE( isURIUnreserved( '=' ) );
+		EXPECT_FALSE( isUriUnreserved( ':' ) );
+		EXPECT_FALSE( isUriUnreserved( '/' ) );
+		EXPECT_FALSE( isUriUnreserved( '?' ) );
+		EXPECT_FALSE( isUriUnreserved( '#' ) );
+		EXPECT_FALSE( isUriUnreserved( '[' ) );
+		EXPECT_FALSE( isUriUnreserved( ']' ) );
+		EXPECT_FALSE( isUriUnreserved( '@' ) );
+		EXPECT_FALSE( isUriUnreserved( '!' ) );
+		EXPECT_FALSE( isUriUnreserved( '$' ) );
+		EXPECT_FALSE( isUriUnreserved( '&' ) );
+		EXPECT_FALSE( isUriUnreserved( '\'' ) );
+		EXPECT_FALSE( isUriUnreserved( '(' ) );
+		EXPECT_FALSE( isUriUnreserved( ')' ) );
+		EXPECT_FALSE( isUriUnreserved( '*' ) );
+		EXPECT_FALSE( isUriUnreserved( '+' ) );
+		EXPECT_FALSE( isUriUnreserved( ',' ) );
+		EXPECT_FALSE( isUriUnreserved( ';' ) );
+		EXPECT_FALSE( isUriUnreserved( '=' ) );
 
 		// Other characters should return false
-		EXPECT_FALSE( isURIUnreserved( ' ' ) );
-		EXPECT_FALSE( isURIUnreserved( '\t' ) );
-		EXPECT_FALSE( isURIUnreserved( '\n' ) );
-		EXPECT_FALSE( isURIUnreserved( '\r' ) );
-		EXPECT_FALSE( isURIUnreserved( '\0' ) );
-		EXPECT_FALSE( isURIUnreserved( '"' ) );
-		EXPECT_FALSE( isURIUnreserved( '%' ) );
-		EXPECT_FALSE( isURIUnreserved( '<' ) );
-		EXPECT_FALSE( isURIUnreserved( '>' ) );
-		EXPECT_FALSE( isURIUnreserved( '\\' ) );
-		EXPECT_FALSE( isURIUnreserved( '^' ) );
-		EXPECT_FALSE( isURIUnreserved( '`' ) );
-		EXPECT_FALSE( isURIUnreserved( '|' ) );
+		EXPECT_FALSE( isUriUnreserved( ' ' ) );
+		EXPECT_FALSE( isUriUnreserved( '\t' ) );
+		EXPECT_FALSE( isUriUnreserved( '\n' ) );
+		EXPECT_FALSE( isUriUnreserved( '\r' ) );
+		EXPECT_FALSE( isUriUnreserved( '\0' ) );
+		EXPECT_FALSE( isUriUnreserved( '"' ) );
+		EXPECT_FALSE( isUriUnreserved( '%' ) );
+		EXPECT_FALSE( isUriUnreserved( '<' ) );
+		EXPECT_FALSE( isUriUnreserved( '>' ) );
+		EXPECT_FALSE( isUriUnreserved( '\\' ) );
+		EXPECT_FALSE( isUriUnreserved( '^' ) );
+		EXPECT_FALSE( isUriUnreserved( '`' ) );
+		EXPECT_FALSE( isUriUnreserved( '|' ) );
 
 		// Edge ASCII boundaries
-		EXPECT_FALSE( isURIUnreserved( '@' ) ); // ASCII 64 (before 'A')
-		EXPECT_FALSE( isURIUnreserved( '[' ) ); // ASCII 91 (after 'Z')
-		EXPECT_FALSE( isURIUnreserved( '`' ) ); // ASCII 96 (before 'a')
-		EXPECT_FALSE( isURIUnreserved( '{' ) ); // ASCII 123 (after 'z')
-		EXPECT_FALSE( isURIUnreserved( '/' ) ); // ASCII 47 (before '0')
-		EXPECT_FALSE( isURIUnreserved( ':' ) ); // ASCII 58 (after '9')
+		EXPECT_FALSE( isUriUnreserved( '@' ) ); // ASCII 64 (before 'A')
+		EXPECT_FALSE( isUriUnreserved( '[' ) ); // ASCII 91 (after 'Z')
+		EXPECT_FALSE( isUriUnreserved( '`' ) ); // ASCII 96 (before 'a')
+		EXPECT_FALSE( isUriUnreserved( '{' ) ); // ASCII 123 (after 'z')
+		EXPECT_FALSE( isUriUnreserved( '/' ) ); // ASCII 47 (before '0')
+		EXPECT_FALSE( isUriUnreserved( ':' ) ); // ASCII 58 (after '9')
 	}
 
 	TEST( StringUtilsCharacterClassification, isURIUnreserved_string )
 	{
 		// Valid unreserved character strings
-		EXPECT_TRUE( isURIUnreserved( "a" ) );
-		EXPECT_TRUE( isURIUnreserved( "Z" ) );
-		EXPECT_TRUE( isURIUnreserved( "0" ) );
-		EXPECT_TRUE( isURIUnreserved( "9" ) );
-		EXPECT_TRUE( isURIUnreserved( "-" ) );
-		EXPECT_TRUE( isURIUnreserved( "." ) );
-		EXPECT_TRUE( isURIUnreserved( "_" ) );
-		EXPECT_TRUE( isURIUnreserved( "~" ) );
+		EXPECT_TRUE( isUriUnreserved( "a" ) );
+		EXPECT_TRUE( isUriUnreserved( "Z" ) );
+		EXPECT_TRUE( isUriUnreserved( "0" ) );
+		EXPECT_TRUE( isUriUnreserved( "9" ) );
+		EXPECT_TRUE( isUriUnreserved( "-" ) );
+		EXPECT_TRUE( isUriUnreserved( "." ) );
+		EXPECT_TRUE( isUriUnreserved( "_" ) );
+		EXPECT_TRUE( isUriUnreserved( "~" ) );
 
 		// Multiple unreserved characters
-		EXPECT_TRUE( isURIUnreserved( "abc" ) );
-		EXPECT_TRUE( isURIUnreserved( "XYZ" ) );
-		EXPECT_TRUE( isURIUnreserved( "123" ) );
-		EXPECT_TRUE( isURIUnreserved( "-._~" ) );
-		EXPECT_TRUE( isURIUnreserved( "abcdefghijklmnopqrstuvwxyz" ) );
-		EXPECT_TRUE( isURIUnreserved( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) );
-		EXPECT_TRUE( isURIUnreserved( "0123456789" ) );
-		EXPECT_TRUE( isURIUnreserved( "abc123XYZ-._~" ) ); // All unreserved types
+		EXPECT_TRUE( isUriUnreserved( "abc" ) );
+		EXPECT_TRUE( isUriUnreserved( "XYZ" ) );
+		EXPECT_TRUE( isUriUnreserved( "123" ) );
+		EXPECT_TRUE( isUriUnreserved( "-._~" ) );
+		EXPECT_TRUE( isUriUnreserved( "abcdefghijklmnopqrstuvwxyz" ) );
+		EXPECT_TRUE( isUriUnreserved( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) );
+		EXPECT_TRUE( isUriUnreserved( "0123456789" ) );
+		EXPECT_TRUE( isUriUnreserved( "abc123XYZ-._~" ) ); // All unreserved types
 
 		// Valid URL-like strings with only unreserved characters
-		EXPECT_TRUE( isURIUnreserved( "example" ) );
-		EXPECT_TRUE( isURIUnreserved( "test123" ) );
-		EXPECT_TRUE( isURIUnreserved( "my-file.txt" ) );
-		EXPECT_TRUE( isURIUnreserved( "user_name" ) );
-		EXPECT_TRUE( isURIUnreserved( "version~1" ) );
+		EXPECT_TRUE( isUriUnreserved( "example" ) );
+		EXPECT_TRUE( isUriUnreserved( "test123" ) );
+		EXPECT_TRUE( isUriUnreserved( "my-file.txt" ) );
+		EXPECT_TRUE( isUriUnreserved( "user_name" ) );
+		EXPECT_TRUE( isUriUnreserved( "version~1" ) );
 
 		// Mixed strings with reserved characters
-		EXPECT_FALSE( isURIUnreserved( "a:" ) );
-		EXPECT_FALSE( isURIUnreserved( ":a" ) );
-		EXPECT_FALSE( isURIUnreserved( "a:b" ) );
-		EXPECT_FALSE( isURIUnreserved( "test/" ) );
-		EXPECT_FALSE( isURIUnreserved( "file?name" ) );
-		EXPECT_FALSE( isURIUnreserved( "user@domain" ) );
-		EXPECT_FALSE( isURIUnreserved( "path[0]" ) );
-		EXPECT_FALSE( isURIUnreserved( "hello:world" ) );  // Text + reserved + text
-		EXPECT_FALSE( isURIUnreserved( "test.txt?" ) );	   // Unreserved + reserved
-		EXPECT_FALSE( isURIUnreserved( "!important" ) );   // Reserved + unreserved
-		EXPECT_FALSE( isURIUnreserved( "data&more" ) );	   // Mixed realistic scenario
-		EXPECT_FALSE( isURIUnreserved( "key=value" ) );	   // Common query format
-		EXPECT_FALSE( isURIUnreserved( "path/to/file" ) ); // Path with slashes
+		EXPECT_FALSE( isUriUnreserved( "a:" ) );
+		EXPECT_FALSE( isUriUnreserved( ":a" ) );
+		EXPECT_FALSE( isUriUnreserved( "a:b" ) );
+		EXPECT_FALSE( isUriUnreserved( "test/" ) );
+		EXPECT_FALSE( isUriUnreserved( "file?name" ) );
+		EXPECT_FALSE( isUriUnreserved( "user@domain" ) );
+		EXPECT_FALSE( isUriUnreserved( "path[0]" ) );
+		EXPECT_FALSE( isUriUnreserved( "hello:world" ) );  // Text + reserved + text
+		EXPECT_FALSE( isUriUnreserved( "test.txt?" ) );	   // Unreserved + reserved
+		EXPECT_FALSE( isUriUnreserved( "!important" ) );   // Reserved + unreserved
+		EXPECT_FALSE( isUriUnreserved( "data&more" ) );	   // Mixed realistic scenario
+		EXPECT_FALSE( isUriUnreserved( "key=value" ) );	   // Common query format
+		EXPECT_FALSE( isUriUnreserved( "path/to/file" ) ); // Path with slashes
 
 		// Invalid cases - empty string
-		EXPECT_FALSE( isURIUnreserved( "" ) );
-		EXPECT_FALSE( isURIUnreserved( std::string_view{} ) );
+		EXPECT_FALSE( isUriUnreserved( "" ) );
+		EXPECT_FALSE( isUriUnreserved( std::string_view{} ) );
 
 		// Strings with whitespace and control characters
-		EXPECT_FALSE( isURIUnreserved( " " ) );
-		EXPECT_FALSE( isURIUnreserved( "\t" ) );
-		EXPECT_FALSE( isURIUnreserved( "\n" ) );
-		EXPECT_FALSE( isURIUnreserved( "a " ) );  // Contains space
-		EXPECT_FALSE( isURIUnreserved( " a" ) );  // Contains space
-		EXPECT_FALSE( isURIUnreserved( "a b" ) ); // Contains space
+		EXPECT_FALSE( isUriUnreserved( " " ) );
+		EXPECT_FALSE( isUriUnreserved( "\t" ) );
+		EXPECT_FALSE( isUriUnreserved( "\n" ) );
+		EXPECT_FALSE( isUriUnreserved( "a " ) );  // Contains space
+		EXPECT_FALSE( isUriUnreserved( " a" ) );  // Contains space
+		EXPECT_FALSE( isUriUnreserved( "a b" ) ); // Contains space
 
 		// Strings with other non-unreserved characters
-		EXPECT_FALSE( isURIUnreserved( "\"" ) );
-		EXPECT_FALSE( isURIUnreserved( "%" ) );
-		EXPECT_FALSE( isURIUnreserved( "<>" ) );
-		EXPECT_FALSE( isURIUnreserved( "\\" ) );
-		EXPECT_FALSE( isURIUnreserved( "^" ) );
-		EXPECT_FALSE( isURIUnreserved( "`" ) );
-		EXPECT_FALSE( isURIUnreserved( "|" ) );
+		EXPECT_FALSE( isUriUnreserved( "\"" ) );
+		EXPECT_FALSE( isUriUnreserved( "%" ) );
+		EXPECT_FALSE( isUriUnreserved( "<>" ) );
+		EXPECT_FALSE( isUriUnreserved( "\\" ) );
+		EXPECT_FALSE( isUriUnreserved( "^" ) );
+		EXPECT_FALSE( isUriUnreserved( "`" ) );
+		EXPECT_FALSE( isUriUnreserved( "|" ) );
 
 		// Large string tests
 		const std::string largeUnreserved( 1000, 'a' );
-		EXPECT_TRUE( isURIUnreserved( largeUnreserved ) );
+		EXPECT_TRUE( isUriUnreserved( largeUnreserved ) );
 
 		const std::string largeMixed = std::string( 999, 'a' ) + ":";
-		EXPECT_FALSE( isURIUnreserved( largeMixed ) );
+		EXPECT_FALSE( isUriUnreserved( largeMixed ) );
 
 		// Performance test with mixed unreserved types
 		const std::string mixedUnreserved = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~";
-		EXPECT_TRUE( isURIUnreserved( mixedUnreserved ) );
+		EXPECT_TRUE( isUriUnreserved( mixedUnreserved ) );
 
 		// String view from various sources
 		std::string unreservedStr = "test123";
 		std::string mixedStr = "test:123";
-		EXPECT_TRUE( isURIUnreserved( unreservedStr ) );
-		EXPECT_FALSE( isURIUnreserved( mixedStr ) );
+		EXPECT_TRUE( isUriUnreserved( unreservedStr ) );
+		EXPECT_FALSE( isUriUnreserved( mixedStr ) );
 	}
 
 	//-----------------------------
@@ -547,88 +547,88 @@ namespace nfx::string::test
 	TEST( StringUtilsNetworkValidation, IsIPv4Address )
 	{
 		// Valid IPv4 addresses
-		EXPECT_TRUE( isIPv4Address( "0.0.0.0" ) );
-		EXPECT_TRUE( isIPv4Address( "127.0.0.1" ) );
-		EXPECT_TRUE( isIPv4Address( "192.168.1.1" ) );
-		EXPECT_TRUE( isIPv4Address( "255.255.255.255" ) );
-		EXPECT_TRUE( isIPv4Address( "10.0.0.1" ) );
-		EXPECT_TRUE( isIPv4Address( "172.16.0.1" ) );
-		EXPECT_TRUE( isIPv4Address( "8.8.8.8" ) );
-		EXPECT_TRUE( isIPv4Address( "1.2.3.4" ) );
+		EXPECT_TRUE( isIpv4Address( "0.0.0.0" ) );
+		EXPECT_TRUE( isIpv4Address( "127.0.0.1" ) );
+		EXPECT_TRUE( isIpv4Address( "192.168.1.1" ) );
+		EXPECT_TRUE( isIpv4Address( "255.255.255.255" ) );
+		EXPECT_TRUE( isIpv4Address( "10.0.0.1" ) );
+		EXPECT_TRUE( isIpv4Address( "172.16.0.1" ) );
+		EXPECT_TRUE( isIpv4Address( "8.8.8.8" ) );
+		EXPECT_TRUE( isIpv4Address( "1.2.3.4" ) );
 
 		// Invalid IPv4 addresses - wrong format
-		EXPECT_FALSE( isIPv4Address( "" ) );
-		EXPECT_FALSE( isIPv4Address( "192.168.1" ) );	  // Missing octet
-		EXPECT_FALSE( isIPv4Address( "192.168.1.1.1" ) ); // Too many octets
-		EXPECT_FALSE( isIPv4Address( "192.168..1" ) );	  // Empty octet
-		EXPECT_FALSE( isIPv4Address( ".192.168.1.1" ) );  // Starts with dot
-		EXPECT_FALSE( isIPv4Address( "192.168.1.1." ) );  // Ends with dot
-		EXPECT_FALSE( isIPv4Address( "192.168.1.1.." ) ); // Double dot at end
+		EXPECT_FALSE( isIpv4Address( "" ) );
+		EXPECT_FALSE( isIpv4Address( "192.168.1" ) );	  // Missing octet
+		EXPECT_FALSE( isIpv4Address( "192.168.1.1.1" ) ); // Too many octets
+		EXPECT_FALSE( isIpv4Address( "192.168..1" ) );	  // Empty octet
+		EXPECT_FALSE( isIpv4Address( ".192.168.1.1" ) );  // Starts with dot
+		EXPECT_FALSE( isIpv4Address( "192.168.1.1." ) );  // Ends with dot
+		EXPECT_FALSE( isIpv4Address( "192.168.1.1.." ) ); // Double dot at end
 
 		// Invalid IPv4 addresses - out of range
-		EXPECT_FALSE( isIPv4Address( "256.1.1.1" ) );		// > 255
-		EXPECT_FALSE( isIPv4Address( "1.256.1.1" ) );		// > 255
-		EXPECT_FALSE( isIPv4Address( "1.1.256.1" ) );		// > 255
-		EXPECT_FALSE( isIPv4Address( "1.1.1.256" ) );		// > 255
-		EXPECT_FALSE( isIPv4Address( "999.999.999.999" ) ); // Way out of range
-		EXPECT_FALSE( isIPv4Address( "300.300.300.300" ) );
+		EXPECT_FALSE( isIpv4Address( "256.1.1.1" ) );		// > 255
+		EXPECT_FALSE( isIpv4Address( "1.256.1.1" ) );		// > 255
+		EXPECT_FALSE( isIpv4Address( "1.1.256.1" ) );		// > 255
+		EXPECT_FALSE( isIpv4Address( "1.1.1.256" ) );		// > 255
+		EXPECT_FALSE( isIpv4Address( "999.999.999.999" ) ); // Way out of range
+		EXPECT_FALSE( isIpv4Address( "300.300.300.300" ) );
 
 		// Invalid IPv4 addresses - non-numeric
-		EXPECT_FALSE( isIPv4Address( "abc.def.ghi.jkl" ) );
-		EXPECT_FALSE( isIPv4Address( "192.168.1.a" ) );
-		EXPECT_FALSE( isIPv4Address( "192.168.1.1a" ) );
-		EXPECT_FALSE( isIPv4Address( "192.168.1.1 " ) ); // Trailing space
-		EXPECT_FALSE( isIPv4Address( " 192.168.1.1" ) ); // Leading space
-		EXPECT_FALSE( isIPv4Address( "192.168. 1.1" ) ); // Space in middle
+		EXPECT_FALSE( isIpv4Address( "abc.def.ghi.jkl" ) );
+		EXPECT_FALSE( isIpv4Address( "192.168.1.a" ) );
+		EXPECT_FALSE( isIpv4Address( "192.168.1.1a" ) );
+		EXPECT_FALSE( isIpv4Address( "192.168.1.1 " ) ); // Trailing space
+		EXPECT_FALSE( isIpv4Address( " 192.168.1.1" ) ); // Leading space
+		EXPECT_FALSE( isIpv4Address( "192.168. 1.1" ) ); // Space in middle
 
 		// Invalid IPv4 addresses - special characters
-		EXPECT_FALSE( isIPv4Address( "192.168.1.1:80" ) ); // Port included
-		EXPECT_FALSE( isIPv4Address( "192.168.1.1/24" ) ); // CIDR notation
-		EXPECT_FALSE( isIPv4Address( "192-168-1-1" ) );	   // Hyphens instead of dots
+		EXPECT_FALSE( isIpv4Address( "192.168.1.1:80" ) ); // Port included
+		EXPECT_FALSE( isIpv4Address( "192.168.1.1/24" ) ); // CIDR notation
+		EXPECT_FALSE( isIpv4Address( "192-168-1-1" ) );	   // Hyphens instead of dots
 
 		// Edge cases
-		EXPECT_FALSE( isIPv4Address( "..." ) );
-		EXPECT_FALSE( isIPv4Address( "1.2.3.4.5.6.7.8" ) ); // Too long
-		EXPECT_FALSE( isIPv4Address( "01.02.03.04" ) );		// Leading zeros (technically invalid in strict parsing)
+		EXPECT_FALSE( isIpv4Address( "..." ) );
+		EXPECT_FALSE( isIpv4Address( "1.2.3.4.5.6.7.8" ) ); // Too long
+		EXPECT_FALSE( isIpv4Address( "01.02.03.04" ) );		// Leading zeros (technically invalid in strict parsing)
 	}
 
 	TEST( StringUtilsNetworkValidation, IsIPv6Address )
 	{
 		// Valid IPv6 addresses - full notation
-		EXPECT_TRUE( isIPv6Address( "2001:0db8:0000:0000:0000:0000:0000:0001" ) );
-		EXPECT_TRUE( isIPv6Address( "2001:db8:0:0:0:0:0:1" ) );
-		EXPECT_TRUE( isIPv6Address( "2001:0db8:85a3:0000:0000:8a2e:0370:7334" ) );
+		EXPECT_TRUE( isIpv6Address( "2001:0db8:0000:0000:0000:0000:0000:0001" ) );
+		EXPECT_TRUE( isIpv6Address( "2001:db8:0:0:0:0:0:1" ) );
+		EXPECT_TRUE( isIpv6Address( "2001:0db8:85a3:0000:0000:8a2e:0370:7334" ) );
 
 		// Valid IPv6 addresses - compressed notation
-		EXPECT_TRUE( isIPv6Address( "::" ) );		   // All zeros
-		EXPECT_TRUE( isIPv6Address( "::1" ) );		   // Loopback
-		EXPECT_TRUE( isIPv6Address( "2001:db8::1" ) ); // Compressed middle
-		EXPECT_TRUE( isIPv6Address( "2001:db8:85a3::8a2e:370:7334" ) );
-		EXPECT_TRUE( isIPv6Address( "::ffff:192.0.2.1" ) ); // IPv4-mapped
-		EXPECT_TRUE( isIPv6Address( "fe80::1" ) );			// Link-local
+		EXPECT_TRUE( isIpv6Address( "::" ) );		   // All zeros
+		EXPECT_TRUE( isIpv6Address( "::1" ) );		   // Loopback
+		EXPECT_TRUE( isIpv6Address( "2001:db8::1" ) ); // Compressed middle
+		EXPECT_TRUE( isIpv6Address( "2001:db8:85a3::8a2e:370:7334" ) );
+		EXPECT_TRUE( isIpv6Address( "::ffff:192.0.2.1" ) ); // IPv4-mapped
+		EXPECT_TRUE( isIpv6Address( "fe80::1" ) );			// Link-local
 
 		// Valid IPv6 addresses - with zone ID
-		EXPECT_TRUE( isIPv6Address( "fe80::1%eth0" ) );
-		EXPECT_TRUE( isIPv6Address( "fe80::1%lo0" ) );
+		EXPECT_TRUE( isIpv6Address( "fe80::1%eth0" ) );
+		EXPECT_TRUE( isIpv6Address( "fe80::1%lo0" ) );
 
 		// Invalid IPv6 addresses - wrong format
-		EXPECT_FALSE( isIPv6Address( "" ) );
-		EXPECT_FALSE( isIPv6Address( ":" ) );
-		EXPECT_FALSE( isIPv6Address( ":::" ) );								   // Too many colons
-		EXPECT_FALSE( isIPv6Address( "2001:db8::1::2" ) );					   // Multiple :: compressions
-		EXPECT_FALSE( isIPv6Address( "gggg::1" ) );							   // Invalid hex
-		EXPECT_FALSE( isIPv6Address( "2001:db8:85a3::8a2e:370:7334:extra" ) ); // Too many groups
+		EXPECT_FALSE( isIpv6Address( "" ) );
+		EXPECT_FALSE( isIpv6Address( ":" ) );
+		EXPECT_FALSE( isIpv6Address( ":::" ) );								   // Too many colons
+		EXPECT_FALSE( isIpv6Address( "2001:db8::1::2" ) );					   // Multiple :: compressions
+		EXPECT_FALSE( isIpv6Address( "gggg::1" ) );							   // Invalid hex
+		EXPECT_FALSE( isIpv6Address( "2001:db8:85a3::8a2e:370:7334:extra" ) ); // Too many groups
 
 		// Invalid IPv6 addresses - too many digits per group
-		EXPECT_FALSE( isIPv6Address( "20011:db8::1" ) );	// 5 hex digits
-		EXPECT_FALSE( isIPv6Address( "2001:db88888::1" ) ); // Too many digits
+		EXPECT_FALSE( isIpv6Address( "20011:db8::1" ) );	// 5 hex digits
+		EXPECT_FALSE( isIpv6Address( "2001:db88888::1" ) ); // Too many digits
 
 		// Invalid IPv6 addresses - invalid characters
-		EXPECT_FALSE( isIPv6Address( "2001:db8::1 " ) );   // Trailing space
-		EXPECT_FALSE( isIPv6Address( " 2001:db8::1" ) );   // Leading space
-		EXPECT_FALSE( isIPv6Address( "2001:db8::g" ) );	   // Invalid hex char
-		EXPECT_FALSE( isIPv6Address( "2001:db8::1/64" ) ); // CIDR notation
-		EXPECT_FALSE( isIPv6Address( "[2001:db8::1]" ) );  // Brackets
+		EXPECT_FALSE( isIpv6Address( "2001:db8::1 " ) );   // Trailing space
+		EXPECT_FALSE( isIpv6Address( " 2001:db8::1" ) );   // Leading space
+		EXPECT_FALSE( isIpv6Address( "2001:db8::g" ) );	   // Invalid hex char
+		EXPECT_FALSE( isIpv6Address( "2001:db8::1/64" ) ); // CIDR notation
+		EXPECT_FALSE( isIpv6Address( "[2001:db8::1]" ) );  // Brackets
 	}
 
 	//-----------------------------
@@ -638,121 +638,121 @@ namespace nfx::string::test
 	TEST( StringUtilsNetworkValidation, IsValidHostname )
 	{
 		// Valid hostnames
-		EXPECT_TRUE( isValidHostname( "localhost" ) );
-		EXPECT_TRUE( isValidHostname( "example.com" ) );
-		EXPECT_TRUE( isValidHostname( "www.example.com" ) );
-		EXPECT_TRUE( isValidHostname( "sub.domain.example.com" ) );
-		EXPECT_TRUE( isValidHostname( "my-server" ) );
-		EXPECT_TRUE( isValidHostname( "server-01" ) );
-		EXPECT_TRUE( isValidHostname( "192-168-1-1" ) );  // Numeric but valid hostname format
-		EXPECT_TRUE( isValidHostname( "a" ) );			  // Single character
-		EXPECT_TRUE( isValidHostname( "a.b" ) );		  // Minimum domain
-		EXPECT_TRUE( isValidHostname( "test123" ) );	  // Alphanumeric
-		EXPECT_TRUE( isValidHostname( "test-123-abc" ) ); // With hyphens
+		EXPECT_TRUE( isHostname( "localhost" ) );
+		EXPECT_TRUE( isHostname( "example.com" ) );
+		EXPECT_TRUE( isHostname( "www.example.com" ) );
+		EXPECT_TRUE( isHostname( "sub.domain.example.com" ) );
+		EXPECT_TRUE( isHostname( "my-server" ) );
+		EXPECT_TRUE( isHostname( "server-01" ) );
+		EXPECT_TRUE( isHostname( "192-168-1-1" ) );	 // Numeric but valid hostname format
+		EXPECT_TRUE( isHostname( "a" ) );			 // Single character
+		EXPECT_TRUE( isHostname( "a.b" ) );			 // Minimum domain
+		EXPECT_TRUE( isHostname( "test123" ) );		 // Alphanumeric
+		EXPECT_TRUE( isHostname( "test-123-abc" ) ); // With hyphens
 
 		// Valid hostnames - max lengths
 		const std::string label63( 63, 'a' ); // Max label length
-		EXPECT_TRUE( isValidHostname( label63 ) );
-		EXPECT_TRUE( isValidHostname( label63 + ".com" ) );
+		EXPECT_TRUE( isHostname( label63 ) );
+		EXPECT_TRUE( isHostname( label63 + ".com" ) );
 
 		const std::string hostname253 = label63 + "." + label63 + "." + label63 + ".com"; // Close to max
-		EXPECT_TRUE( isValidHostname( hostname253 ) );
+		EXPECT_TRUE( isHostname( hostname253 ) );
 
 		// Invalid hostnames - empty
-		EXPECT_FALSE( isValidHostname( "" ) );
+		EXPECT_FALSE( isHostname( "" ) );
 
 		// Invalid hostnames - too long
 		const std::string label64( 64, 'a' ); // Exceeds max label length
-		EXPECT_FALSE( isValidHostname( label64 ) );
+		EXPECT_FALSE( isHostname( label64 ) );
 		const std::string hostname254( 254, 'a' ); // Exceeds max total length
-		EXPECT_FALSE( isValidHostname( hostname254 ) );
+		EXPECT_FALSE( isHostname( hostname254 ) );
 
 		// Invalid hostnames - starts with hyphen
-		EXPECT_FALSE( isValidHostname( "-server" ) );
-		EXPECT_FALSE( isValidHostname( "server.-test" ) );
+		EXPECT_FALSE( isHostname( "-server" ) );
+		EXPECT_FALSE( isHostname( "server.-test" ) );
 
 		// Invalid hostnames - ends with hyphen
-		EXPECT_FALSE( isValidHostname( "server-" ) );
-		EXPECT_FALSE( isValidHostname( "server.test-" ) );
+		EXPECT_FALSE( isHostname( "server-" ) );
+		EXPECT_FALSE( isHostname( "server.test-" ) );
 
 		// Invalid hostnames - consecutive dots
-		EXPECT_FALSE( isValidHostname( "example..com" ) );
-		EXPECT_FALSE( isValidHostname( "..example" ) );
+		EXPECT_FALSE( isHostname( "example..com" ) );
+		EXPECT_FALSE( isHostname( "..example" ) );
 
 		// Invalid hostnames - starts/ends with dot
-		EXPECT_FALSE( isValidHostname( ".example.com" ) );
-		EXPECT_FALSE( isValidHostname( "example.com." ) );
+		EXPECT_FALSE( isHostname( ".example.com" ) );
+		EXPECT_FALSE( isHostname( "example.com." ) );
 
 		// Invalid hostnames - invalid characters
-		EXPECT_FALSE( isValidHostname( "example_com" ) );  // Underscore
-		EXPECT_FALSE( isValidHostname( "example.com!" ) ); // Special char
-		EXPECT_FALSE( isValidHostname( "example com" ) );  // Space
-		EXPECT_FALSE( isValidHostname( "example@com" ) );  // @ symbol
-		EXPECT_FALSE( isValidHostname( "example:8080" ) ); // Colon
-		EXPECT_FALSE( isValidHostname( "example/path" ) ); // Slash
+		EXPECT_FALSE( isHostname( "example_com" ) );  // Underscore
+		EXPECT_FALSE( isHostname( "example.com!" ) ); // Special char
+		EXPECT_FALSE( isHostname( "example com" ) );  // Space
+		EXPECT_FALSE( isHostname( "example@com" ) );  // @ symbol
+		EXPECT_FALSE( isHostname( "example:8080" ) ); // Colon
+		EXPECT_FALSE( isHostname( "example/path" ) ); // Slash
 	}
 
 	TEST( StringUtilsNetworkValidation, IsValidIdnHostname )
 	{
 		// Valid ASCII hostnames (should still work)
-		EXPECT_TRUE( isValidIdnHostname( "localhost" ) );
-		EXPECT_TRUE( isValidIdnHostname( "example.com" ) );
-		EXPECT_TRUE( isValidIdnHostname( "www.example.com" ) );
-		EXPECT_TRUE( isValidIdnHostname( "my-server-01" ) );
+		EXPECT_TRUE( isIdnHostname( "localhost" ) );
+		EXPECT_TRUE( isIdnHostname( "example.com" ) );
+		EXPECT_TRUE( isIdnHostname( "www.example.com" ) );
+		EXPECT_TRUE( isIdnHostname( "my-server-01" ) );
 
 		// Valid Punycode hostnames (xn-- prefix)
-		EXPECT_TRUE( isValidIdnHostname( "xn--e1afmkfd.ru" ) );			  // пример.ru
-		EXPECT_TRUE( isValidIdnHostname( "xn--n3h.com" ) );				  // ☃.com (snowman)
-		EXPECT_TRUE( isValidIdnHostname( "xn--80akhbyknj4f.xn--p1ai" ) ); // испытание.рф
-		EXPECT_TRUE( isValidIdnHostname( "example.xn--fiqs8s" ) );		  // example.中国
+		EXPECT_TRUE( isIdnHostname( "xn--e1afmkfd.ru" ) );			 // пример.ru
+		EXPECT_TRUE( isIdnHostname( "xn--n3h.com" ) );				 // ☃.com (snowman)
+		EXPECT_TRUE( isIdnHostname( "xn--80akhbyknj4f.xn--p1ai" ) ); // испытание.рф
+		EXPECT_TRUE( isIdnHostname( "example.xn--fiqs8s" ) );		 // example.中国
 
 		// Valid Unicode hostnames (direct Unicode, not Punycode)
-		EXPECT_TRUE( isValidIdnHostname( "münchen.de" ) ); // German umlaut
-		EXPECT_TRUE( isValidIdnHostname( "zürich.ch" ) );  // Swiss city
-		EXPECT_TRUE( isValidIdnHostname( "россия.рф" ) );  // Russia in Cyrillic
-		EXPECT_TRUE( isValidIdnHostname( "中国.cn" ) );	   // China in Chinese
-		EXPECT_TRUE( isValidIdnHostname( "日本.jp" ) );	   // Japan in Japanese
-		EXPECT_TRUE( isValidIdnHostname( "مصر.eg" ) );	   // Egypt in Arabic
-		EXPECT_TRUE( isValidIdnHostname( "ελλάδα.gr" ) );  // Greece in Greek
-		EXPECT_TRUE( isValidIdnHostname( "españa.es" ) );  // Spain with ñ
-		EXPECT_TRUE( isValidIdnHostname( "café.fr" ) );	   // French café
-		EXPECT_TRUE( isValidIdnHostname( "naïve.com" ) );  // Diaeresis
+		EXPECT_TRUE( isIdnHostname( "münchen.de" ) ); // German umlaut
+		EXPECT_TRUE( isIdnHostname( "zürich.ch" ) );  // Swiss city
+		EXPECT_TRUE( isIdnHostname( "россия.рф" ) );  // Russia in Cyrillic
+		EXPECT_TRUE( isIdnHostname( "中国.cn" ) );	  // China in Chinese
+		EXPECT_TRUE( isIdnHostname( "日本.jp" ) );	  // Japan in Japanese
+		EXPECT_TRUE( isIdnHostname( "مصر.eg" ) );	  // Egypt in Arabic
+		EXPECT_TRUE( isIdnHostname( "ελλάδα.gr" ) );  // Greece in Greek
+		EXPECT_TRUE( isIdnHostname( "españa.es" ) );  // Spain with ñ
+		EXPECT_TRUE( isIdnHostname( "café.fr" ) );	  // French café
+		EXPECT_TRUE( isIdnHostname( "naïve.com" ) );  // Diaeresis
 
 		// Mixed ASCII and Unicode
-		EXPECT_TRUE( isValidIdnHostname( "www.münchen.de" ) );
-		EXPECT_TRUE( isValidIdnHostname( "test.中国.com" ) );
+		EXPECT_TRUE( isIdnHostname( "www.münchen.de" ) );
+		EXPECT_TRUE( isIdnHostname( "test.中国.com" ) );
 
 		// Valid hostnames - length constraints
 		const std::string label63( 63, 'a' );
-		EXPECT_TRUE( isValidIdnHostname( label63 ) );
-		EXPECT_TRUE( isValidIdnHostname( label63 + ".com" ) );
+		EXPECT_TRUE( isIdnHostname( label63 ) );
+		EXPECT_TRUE( isIdnHostname( label63 + ".com" ) );
 
 		// Invalid hostnames - empty
-		EXPECT_FALSE( isValidIdnHostname( "" ) );
+		EXPECT_FALSE( isIdnHostname( "" ) );
 
 		// Invalid hostnames - too long
 		const std::string label64( 64, 'a' );
-		EXPECT_FALSE( isValidIdnHostname( label64 ) );
+		EXPECT_FALSE( isIdnHostname( label64 ) );
 		const std::string hostname254( 254, 'a' );
-		EXPECT_FALSE( isValidIdnHostname( hostname254 ) );
+		EXPECT_FALSE( isIdnHostname( hostname254 ) );
 
 		// Invalid hostnames - starts/ends with hyphen
-		EXPECT_FALSE( isValidIdnHostname( "-server" ) );
-		EXPECT_FALSE( isValidIdnHostname( "server-" ) );
-		EXPECT_FALSE( isValidIdnHostname( "test.-example" ) );
-		EXPECT_FALSE( isValidIdnHostname( "test.example-" ) );
+		EXPECT_FALSE( isIdnHostname( "-server" ) );
+		EXPECT_FALSE( isIdnHostname( "server-" ) );
+		EXPECT_FALSE( isIdnHostname( "test.-example" ) );
+		EXPECT_FALSE( isIdnHostname( "test.example-" ) );
 
 		// Invalid hostnames - starts/ends with dot
-		EXPECT_FALSE( isValidIdnHostname( ".example.com" ) );
-		EXPECT_FALSE( isValidIdnHostname( "example.com." ) );
+		EXPECT_FALSE( isIdnHostname( ".example.com" ) );
+		EXPECT_FALSE( isIdnHostname( "example.com." ) );
 
 		// Invalid hostnames - consecutive dots
-		EXPECT_FALSE( isValidIdnHostname( "example..com" ) );
+		EXPECT_FALSE( isIdnHostname( "example..com" ) );
 
 		// Invalid Punycode (malformed)
-		EXPECT_FALSE( isValidIdnHostname( "xn--" ) );			 // Just prefix
-		EXPECT_FALSE( isValidIdnHostname( "xn--.com" ) );		 // Empty after prefix
-		EXPECT_FALSE( isValidIdnHostname( "xn--abc!def.com" ) ); // Invalid char in Punycode
+		EXPECT_FALSE( isIdnHostname( "xn--" ) );			// Just prefix
+		EXPECT_FALSE( isIdnHostname( "xn--.com" ) );		// Empty after prefix
+		EXPECT_FALSE( isIdnHostname( "xn--abc!def.com" ) ); // Invalid char in Punycode
 	}
 
 	TEST( StringUtilsNetworkValidation, IsDomainName )
@@ -790,47 +790,47 @@ namespace nfx::string::test
 	TEST( StringUtilsNetworkValidation, IsValidPort_String )
 	{
 		// Valid port strings
-		EXPECT_TRUE( isValidPort( "0" ) );
-		EXPECT_TRUE( isValidPort( "1" ) );
-		EXPECT_TRUE( isValidPort( "80" ) );
-		EXPECT_TRUE( isValidPort( "443" ) );
-		EXPECT_TRUE( isValidPort( "8080" ) );
-		EXPECT_TRUE( isValidPort( "3000" ) );
-		EXPECT_TRUE( isValidPort( "65535" ) ); // Max port
+		EXPECT_TRUE( isPortNumber( "0" ) );
+		EXPECT_TRUE( isPortNumber( "1" ) );
+		EXPECT_TRUE( isPortNumber( "80" ) );
+		EXPECT_TRUE( isPortNumber( "443" ) );
+		EXPECT_TRUE( isPortNumber( "8080" ) );
+		EXPECT_TRUE( isPortNumber( "3000" ) );
+		EXPECT_TRUE( isPortNumber( "65535" ) ); // Max port
 
 		// Valid port strings - well-known ports
-		EXPECT_TRUE( isValidPort( "21" ) );	  // FTP
-		EXPECT_TRUE( isValidPort( "22" ) );	  // SSH
-		EXPECT_TRUE( isValidPort( "25" ) );	  // SMTP
-		EXPECT_TRUE( isValidPort( "53" ) );	  // DNS
-		EXPECT_TRUE( isValidPort( "3306" ) ); // MySQL
-		EXPECT_TRUE( isValidPort( "5432" ) ); // PostgreSQL
+		EXPECT_TRUE( isPortNumber( "21" ) );   // FTP
+		EXPECT_TRUE( isPortNumber( "22" ) );   // SSH
+		EXPECT_TRUE( isPortNumber( "25" ) );   // SMTP
+		EXPECT_TRUE( isPortNumber( "53" ) );   // DNS
+		EXPECT_TRUE( isPortNumber( "3306" ) ); // MySQL
+		EXPECT_TRUE( isPortNumber( "5432" ) ); // PostgreSQL
 
 		// Invalid port strings - empty
-		EXPECT_FALSE( isValidPort( "" ) );
+		EXPECT_FALSE( isPortNumber( "" ) );
 
 		// Invalid port strings - out of range
-		EXPECT_FALSE( isValidPort( "65536" ) ); // Max + 1
-		EXPECT_FALSE( isValidPort( "99999" ) );
-		EXPECT_FALSE( isValidPort( "100000" ) );
-		EXPECT_FALSE( isValidPort( "999999" ) );
+		EXPECT_FALSE( isPortNumber( "65536" ) ); // Max + 1
+		EXPECT_FALSE( isPortNumber( "99999" ) );
+		EXPECT_FALSE( isPortNumber( "100000" ) );
+		EXPECT_FALSE( isPortNumber( "999999" ) );
 
 		// Invalid port strings - non-numeric
-		EXPECT_FALSE( isValidPort( "abc" ) );
-		EXPECT_FALSE( isValidPort( "80a" ) );
-		EXPECT_FALSE( isValidPort( "a80" ) );
-		EXPECT_FALSE( isValidPort( "8o8o" ) ); // Letter 'o' instead of zero
+		EXPECT_FALSE( isPortNumber( "abc" ) );
+		EXPECT_FALSE( isPortNumber( "80a" ) );
+		EXPECT_FALSE( isPortNumber( "a80" ) );
+		EXPECT_FALSE( isPortNumber( "8o8o" ) ); // Letter 'o' instead of zero
 
 		// Invalid port strings - with whitespace
-		EXPECT_FALSE( isValidPort( " 80" ) );
-		EXPECT_FALSE( isValidPort( "80 " ) );
-		EXPECT_FALSE( isValidPort( " 80 " ) );
+		EXPECT_FALSE( isPortNumber( " 80" ) );
+		EXPECT_FALSE( isPortNumber( "80 " ) );
+		EXPECT_FALSE( isPortNumber( " 80 " ) );
 
 		// Invalid port strings - with special characters
-		EXPECT_FALSE( isValidPort( "-80" ) );	// Negative sign
-		EXPECT_FALSE( isValidPort( "+80" ) );	// Plus sign
-		EXPECT_FALSE( isValidPort( "80.0" ) );	// Decimal
-		EXPECT_FALSE( isValidPort( "80:80" ) ); // Colon
+		EXPECT_FALSE( isPortNumber( "-80" ) );	 // Negative sign
+		EXPECT_FALSE( isPortNumber( "+80" ) );	 // Plus sign
+		EXPECT_FALSE( isPortNumber( "80.0" ) );	 // Decimal
+		EXPECT_FALSE( isPortNumber( "80:80" ) ); // Colon
 	}
 
 	//-----------------------------
@@ -4641,24 +4641,24 @@ namespace nfx::string::test
 
 	TEST( StringUtilsIsUUID, ValidUUIDs )
 	{
-		EXPECT_TRUE( isUUID( "550e8400-e29b-41d4-a716-446655440000" ) );
-		EXPECT_TRUE( isUUID( "00000000-0000-0000-0000-000000000000" ) );
-		EXPECT_TRUE( isUUID( "ffffffff-ffff-ffff-ffff-ffffffffffff" ) );
-		EXPECT_TRUE( isUUID( "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF" ) ); // Uppercase
-		EXPECT_TRUE( isUUID( "123e4567-e89b-12d3-a456-426614174000" ) );
-		EXPECT_TRUE( isUUID( "a1b2c3d4-e5f6-7890-abcd-ef1234567890" ) );
+		EXPECT_TRUE( isUuid( "550e8400-e29b-41d4-a716-446655440000" ) );
+		EXPECT_TRUE( isUuid( "00000000-0000-0000-0000-000000000000" ) );
+		EXPECT_TRUE( isUuid( "ffffffff-ffff-ffff-ffff-ffffffffffff" ) );
+		EXPECT_TRUE( isUuid( "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF" ) ); // Uppercase
+		EXPECT_TRUE( isUuid( "123e4567-e89b-12d3-a456-426614174000" ) );
+		EXPECT_TRUE( isUuid( "a1b2c3d4-e5f6-7890-abcd-ef1234567890" ) );
 	}
 
 	TEST( StringUtilsIsUUID, InvalidUUIDs )
 	{
-		EXPECT_FALSE( isUUID( "" ) );
-		EXPECT_FALSE( isUUID( "550e8400-e29b-41d4-a716-44665544000" ) );   // Too short
-		EXPECT_FALSE( isUUID( "550e8400-e29b-41d4-a716-4466554400000" ) ); // Too long
-		EXPECT_FALSE( isUUID( "550e8400e29b41d4a716446655440000" ) );	   // No hyphens
-		EXPECT_FALSE( isUUID( "550e8400-e29b-41d4-a716446655440000" ) );   // Missing hyphen
-		EXPECT_FALSE( isUUID( "550g8400-e29b-41d4-a716-446655440000" ) );  // Invalid hex 'g'
-		EXPECT_FALSE( isUUID( "550e8400-e29b-41d4-a716-44665544000z" ) );  // Invalid char 'z'
-		EXPECT_FALSE( isUUID( "550e8400_e29b_41d4_a716_446655440000" ) );  // Underscores
+		EXPECT_FALSE( isUuid( "" ) );
+		EXPECT_FALSE( isUuid( "550e8400-e29b-41d4-a716-44665544000" ) );   // Too short
+		EXPECT_FALSE( isUuid( "550e8400-e29b-41d4-a716-4466554400000" ) ); // Too long
+		EXPECT_FALSE( isUuid( "550e8400e29b41d4a716446655440000" ) );	   // No hyphens
+		EXPECT_FALSE( isUuid( "550e8400-e29b-41d4-a716446655440000" ) );   // Missing hyphen
+		EXPECT_FALSE( isUuid( "550g8400-e29b-41d4-a716-446655440000" ) );  // Invalid hex 'g'
+		EXPECT_FALSE( isUuid( "550e8400-e29b-41d4-a716-44665544000z" ) );  // Invalid char 'z'
+		EXPECT_FALSE( isUuid( "550e8400_e29b_41d4_a716_446655440000" ) );  // Underscores
 	}
 
 	//----------------------------------------------
@@ -4667,27 +4667,27 @@ namespace nfx::string::test
 
 	TEST( StringUtilsIsURI, ValidURIs )
 	{
-		EXPECT_TRUE( isURI( "http://example.com" ) );
-		EXPECT_TRUE( isURI( "https://example.com/path" ) );
-		EXPECT_TRUE( isURI( "ftp://ftp.example.com/file.txt" ) );
-		EXPECT_TRUE( isURI( "mailto:user@example.com" ) );
-		EXPECT_TRUE( isURI( "file:///path/to/file" ) );
-		EXPECT_TRUE( isURI( "custom-scheme://host/path" ) );
-		EXPECT_TRUE( isURI( "scheme+sub://host" ) );
-		EXPECT_TRUE( isURI( "scheme.sub://host" ) );
-		EXPECT_TRUE( isURI( "urn:isbn:0451450523" ) );
-		EXPECT_TRUE( isURI( "tel:+1-816-555-1212" ) );
+		EXPECT_TRUE( isUri( "http://example.com" ) );
+		EXPECT_TRUE( isUri( "https://example.com/path" ) );
+		EXPECT_TRUE( isUri( "ftp://ftp.example.com/file.txt" ) );
+		EXPECT_TRUE( isUri( "mailto:user@example.com" ) );
+		EXPECT_TRUE( isUri( "file:///path/to/file" ) );
+		EXPECT_TRUE( isUri( "custom-scheme://host/path" ) );
+		EXPECT_TRUE( isUri( "scheme+sub://host" ) );
+		EXPECT_TRUE( isUri( "scheme.sub://host" ) );
+		EXPECT_TRUE( isUri( "urn:isbn:0451450523" ) );
+		EXPECT_TRUE( isUri( "tel:+1-816-555-1212" ) );
 	}
 
 	TEST( StringUtilsIsURI, InvalidURIs )
 	{
-		EXPECT_FALSE( isURI( "" ) );
-		EXPECT_FALSE( isURI( "example.com" ) );			// No scheme
-		EXPECT_FALSE( isURI( "://example.com" ) );		// Empty scheme
-		EXPECT_FALSE( isURI( "1http://example.com" ) ); // Scheme starts with digit
-		EXPECT_FALSE( isURI( "-http://example.com" ) ); // Scheme starts with hyphen
-		EXPECT_FALSE( isURI( "http ://example.com" ) ); // Space in URI
-		EXPECT_FALSE( isURI( "http://example .com" ) ); // Space in URI
+		EXPECT_FALSE( isUri( "" ) );
+		EXPECT_FALSE( isUri( "example.com" ) );			// No scheme
+		EXPECT_FALSE( isUri( "://example.com" ) );		// Empty scheme
+		EXPECT_FALSE( isUri( "1http://example.com" ) ); // Scheme starts with digit
+		EXPECT_FALSE( isUri( "-http://example.com" ) ); // Scheme starts with hyphen
+		EXPECT_FALSE( isUri( "http ://example.com" ) ); // Space in URI
+		EXPECT_FALSE( isUri( "http://example .com" ) ); // Space in URI
 	}
 
 	//----------------------------------------------
@@ -4697,24 +4697,24 @@ namespace nfx::string::test
 	TEST( StringUtilsIsURIReference, ValidURIReferences )
 	{
 		// Absolute URIs
-		EXPECT_TRUE( isURIReference( "http://example.com" ) );
-		EXPECT_TRUE( isURIReference( "https://example.com/path" ) );
+		EXPECT_TRUE( isUriReference( "http://example.com" ) );
+		EXPECT_TRUE( isUriReference( "https://example.com/path" ) );
 
 		// Relative references
-		EXPECT_TRUE( isURIReference( "/path/to/resource" ) );
-		EXPECT_TRUE( isURIReference( "relative/path" ) );
-		EXPECT_TRUE( isURIReference( "../parent/path" ) );
-		EXPECT_TRUE( isURIReference( "./current/path" ) );
-		EXPECT_TRUE( isURIReference( "?query=value" ) );
-		EXPECT_TRUE( isURIReference( "#fragment" ) );
-		EXPECT_TRUE( isURIReference( "" ) ); // Empty is valid
+		EXPECT_TRUE( isUriReference( "/path/to/resource" ) );
+		EXPECT_TRUE( isUriReference( "relative/path" ) );
+		EXPECT_TRUE( isUriReference( "../parent/path" ) );
+		EXPECT_TRUE( isUriReference( "./current/path" ) );
+		EXPECT_TRUE( isUriReference( "?query=value" ) );
+		EXPECT_TRUE( isUriReference( "#fragment" ) );
+		EXPECT_TRUE( isUriReference( "" ) ); // Empty is valid
 	}
 
 	TEST( StringUtilsIsURIReference, InvalidURIReferences )
 	{
-		EXPECT_FALSE( isURIReference( "path with spaces" ) );
-		EXPECT_FALSE( isURIReference( "http://example .com" ) );
-		EXPECT_FALSE( isURIReference( "/path\twith\ttabs" ) );
+		EXPECT_FALSE( isUriReference( "path with spaces" ) );
+		EXPECT_FALSE( isUriReference( "http://example .com" ) );
+		EXPECT_FALSE( isUriReference( "/path\twith\ttabs" ) );
 	}
 
 	//----------------------------------------------
@@ -4723,25 +4723,25 @@ namespace nfx::string::test
 
 	TEST( StringUtilsIsJSONPointer, ValidPointers )
 	{
-		EXPECT_TRUE( isJSONPointer( "" ) );	 // Root document
-		EXPECT_TRUE( isJSONPointer( "/" ) ); // Empty key
-		EXPECT_TRUE( isJSONPointer( "/foo" ) );
-		EXPECT_TRUE( isJSONPointer( "/foo/bar" ) );
-		EXPECT_TRUE( isJSONPointer( "/foo/0" ) ); // Array index
-		EXPECT_TRUE( isJSONPointer( "/a~1b" ) );  // Escaped /
-		EXPECT_TRUE( isJSONPointer( "/c%d" ) );	  // % is allowed
-		EXPECT_TRUE( isJSONPointer( "/e^f" ) );	  // ^ is allowed
-		EXPECT_TRUE( isJSONPointer( "/m~0n" ) );  // Escaped ~
-		EXPECT_TRUE( isJSONPointer( "/foo/bar/baz/0/qux" ) );
+		EXPECT_TRUE( isJsonPointer( "" ) );	 // Root document
+		EXPECT_TRUE( isJsonPointer( "/" ) ); // Empty key
+		EXPECT_TRUE( isJsonPointer( "/foo" ) );
+		EXPECT_TRUE( isJsonPointer( "/foo/bar" ) );
+		EXPECT_TRUE( isJsonPointer( "/foo/0" ) ); // Array index
+		EXPECT_TRUE( isJsonPointer( "/a~1b" ) );  // Escaped /
+		EXPECT_TRUE( isJsonPointer( "/c%d" ) );	  // % is allowed
+		EXPECT_TRUE( isJsonPointer( "/e^f" ) );	  // ^ is allowed
+		EXPECT_TRUE( isJsonPointer( "/m~0n" ) );  // Escaped ~
+		EXPECT_TRUE( isJsonPointer( "/foo/bar/baz/0/qux" ) );
 	}
 
 	TEST( StringUtilsIsJSONPointer, InvalidPointers )
 	{
-		EXPECT_FALSE( isJSONPointer( "foo" ) );		// Missing leading /
-		EXPECT_FALSE( isJSONPointer( "foo/bar" ) ); // Missing leading /
-		EXPECT_FALSE( isJSONPointer( "/foo~" ) );	// ~ at end
-		EXPECT_FALSE( isJSONPointer( "/foo~2" ) );	// Invalid escape ~2
-		EXPECT_FALSE( isJSONPointer( "/foo~a" ) );	// Invalid escape ~a
+		EXPECT_FALSE( isJsonPointer( "foo" ) );		// Missing leading /
+		EXPECT_FALSE( isJsonPointer( "foo/bar" ) ); // Missing leading /
+		EXPECT_FALSE( isJsonPointer( "/foo~" ) );	// ~ at end
+		EXPECT_FALSE( isJsonPointer( "/foo~2" ) );	// Invalid escape ~2
+		EXPECT_FALSE( isJsonPointer( "/foo~a" ) );	// Invalid escape ~a
 	}
 
 	//----------------------------------------------
@@ -4751,35 +4751,35 @@ namespace nfx::string::test
 	TEST( StringUtilsIsRelativeJSONPointer, ValidPointers )
 	{
 		// Bare integers are valid per RFC 6901
-		EXPECT_TRUE( isRelativeJSONPointer( "0" ) );   // Just zero (valid!)
-		EXPECT_TRUE( isRelativeJSONPointer( "1" ) );   // Just integer (valid!)
-		EXPECT_TRUE( isRelativeJSONPointer( "42" ) );  // Just integer (valid!)
-		EXPECT_TRUE( isRelativeJSONPointer( "100" ) ); // Multi-digit integer (valid!)
+		EXPECT_TRUE( isRelativeJsonPointer( "0" ) );   // Just zero (valid!)
+		EXPECT_TRUE( isRelativeJsonPointer( "1" ) );   // Just integer (valid!)
+		EXPECT_TRUE( isRelativeJsonPointer( "42" ) );  // Just integer (valid!)
+		EXPECT_TRUE( isRelativeJsonPointer( "100" ) ); // Multi-digit integer (valid!)
 
 		// Integer with # or path
-		EXPECT_TRUE( isRelativeJSONPointer( "0#" ) );		 // Current + name
-		EXPECT_TRUE( isRelativeJSONPointer( "1#" ) );		 // Parent + name
-		EXPECT_TRUE( isRelativeJSONPointer( "0/foo" ) );	 // Current + path
-		EXPECT_TRUE( isRelativeJSONPointer( "1/foo/bar" ) ); // Parent + path
-		EXPECT_TRUE( isRelativeJSONPointer( "2/0" ) );		 // Grandparent + index
-		EXPECT_TRUE( isRelativeJSONPointer( "0/" ) );		 // Empty token
-		EXPECT_TRUE( isRelativeJSONPointer( "10/foo" ) );	 // Multi-digit
-		EXPECT_TRUE( isRelativeJSONPointer( "0/a~0b" ) );	 // With escape
+		EXPECT_TRUE( isRelativeJsonPointer( "0#" ) );		 // Current + name
+		EXPECT_TRUE( isRelativeJsonPointer( "1#" ) );		 // Parent + name
+		EXPECT_TRUE( isRelativeJsonPointer( "0/foo" ) );	 // Current + path
+		EXPECT_TRUE( isRelativeJsonPointer( "1/foo/bar" ) ); // Parent + path
+		EXPECT_TRUE( isRelativeJsonPointer( "2/0" ) );		 // Grandparent + index
+		EXPECT_TRUE( isRelativeJsonPointer( "0/" ) );		 // Empty token
+		EXPECT_TRUE( isRelativeJsonPointer( "10/foo" ) );	 // Multi-digit
+		EXPECT_TRUE( isRelativeJsonPointer( "0/a~0b" ) );	 // With escape
 	}
 
 	TEST( StringUtilsIsRelativeJSONPointer, InvalidPointers )
 	{
-		EXPECT_FALSE( isRelativeJSONPointer( "" ) );	   // Empty
-		EXPECT_FALSE( isRelativeJSONPointer( "#" ) );	   // Missing number
-		EXPECT_FALSE( isRelativeJSONPointer( "/foo" ) );   // Absolute pointer
-		EXPECT_FALSE( isRelativeJSONPointer( "01/foo" ) ); // Leading zero (with path)
-		EXPECT_FALSE( isRelativeJSONPointer( "01" ) );	   // Leading zero (bare)
-		EXPECT_FALSE( isRelativeJSONPointer( "01#" ) );	   // Leading zero (with #)
-		EXPECT_FALSE( isRelativeJSONPointer( "-1/foo" ) ); // Negative
-		EXPECT_FALSE( isRelativeJSONPointer( "-1" ) );	   // Negative bare
-		EXPECT_FALSE( isRelativeJSONPointer( "a/foo" ) );  // Non-digit start
-		EXPECT_FALSE( isRelativeJSONPointer( "0#foo" ) );  // # not at end
-		EXPECT_FALSE( isRelativeJSONPointer( "1#2" ) );	   // # in middle
+		EXPECT_FALSE( isRelativeJsonPointer( "" ) );	   // Empty
+		EXPECT_FALSE( isRelativeJsonPointer( "#" ) );	   // Missing number
+		EXPECT_FALSE( isRelativeJsonPointer( "/foo" ) );   // Absolute pointer
+		EXPECT_FALSE( isRelativeJsonPointer( "01/foo" ) ); // Leading zero (with path)
+		EXPECT_FALSE( isRelativeJsonPointer( "01" ) );	   // Leading zero (bare)
+		EXPECT_FALSE( isRelativeJsonPointer( "01#" ) );	   // Leading zero (with #)
+		EXPECT_FALSE( isRelativeJsonPointer( "-1/foo" ) ); // Negative
+		EXPECT_FALSE( isRelativeJsonPointer( "-1" ) );	   // Negative bare
+		EXPECT_FALSE( isRelativeJsonPointer( "a/foo" ) );  // Non-digit start
+		EXPECT_FALSE( isRelativeJsonPointer( "0#foo" ) );  // # not at end
+		EXPECT_FALSE( isRelativeJsonPointer( "1#2" ) );	   // # in middle
 	}
 
 	//----------------------------------------------
@@ -4803,11 +4803,11 @@ namespace nfx::string::test
 
 	TEST( StringUtilsConstexpr, FormatValidation )
 	{
-		constexpr bool validUUID = isUUID( "550e8400-e29b-41d4-a716-446655440000" );
-		constexpr bool validURI = isURI( "https://example.com" );
-		constexpr bool validURIRef = isURIReference( "/path" );
-		constexpr bool validJSONPtr = isJSONPointer( "/foo/bar" );
-		constexpr bool validRelPtr = isRelativeJSONPointer( "1/foo" );
+		constexpr bool validUUID = isUuid( "550e8400-e29b-41d4-a716-446655440000" );
+		constexpr bool validURI = isUri( "https://example.com" );
+		constexpr bool validURIRef = isUriReference( "/path" );
+		constexpr bool validJSONPtr = isJsonPointer( "/foo/bar" );
+		constexpr bool validRelPtr = isRelativeJsonPointer( "1/foo" );
 
 		EXPECT_TRUE( validUUID );
 		EXPECT_TRUE( validURI );

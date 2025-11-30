@@ -10,12 +10,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Internationalization Support**: IDN (Internationalized Domain Names) validation
-  - `isValidIdnHostname()` - Validate hostnames with Unicode characters or Punycode encoding (xn--)
+  - `isIdnHostname()` - Validate hostnames with Unicode characters or Punycode encoding (xn--)
   - `isIdnEmail()` - Validate email addresses with Unicode in local-part or domain (EAI/SMTPUTF8)
 
 ### Changed
 
-- NIL
+- **BREAKING**: Standardized acronym capitalization in function names (camelCase convention)
+  - URI functions: `isURIReserved()` → `isUriReserved()`, `isURIUnreserved()` → `isUriUnreserved()`, `isURI()` → `isUri()`, `isURIReference()` → `isUriReference()`
+  - IP functions: `isIPv4Address()` → `isIpv4Address()`, `isIPv6Address()` → `isIpv6Address()`
+  - UUID: `isUUID()` → `isUuid()`
+  - JSON Pointer: `isJSONPointer()` → `isJsonPointer()`, `isRelativeJSONPointer()` → `isRelativeJsonPointer()`
+- **BREAKING**: Renamed validation functions for clarity and consistency
+  - `isValidHostname()` → `isHostname()`
+  - `isValidIdnHostname()` → `isIdnHostname()`
+  - `isValidPort()` → `isPortNumber()`
 
 ### Deprecated
 
@@ -28,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `isTime()` - Corrected leap second validation (now accepts 00-60, was accepting 61+)
-- `isRelativeJSONPointer()` - Fixed validation to accept bare non-negative integers (e.g., "0", "42")
+- `isRelativeJsonPointer()` - Fixed validation to accept bare non-negative integers (e.g., "0", "42")
 
 ### Security
 

@@ -38,15 +38,15 @@ nfx-stringutils is a modern C++20 header-only library providing high-performance
 
 - **Character Classification**: `isWhitespace()`, `isDigit()`, `isAlpha()`, `isAlphaNumeric()`
 - **String Validation**: `isEmpty()`, `isNullOrWhiteSpace()`, `isAllDigits()`, `hasExactLength()`
-- **URI Character Classification**: `isURIReserved()`, `isURIUnreserved()` with RFC 3986 compliance
+- **URI Character Classification**: `isUriReserved()`, `isUriUnreserved()` with RFC 3986 compliance
 
 ### 🌐 Network & URI Validation
 
-- **IPv4 Address Validation**: `isIPv4Address()` with RFC 791 compliance (rejects leading zeros)
-- **IPv6 Address Validation**: `isIPv6Address()` with RFC 4291/5952 compliance (supports compression and IPv4-mapped)
-- **Hostname Validation**: `isValidHostname()` with RFC 1123 compliance (max 253 chars, labels max 63 chars)
+- **IPv4 Address Validation**: `isIpv4Address()` with RFC 791 compliance (rejects leading zeros)
+- **IPv6 Address Validation**: `isIpv6Address()` with RFC 4291/5952 compliance (supports compression and IPv4-mapped)
+- **Hostname Validation**: `isHostname()` with RFC 1123 compliance (max 253 chars, labels max 63 chars)
 - **Domain Name Validation**: `isDomainName()` with RFC 1035 compliance (requires FQDN format)
-- **Port Validation**: `isValidPort()` with RFC 6335 compliance (0-65535 range, compile-time type safety)
+- **Port Validation**: `isPortNumber()` with RFC 6335 compliance (0-65535 range, compile-time type safety)
 - **Endpoint Parsing**: `tryParseEndpoint()` supports IPv4:port, hostname:port, [IPv6]:port formats
 
 ### 🔧 String Operations
@@ -422,8 +422,8 @@ bool alpha = isAlpha('A');                   // true
 bool alnum = isAlphaNumeric('Z');            // true
 
 // URI classification (RFC 3986)
-bool reserved = isURIReserved(':');          // true
-bool unreserved = isURIUnreserved('A');      // true
+bool reserved = isUriReserved(':');          // true
+bool unreserved = isUriUnreserved('A');      // true
 ```
 
 ### String Operations & Manipulation
@@ -491,28 +491,28 @@ bool doubleOk = fromString<double>("123.456", doubleValue); // true, doubleValue
 using namespace nfx::string;
 
 // IP address validation
-bool ipv4Valid = isIPv4Address("192.168.1.1");       // true
-bool ipv4Invalid = isIPv4Address("256.1.1.1");       // false (out of range)
-bool ipv4LeadingZero = isIPv4Address("01.02.03.04"); // false (leading zeros)
+bool ipv4Valid = isIpv4Address("192.168.1.1");       // true
+bool ipv4Invalid = isIpv4Address("256.1.1.1");       // false (out of range)
+bool ipv4LeadingZero = isIpv4Address("01.02.03.04"); // false (leading zeros)
 
-bool ipv6Valid = isIPv6Address("2001:db8::1");       // true
-bool ipv6Loopback = isIPv6Address("::1");            // true
-bool ipv6Mapped = isIPv6Address("::ffff:192.0.2.1"); // true (IPv4-mapped)
-bool ipv6Zone = isIPv6Address("fe80::1%eth0");       // true (with zone ID)
+bool ipv6Valid = isIpv6Address("2001:db8::1");       // true
+bool ipv6Loopback = isIpv6Address("::1");            // true
+bool ipv6Mapped = isIpv6Address("::ffff:192.0.2.1"); // true (IPv4-mapped)
+bool ipv6Zone = isIpv6Address("fe80::1%eth0");       // true (with zone ID)
 
 // Hostname and domain validation
-bool hostnameValid = isValidHostname("example.com");  // true
-bool hostnameLocal = isValidHostname("localhost");    // true
-bool hostnameInvalid = isValidHostname("-invalid");   // false (starts with hyphen)
+bool hostnameValid = isHostname("example.com");  // true
+bool hostnameLocal = isHostname("localhost");    // true
+bool hostnameInvalid = isHostname("-invalid");   // false (starts with hyphen)
 
 bool domainValid = isDomainName("example.com");       // true (has dot)
 bool domainInvalid = isDomainName("localhost");       // false (no dot, not FQDN)
 
 // Port validation (compile-time type safety)
-bool portValid = isValidPort(80);                    // true
-bool portMax = isValidPort(65535);                   // true
-bool portInvalid = isValidPort(70000);               // false (out of range)
-bool portStringValid = isValidPort("8080");          // true
+bool portValid = isPortNumber(80);                    // true
+bool portMax = isPortNumber(65535);                   // true
+bool portInvalid = isPortNumber(70000);               // false (out of range)
+bool portStringValid = isPortNumber("8080");          // true
 
 // Endpoint parsing (host:port format)
 std::string_view host;

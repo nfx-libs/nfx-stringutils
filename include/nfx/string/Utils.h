@@ -647,7 +647,7 @@ namespace nfx::string
 	 * @return True if character is a reserved URI character (:/?#[]@!$&'()*+,;=)
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isURIReserved( char c ) noexcept;
+	[[nodiscard]] inline constexpr bool isUriReserved( char c ) noexcept;
 
 	/**
 	 * @brief Check if string contains only URI reserved characters
@@ -656,7 +656,7 @@ namespace nfx::string
 	 * @details Returns false for empty strings. Uses RFC 3986 Section 2.2 definition.
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isURIReserved( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isUriReserved( std::string_view str ) noexcept;
 
 	/**
 	 * @brief Check if character is URI unreserved (RFC 3986 Section 2.3)
@@ -664,7 +664,7 @@ namespace nfx::string
 	 * @return True if character is A-Z, a-z, 0-9, -, ., _, or ~
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isURIUnreserved( char c ) noexcept;
+	[[nodiscard]] inline constexpr bool isUriUnreserved( char c ) noexcept;
 
 	/**
 	 * @brief Check if string contains only URI unreserved characters
@@ -673,7 +673,7 @@ namespace nfx::string
 	 * @details Returns false for empty strings. Uses RFC 3986 Section 2.3 definition.
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isURIUnreserved( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isUriUnreserved( std::string_view str ) noexcept;
 
 	//-----------------------------
 	// URL encoding/decoding
@@ -913,7 +913,7 @@ namespace nfx::string
 	 * @details Validates dotted-decimal notation with four octets (0-255 each).
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isIPv4Address( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isIpv4Address( std::string_view str ) noexcept;
 
 	/**
 	 * @brief Validate IPv6 address format (RFC 4291, RFC 5952)
@@ -922,7 +922,7 @@ namespace nfx::string
 	 * @details Validates standard and compressed notation.
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isIPv6Address( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isIpv6Address( std::string_view str ) noexcept;
 
 	//-----------------------------
 	// Host validation
@@ -937,7 +937,7 @@ namespace nfx::string
 	 *          Examples: "localhost", "example.com", "my-server-01.local"
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isValidHostname( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isHostname( std::string_view str ) noexcept;
 
 	/**
 	 * @brief Validate Internationalized Domain Name (IDN) hostname format
@@ -946,7 +946,7 @@ namespace nfx::string
 	 * @details Validates hostnames containing Unicode characters (IDN).
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isValidIdnHostname( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isIdnHostname( std::string_view str ) noexcept;
 
 	/**
 	 * @brief Validate domain name format (RFC 1035)
@@ -970,7 +970,7 @@ namespace nfx::string
 	 *          Examples: "80", "8080", "443", "65535"
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isValidPort( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isPortNumber( std::string_view str ) noexcept;
 
 	//-----------------------------
 	// Endpoint parsing
@@ -1072,7 +1072,7 @@ namespace nfx::string
 	 * @see https://datatracker.ietf.org/doc/html/rfc4122
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isUUID( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isUuid( std::string_view str ) noexcept;
 
 	//-----------------------------
 	// URI validation (RFC 3986)
@@ -1086,7 +1086,7 @@ namespace nfx::string
 	 * @see https://datatracker.ietf.org/doc/html/rfc3986
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isURI( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isUri( std::string_view str ) noexcept;
 
 	/**
 	 * @brief Validate URI-reference format (RFC 3986)
@@ -1096,7 +1096,7 @@ namespace nfx::string
 	 * @see https://datatracker.ietf.org/doc/html/rfc3986
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isURIReference( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isUriReference( std::string_view str ) noexcept;
 
 	//-----------------------------
 	// JSON Pointer validation (RFC 6901)
@@ -1111,7 +1111,7 @@ namespace nfx::string
 	 * @see https://datatracker.ietf.org/doc/html/rfc6901
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isJSONPointer( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isJsonPointer( std::string_view str ) noexcept;
 
 	/**
 	 * @brief Validate relative JSON Pointer format
@@ -1121,7 +1121,7 @@ namespace nfx::string
 	 * @see https://datatracker.ietf.org/doc/html/draft-handrews-relative-json-pointer
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
-	[[nodiscard]] inline constexpr bool isRelativeJSONPointer( std::string_view str ) noexcept;
+	[[nodiscard]] inline constexpr bool isRelativeJsonPointer( std::string_view str ) noexcept;
 } // namespace nfx::string
 
 #include "nfx/detail/string/Utils.inl"

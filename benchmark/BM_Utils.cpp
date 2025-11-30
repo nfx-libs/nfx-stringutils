@@ -858,7 +858,7 @@ namespace nfx::string::benchmark
 	// Reserved
 	//----------------------------
 
-	static void BM_Manual_isURIReserved( ::benchmark::State& state )
+	static void BM_Manual_isUriReserved( ::benchmark::State& state )
 	{
 		for ( auto _ : state )
 		{
@@ -873,13 +873,13 @@ namespace nfx::string::benchmark
 		}
 	}
 
-	static void BM_NFX_isURIReserved( ::benchmark::State& state )
+	static void BM_NFX_isUriReserved( ::benchmark::State& state )
 	{
 		for ( auto _ : state )
 		{
 			for ( char c : test_chars )
 			{
-				bool result = nfx::string::isURIReserved( c );
+				bool result = nfx::string::isUriReserved( c );
 				::benchmark::DoNotOptimize( result );
 			}
 		}
@@ -889,7 +889,7 @@ namespace nfx::string::benchmark
 	// Unreserved
 	//----------------------------
 
-	static void BM_Manual_isURIUnreserved( ::benchmark::State& state )
+	static void BM_Manual_isUriUnreserved( ::benchmark::State& state )
 	{
 		for ( auto _ : state )
 		{
@@ -903,13 +903,13 @@ namespace nfx::string::benchmark
 		}
 	}
 
-	static void BM_NFX_isURIUnreserved( ::benchmark::State& state )
+	static void BM_NFX_isUriUnreserved( ::benchmark::State& state )
 	{
 		for ( auto _ : state )
 		{
 			for ( char c : test_chars )
 			{
-				bool result = nfx::string::isURIUnreserved( c );
+				bool result = nfx::string::isUriUnreserved( c );
 				::benchmark::DoNotOptimize( result );
 			}
 		}
@@ -1450,11 +1450,11 @@ BENCHMARK( nfx::string::benchmark::BM_NFX_ParseDouble )
 // Reserved
 //----------------------------
 
-BENCHMARK( nfx::string::benchmark::BM_Manual_isURIReserved )
+BENCHMARK( nfx::string::benchmark::BM_Manual_isUriReserved )
 	->MinTime( 1.0 )
 	->Unit( benchmark::kNanosecond );
 
-BENCHMARK( nfx::string::benchmark::BM_NFX_isURIReserved )
+BENCHMARK( nfx::string::benchmark::BM_NFX_isUriReserved )
 	->MinTime( 1.0 )
 	->Unit( benchmark::kNanosecond );
 
@@ -1462,11 +1462,11 @@ BENCHMARK( nfx::string::benchmark::BM_NFX_isURIReserved )
 // Unreserved
 //----------------------------
 
-BENCHMARK( nfx::string::benchmark::BM_Manual_isURIUnreserved )
+BENCHMARK( nfx::string::benchmark::BM_Manual_isUriUnreserved )
 	->MinTime( 1.0 )
 	->Unit( benchmark::kNanosecond );
 
-BENCHMARK( nfx::string::benchmark::BM_NFX_isURIUnreserved )
+BENCHMARK( nfx::string::benchmark::BM_NFX_isUriUnreserved )
 	->MinTime( 1.0 )
 	->Unit( benchmark::kNanosecond );
 

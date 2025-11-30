@@ -964,7 +964,7 @@ namespace nfx::string
 	// URI character classification
 	//-----------------------------
 
-	inline constexpr bool isURIReserved( char c ) noexcept
+	inline constexpr bool isUriReserved( char c ) noexcept
 	{
 		// RFC 3986 Section 2.2 - Reserved Characters
 		// gen-delims: : / ? # [ ] @
@@ -974,29 +974,29 @@ namespace nfx::string
 			   c == '+' || c == ',' || c == ';' || c == '=';
 	}
 
-	inline constexpr bool isURIReserved( std::string_view str ) noexcept
+	inline constexpr bool isUriReserved( std::string_view str ) noexcept
 	{
 		if ( str.empty() )
 		{
 			return false;
 		}
-		return std::all_of( str.begin(), str.end(), []( char c ) { return isURIReserved( c ); } );
+		return std::all_of( str.begin(), str.end(), []( char c ) { return isUriReserved( c ); } );
 	}
 
-	inline constexpr bool isURIUnreserved( char c ) noexcept
+	inline constexpr bool isUriUnreserved( char c ) noexcept
 	{
 		// RFC 3986 Section 2.3 - Unreserved Characters
 		// ALPHA / DIGIT / "-" / "." / "_" / "~"
 		return isAlphaNumeric( c ) || c == '-' || c == '.' || c == '_' || c == '~';
 	}
 
-	inline constexpr bool isURIUnreserved( std::string_view str ) noexcept
+	inline constexpr bool isUriUnreserved( std::string_view str ) noexcept
 	{
 		if ( str.empty() )
 		{
 			return false;
 		}
-		return std::all_of( str.begin(), str.end(), []( char c ) { return isURIUnreserved( c ); } );
+		return std::all_of( str.begin(), str.end(), []( char c ) { return isUriUnreserved( c ); } );
 	}
 
 	//-----------------------------
@@ -2046,7 +2046,7 @@ namespace nfx::string
 	// IP address validation
 	//-----------------------------
 
-	inline constexpr bool isIPv4Address( std::string_view str ) noexcept
+	inline constexpr bool isIpv4Address( std::string_view str ) noexcept
 	{
 		if ( str.empty() || str.size() > 15 ) // Max: "255.255.255.255"
 		{
@@ -2096,7 +2096,7 @@ namespace nfx::string
 		return octetCount == 3 && digitCount > 0 && currentOctet <= 255;
 	}
 
-	inline constexpr bool isIPv6Address( std::string_view str ) noexcept
+	inline constexpr bool isIpv6Address( std::string_view str ) noexcept
 	{
 		if ( str.empty() || str.size() > 45 ) // Max with zone: "[ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255%interface]"
 		{
@@ -2152,7 +2152,7 @@ namespace nfx::string
 													  ? ipv4Part.substr( 0, percentPos )
 													  : ipv4Part;
 
-				if ( !isIPv4Address( ipv4Only ) )
+				if ( !isIpv4Address( ipv4Only ) )
 				{
 					return false;
 				}
@@ -2188,7 +2188,7 @@ namespace nfx::string
 	// Host validation
 	//-----------------------------
 
-	inline constexpr bool isValidHostname( std::string_view str ) noexcept
+	inline constexpr bool isHostname( std::string_view str ) noexcept
 	{
 		// RFC 1123: max 253 chars, labels max 63 chars, alphanumeric + hyphen
 		if ( str.empty() || str.size() > 253 )
@@ -2239,7 +2239,7 @@ namespace nfx::string
 		return !prevWasDot && labelLength > 0 && str[str.size() - 1] != '-';
 	}
 
-	inline constexpr bool nfx::string::isValidIdnHostname( std::string_view str ) noexcept
+	inline constexpr bool nfx::string::isIdnHostname( std::string_view str ) noexcept
 	{
 		// Check basic constraints
 		if ( str.empty() || str.size() > 253 )
@@ -2338,7 +2338,7 @@ namespace nfx::string
 	inline constexpr bool isDomainName( std::string_view str ) noexcept
 	{
 		// Must be valid hostname AND contain at least one dot
-		if ( !isValidHostname( str ) )
+		if ( !isHostname( str ) )
 		{
 			return false;
 		}
@@ -2359,7 +2359,7 @@ namespace nfx::string
 	// Port validation
 	//-----------------------------
 
-	inline constexpr bool isValidPort( std::string_view str ) noexcept
+	inline constexpr bool isPortNumber( std::string_view str ) noexcept
 	{
 		if ( str.empty() || str.size() > 5 ) // Max: "65535"
 		{
@@ -2414,7 +2414,7 @@ namespace nfx::string
 					return false;
 				}
 				const std::string_view portStr = endpoint.substr( closingBracket + 2 );
-				if ( !isValidPort( portStr ) )
+				if ( !isPortNumber( portStr ) )
 				{
 					return false;
 				}
@@ -2431,7 +2431,7 @@ namespace nfx::string
 				return false; // No port specified
 			}
 
-			return isIPv6Address( host );
+			return isIpv6Address( host );
 		}
 
 		// IPv4 or hostname format: host:port
@@ -2449,7 +2449,7 @@ namespace nfx::string
 			return false;
 		}
 
-		if ( !isValidPort( portStr ) )
+		if ( !isPortNumber( portStr ) )
 		{
 			return false;
 		}
@@ -2469,10 +2469,10 @@ namespace nfx::string
 
 		if ( looksLikeIPv4 )
 		{
-			return isIPv4Address( host );
+			return isIpv4Address( host );
 		}
 
-		return isValidHostname( host );
+		return isHostname( host );
 	}
 
 	//-----------------------------
@@ -2938,14 +2938,14 @@ namespace nfx::string
 			return false; // Email domains should have at least one dot
 		}
 
-		return isValidIdnHostname( domain );
+		return isIdnHostname( domain );
 	}
 
 	//-----------------------------
 	// UUID validation (RFC 4122)
 	//-----------------------------
 
-	inline constexpr bool isUUID( std::string_view str ) noexcept
+	inline constexpr bool isUuid( std::string_view str ) noexcept
 	{
 		// Format: 8-4-4-4-12 = 36 characters
 		if ( str.size() != 36 )
@@ -2983,7 +2983,7 @@ namespace nfx::string
 	// URI validation (RFC 3986)
 	//-----------------------------
 
-	inline constexpr bool isURI( std::string_view str ) noexcept
+	inline constexpr bool isUri( std::string_view str ) noexcept
 	{
 		if ( str.empty() )
 		{
@@ -3031,7 +3031,7 @@ namespace nfx::string
 		return true;
 	}
 
-	inline constexpr bool isURIReference( std::string_view str ) noexcept
+	inline constexpr bool isUriReference( std::string_view str ) noexcept
 	{
 		if ( str.empty() )
 		{
@@ -3047,7 +3047,7 @@ namespace nfx::string
 				// Has scheme, validate as URI
 				if ( i > 0 && isAlpha( str[0] ) )
 				{
-					return isURI( str );
+					return isUri( str );
 				}
 				break;
 			}
@@ -3081,7 +3081,7 @@ namespace nfx::string
 	// JSON Pointer validation (RFC 6901)
 	//-----------------------------
 
-	inline constexpr bool isJSONPointer( std::string_view str ) noexcept
+	inline constexpr bool isJsonPointer( std::string_view str ) noexcept
 	{
 		// Empty string is valid (references whole document)
 		if ( str.empty() )
@@ -3121,7 +3121,7 @@ namespace nfx::string
 		return true;
 	}
 
-	inline constexpr bool isRelativeJSONPointer( std::string_view str ) noexcept
+	inline constexpr bool isRelativeJsonPointer( std::string_view str ) noexcept
 	{
 		if ( str.empty() )
 		{
@@ -3157,6 +3157,6 @@ namespace nfx::string
 		}
 
 		// Rest must be valid JSON Pointer (starting with /)
-		return isJSONPointer( str.substr( pos ) );
+		return isJsonPointer( str.substr( pos ) );
 	}
 } // namespace nfx::string

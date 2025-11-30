@@ -67,7 +67,7 @@ int main()
 
 		for ( const auto& ip : ipv4Examples )
 		{
-			const bool isValid{ isIPv4Address( ip ) };
+			const bool isValid{ isIpv4Address( ip ) };
 			std::cout << "  ";
 			if ( ip.empty() )
 			{
@@ -114,7 +114,7 @@ int main()
 
 		for ( const auto& ip : ipv6Examples )
 		{
-			const bool isValid{ isIPv6Address( ip ) };
+			const bool isValid{ isIpv6Address( ip ) };
 			std::cout << "  ";
 			if ( ip.empty() )
 			{
@@ -160,7 +160,7 @@ int main()
 
 		for ( const auto& hostname : hostnameExamples )
 		{
-			const bool isValid{ isValidHostname( hostname ) };
+			const bool isValid{ isHostname( hostname ) };
 			std::cout << "  ";
 			if ( hostname.empty() )
 			{
@@ -244,11 +244,11 @@ int main()
 		constexpr auto customPort{ "8080" };
 		constexpr auto maxPort{ "65535" };
 
-		std::cout << "    HTTP port " << httpPort << " -> " << ( isValidPort( httpPort ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
-		std::cout << "    HTTPS port " << httpsPort << " -> " << ( isValidPort( httpsPort ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
-		std::cout << "    SSH port " << sshPort << " -> " << ( isValidPort( sshPort ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
-		std::cout << "    Custom port " << customPort << " -> " << ( isValidPort( customPort ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
-		std::cout << "    Max port " << maxPort << " -> " << ( isValidPort( maxPort ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		std::cout << "    HTTP port " << httpPort << " -> " << ( isPortNumber( httpPort ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		std::cout << "    HTTPS port " << httpsPort << " -> " << ( isPortNumber( httpsPort ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		std::cout << "    SSH port " << sshPort << " -> " << ( isPortNumber( sshPort ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		std::cout << "    Custom port " << customPort << " -> " << ( isPortNumber( customPort ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+		std::cout << "    Max port " << maxPort << " -> " << ( isPortNumber( maxPort ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
 		std::cout << "\n";
 	}
 
@@ -324,7 +324,7 @@ int main()
 		const std::string_view reservedChars{ ":/?#[]@!$&'()*+,;=" };
 		for ( const char ch : reservedChars )
 		{
-			std::cout << "    '" << ch << "' -> " << ( isURIReserved( ch ) ? "[OK] Reserved" : "[FAIL] Not reserved" ) << "\n";
+			std::cout << "    '" << ch << "' -> " << ( isUriReserved( ch ) ? "[OK] Reserved" : "[FAIL] Not reserved" ) << "\n";
 		}
 
 		std::cout << "\n";
@@ -332,7 +332,7 @@ int main()
 		const std::string_view unreservedChars{ "ABCabc123-._~" };
 		for ( const char ch : unreservedChars )
 		{
-			std::cout << "    '" << ch << "' -> " << ( isURIUnreserved( ch ) ? "[OK] Unreserved" : "[FAIL] Not unreserved" ) << "\n";
+			std::cout << "    '" << ch << "' -> " << ( isUriUnreserved( ch ) ? "[OK] Unreserved" : "[FAIL] Not unreserved" ) << "\n";
 		}
 
 		std::cout << "\n";
@@ -351,7 +351,7 @@ int main()
 
 		if ( tryParseEndpoint( serverEndpoint, serverHost, serverPort ) )
 		{
-			if ( isDomainName( serverHost ) || isValidHostname( serverHost ) )
+			if ( isDomainName( serverHost ) || isHostname( serverHost ) )
 			{
 				std::cout << "  [OK] Server configuration is valid\n";
 				std::cout << "    Endpoint: " << serverEndpoint << "\n";
@@ -375,11 +375,11 @@ int main()
 		for ( const auto& addr : addresses )
 		{
 			std::cout << "  Address: " << addr << " -> ";
-			if ( isIPv4Address( addr ) )
+			if ( isIpv4Address( addr ) )
 			{
 				std::cout << "IPv4";
 			}
-			else if ( isIPv6Address( addr ) )
+			else if ( isIpv6Address( addr ) )
 			{
 				std::cout << "IPv6";
 			}
@@ -387,7 +387,7 @@ int main()
 			{
 				std::cout << "Domain name";
 			}
-			else if ( isValidHostname( addr ) )
+			else if ( isHostname( addr ) )
 			{
 				std::cout << "Hostname";
 			}
@@ -548,7 +548,7 @@ int main()
 		for ( const auto& uuid : uuidExamples )
 		{
 			std::cout << "  " << uuid << std::string( 40 - uuid.length(), ' ' )
-					  << " -> " << ( isUUID( uuid ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+					  << " -> " << ( isUuid( uuid ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
 		}
 
 		std::cout << "\n";
@@ -574,7 +574,7 @@ int main()
 		for ( const auto& uri : uriExamples )
 		{
 			std::cout << "  " << uri << std::string( 40 - uri.length(), ' ' )
-					  << " -> " << ( isURI( uri ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+					  << " -> " << ( isUri( uri ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
 		}
 
 		std::cout << "\n  URI References (includes relative):\n";
@@ -588,7 +588,7 @@ int main()
 		for ( const auto& ref : uriRefExamples )
 		{
 			std::cout << "    " << ref << std::string( 25 - ref.length(), ' ' )
-					  << " -> " << ( isURIReference( ref ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+					  << " -> " << ( isUriReference( ref ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
 		}
 
 		std::cout << "\n";
@@ -616,7 +616,7 @@ int main()
 		{
 			const std::string display = ptr.empty() ? "(empty)" : std::string( ptr );
 			std::cout << "    " << display << std::string( 20 - display.length(), ' ' )
-					  << " -> " << ( isJSONPointer( ptr ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+					  << " -> " << ( isJsonPointer( ptr ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
 		}
 
 		std::cout << "\n  Relative JSON Pointers:\n";
@@ -634,7 +634,7 @@ int main()
 		{
 			const std::string display = ptr.empty() ? "(empty)" : std::string( ptr );
 			std::cout << "    " << display << std::string( 20 - display.length(), ' ' )
-					  << " -> " << ( isRelativeJSONPointer( ptr ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
+					  << " -> " << ( isRelativeJsonPointer( ptr ) ? "[OK] Valid" : "[FAIL] Invalid" ) << "\n";
 		}
 
 		std::cout << "\n";
