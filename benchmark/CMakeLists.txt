@@ -19,7 +19,13 @@ set(benchmark_sources)
 
 list(APPEND benchmark_sources
 	BM_Splitter.cpp
-	BM_Utils.cpp
+	BM_CharacterClassification.cpp
+	BM_StringValidation.cpp
+	BM_StringOperations.cpp
+	BM_StringTransform.cpp
+	BM_StringComparison.cpp
+	BM_NumericParsing.cpp
+	BM_NetworkValidation.cpp
 )
 
 #----------------------------------------------

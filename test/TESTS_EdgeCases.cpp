@@ -192,5 +192,4 @@ namespace nfx::string::test
 		EXPECT_TRUE( fromString<int>( "123", intResult ) );
 		EXPECT_EQ( 123, intResult );
 	}
-
 } // namespace nfx::string::test

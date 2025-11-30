@@ -45,7 +45,7 @@ namespace nfx::string::benchmark
 	//----------------------------------------------
 
 	static const std::string csvData = "John,Doe,30,Engineer,NewYork,75000,Active,2023-01-15";
-	static const std::string pathData = "VE/400a/400/C101.31/S206/H346.11112/meta";
+	static const std::string pathData = "usr/local/bin/app/v2.3/config/settings";
 	static const std::string configData = "server=localhost;port=8080;database=mydb;timeout=30;ssl=true;debug=false";
 
 	//----------------------------------------------
@@ -57,8 +57,6 @@ namespace nfx::string::benchmark
 	public:
 		static void split( std::string_view input, char delimiter, std::vector<std::string_view>& output )
 		{
-			output.clear();
-
 			size_t start = 0;
 			size_t pos = 0;
 
@@ -85,6 +83,7 @@ namespace nfx::string::benchmark
 
 		for ( auto _ : state )
 		{
+			segments.clear();
 			ManualSplitter::split( csvData, ',', segments );
 			::benchmark::DoNotOptimize( segments );
 		}
@@ -142,6 +141,7 @@ namespace nfx::string::benchmark
 
 		for ( auto _ : state )
 		{
+			segments.clear();
 			ManualSplitter::split( pathData, '/', segments );
 			::benchmark::DoNotOptimize( segments );
 		}
@@ -199,6 +199,7 @@ namespace nfx::string::benchmark
 
 		for ( auto _ : state )
 		{
+			segments.clear();
 			ManualSplitter::split( configData, ';', segments );
 			::benchmark::DoNotOptimize( segments );
 		}
