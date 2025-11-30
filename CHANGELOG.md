@@ -9,6 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- NIL
+
+### Changed
+
+- NIL
+
+### Deprecated
+
+- NIL
+
+### Removed
+
+- NIL
+
+### Fixed
+
+- NIL
+
+### Security
+
+- NIL
+
+## [0.3.0] - 2025-11-30
+
+### Added
+
 - **Character Classification**: Additional character validation utilities
 
   - `isHexDigit()` - Check if character is hexadecimal digit (0-9, a-f, A-F) - `constexpr` and `noexcept`
@@ -47,22 +73,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `isValidIdnHostname()` → `isIdnHostname()`
   - `isValidPort()` → `isPortNumber()`
 
-### Deprecated
-
-- NIL
-
-### Removed
-
-- NIL
-
 ### Fixed
 
 - `isTime()` - Corrected leap second validation (now accepts 00-60, was accepting 61+)
 - `isRelativeJsonPointer()` - Fixed validation to accept bare non-negative integers (e.g., "0", "42")
-
-### Security
-
-- NIL
 
 ## [0.2.0] - 2025-11-29
 
