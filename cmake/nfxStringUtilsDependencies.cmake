@@ -15,6 +15,13 @@ set(CMAKE_MESSAGE_LOG_LEVEL VERBOSE    ) # [ERROR, WARNING, NOTICE, STATUS, VERB
 set(CMAKE_FIND_QUIETLY      ON         )
 
 #----------------------------------------------
+# Dependency versions
+#----------------------------------------------
+
+set(NFX_DEPS_GOOGLETEST_VERSION    "1.17.0" )
+set(NFX_DEPS_BENCHMARK_VERSION     "1.9.4"  )
+
+#----------------------------------------------
 # FetchContent dependencies
 #----------------------------------------------
 
@@ -41,7 +48,7 @@ if(NFX_STRINGUTILS_BUILD_TESTS)
 		FetchContent_Declare(
 			googleTest
 			GIT_REPOSITORY https://github.com/google/googletest.git
-			GIT_TAG        v1.17.0
+			GIT_TAG        v${NFX_DEPS_GOOGLETEST_VERSION}
 			GIT_SHALLOW    TRUE
 		)
 	else()
@@ -75,7 +82,7 @@ if(NFX_STRINGUTILS_BUILD_BENCHMARKS)
 		FetchContent_Declare(
 			googleBenchmark
 			GIT_REPOSITORY https://github.com/google/benchmark.git
-			GIT_TAG        v1.9.4
+			GIT_TAG        v${NFX_DEPS_BENCHMARK_VERSION}
 			GIT_SHALLOW    TRUE
 		)
 	else()
