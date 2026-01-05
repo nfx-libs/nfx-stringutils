@@ -129,7 +129,39 @@ namespace nfx::string
 		return str.starts_with( prefix );
 	}
 
-		inline constexpr bool endsWith( std::string_view str, std::string_view suffix ) noexcept
+	inline bool istartsWith( std::string_view str, std::string_view prefix ) noexcept
+	{
+		if ( prefix.size() > str.size() )
+		{
+			return false;
+		}
+
+		for ( std::size_t i = 0; i < prefix.size(); ++i )
+		{
+			if ( toLower( str[i] ) != toLower( prefix[i] ) )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	inline bool istartsWith( std::string_view str, char prefix ) noexcept
+	{
+		if ( str.empty() )
+		{
+			return false;
+		}
+		return toLower( str[0] ) == toLower( prefix );
+	}
+
+	inline bool istartsWith( std::string_view str, const char* prefix ) noexcept
+	{
+		return istartsWith( str, std::string_view( prefix ) );
+	}
+
+	inline constexpr bool endsWith( std::string_view str, std::string_view suffix ) noexcept
 	{
 		return str.ends_with( suffix );
 	}
@@ -142,6 +174,39 @@ namespace nfx::string
 	inline constexpr bool endsWith( std::string_view str, const char* suffix ) noexcept
 	{
 		return str.ends_with( suffix );
+	}
+
+	inline bool iendsWith( std::string_view str, std::string_view suffix ) noexcept
+	{
+		if ( suffix.size() > str.size() )
+		{
+			return false;
+		}
+
+		const std::size_t offset = str.size() - suffix.size();
+		for ( std::size_t i = 0; i < suffix.size(); ++i )
+		{
+			if ( toLower( str[offset + i] ) != toLower( suffix[i] ) )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	inline bool iendsWith( std::string_view str, char suffix ) noexcept
+	{
+		if ( str.empty() )
+		{
+			return false;
+		}
+		return toLower( str[str.size() - 1] ) == toLower( suffix );
+	}
+
+	inline bool iendsWith( std::string_view str, const char* suffix ) noexcept
+	{
+		return iendsWith( str, std::string_view( suffix ) );
 	}
 
 	inline constexpr bool contains( std::string_view str, std::string_view substr ) noexcept
@@ -157,6 +222,58 @@ namespace nfx::string
 	inline constexpr bool contains( std::string_view str, const char* substr ) noexcept
 	{
 		return str.find( substr ) != std::string_view::npos;
+	}
+
+	inline bool icontains( std::string_view str, std::string_view substr ) noexcept
+	{
+		if ( substr.empty() )
+		{
+			return true;
+		}
+
+		if ( substr.size() > str.size() )
+		{
+			return false;
+		}
+
+		// Search for substring with case-insensitive comparison
+		const std::size_t searchLimit = str.size() - substr.size() + 1;
+		for ( std::size_t i = 0; i < searchLimit; ++i )
+		{
+			bool match = true;
+			for ( std::size_t j = 0; j < substr.size(); ++j )
+			{
+				if ( toLower( str[i + j] ) != toLower( substr[j] ) )
+				{
+					match = false;
+					break;
+				}
+			}
+			if ( match )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	inline bool icontains( std::string_view str, char ch ) noexcept
+	{
+		const char lowerCh = toLower( ch );
+		for ( char c : str )
+		{
+			if ( toLower( c ) == lowerCh )
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	inline bool icontains( std::string_view str, const char* substr ) noexcept
+	{
+		return icontains( str, std::string_view( substr ) );
 	}
 
 	inline constexpr bool equals( std::string_view lhs, std::string_view rhs ) noexcept

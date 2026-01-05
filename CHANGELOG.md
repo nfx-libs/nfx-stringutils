@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `contains()` - Added overloads accepting `char` and `const char*` parameters
   - `indexOf()` - Added overload accepting `char` parameter
   - `lastIndexOf()` - Added overload accepting `char` parameter
+- **Case-Insensitive String Operations**: New functions for case-insensitive comparisons
+  - `istartsWith()` - Case-insensitive prefix checking with `string_view`, `char`, and `const char*` overloads
+  - `iendsWith()` - Case-insensitive suffix checking with `string_view`, `char`, and `const char*` overloads
+  - `icontains()` - Case-insensitive substring search with `string_view`, `char`, and `const char*` overloads
+  - All functions perform ASCII case-insensitive comparisons for protocol detection, file extensions, HTTP headers, etc.
 - **Substring Extraction**: Character delimiter support for zero-allocation operations
   - `substringBefore()` - Added overload accepting `char` delimiter
   - `substringAfter()` - Added overload accepting `char` delimiter

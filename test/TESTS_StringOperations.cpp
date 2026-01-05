@@ -230,6 +230,218 @@ namespace nfx::string::test
 		EXPECT_TRUE( contains( "hello hello", "llo" ) );
 	}
 
+	TEST( StringOperations, IStartsWith )
+	{
+		// Basic functionality (case-insensitive)
+		EXPECT_TRUE( istartsWith( "hello world", "hello" ) );
+		EXPECT_TRUE( istartsWith( "hello world", "HELLO" ) );
+		EXPECT_TRUE( istartsWith( "hello world", "Hello" ) );
+		EXPECT_TRUE( istartsWith( "HELLO WORLD", "hello" ) );
+		EXPECT_TRUE( istartsWith( "Hello World", "hElLo" ) );
+		EXPECT_FALSE( istartsWith( "hello world", "world" ) );
+
+		// Edge cases
+		EXPECT_TRUE( istartsWith( "test", "" ) );	 // Empty prefix
+		EXPECT_TRUE( istartsWith( "test", "test" ) ); // Exact match
+		EXPECT_TRUE( istartsWith( "TEST", "test" ) ); // Exact match different case
+		EXPECT_FALSE( istartsWith( "", "test" ) );	 // Empty string, non-empty prefix
+		EXPECT_TRUE( istartsWith( "", "" ) );		 // Both empty
+
+		// Prefix longer than string
+		EXPECT_FALSE( istartsWith( "hi", "hello" ) );
+
+		// Single characters
+		EXPECT_TRUE( istartsWith( "A", "a" ) );
+		EXPECT_FALSE( istartsWith( "a", "b" ) );
+
+		// Real-world use cases
+		EXPECT_TRUE( istartsWith( "HTTPS://example.com", "http" ) );   // Protocol detection
+		EXPECT_TRUE( istartsWith( "Document.PDF", "doc" ) );		   // Case-insensitive filename
+		EXPECT_TRUE( istartsWith( "Content-Type: text/html", "CONTENT" ) ); // HTTP headers
+	}
+
+	TEST( StringOperations, IStartsWith_CharOverload )
+	{
+		// Basic functionality with char (case-insensitive)
+		EXPECT_TRUE( istartsWith( "hello world", 'h' ) );
+		EXPECT_TRUE( istartsWith( "hello world", 'H' ) );
+		EXPECT_TRUE( istartsWith( "Hello World", 'h' ) );
+		EXPECT_TRUE( istartsWith( "HELLO", 'h' ) );
+		EXPECT_FALSE( istartsWith( "hello world", 'w' ) );
+
+		// Edge cases
+		EXPECT_FALSE( istartsWith( "", 'a' ) ); // Empty string
+		EXPECT_TRUE( istartsWith( "a", 'A' ) ); // Single character match different case
+		EXPECT_TRUE( istartsWith( "A", 'a' ) ); // Single character match different case
+		EXPECT_FALSE( istartsWith( "a", 'b' ) ); // Single character no match
+
+		// Special characters (case doesn't apply)
+		EXPECT_TRUE( istartsWith( "@mention", '@' ) );
+		EXPECT_TRUE( istartsWith( " space", ' ' ) );
+	}
+
+	TEST( StringOperations, IStartsWith_CStringOverload )
+	{
+		// Basic functionality with const char* (case-insensitive)
+		EXPECT_TRUE( istartsWith( "hello world", "HELLO" ) );
+		EXPECT_TRUE( istartsWith( "TESTING", "test" ) );
+		EXPECT_FALSE( istartsWith( "hello world", "WORLD" ) );
+
+		// Edge cases
+		EXPECT_TRUE( istartsWith( "test", "" ) );	 // Empty prefix
+		EXPECT_FALSE( istartsWith( "", "test" ) );	 // Empty string
+		EXPECT_TRUE( istartsWith( "TEST", "test" ) ); // Exact match different case
+
+		// Literals
+		const char* prefix = "PRE";
+		EXPECT_TRUE( istartsWith( "prefix", prefix ) );
+		EXPECT_FALSE( istartsWith( "suffix", prefix ) );
+	}
+
+	TEST( StringOperations, IEndsWith )
+	{
+		// Basic functionality (case-insensitive)
+		EXPECT_TRUE( iendsWith( "hello world", "world" ) );
+		EXPECT_TRUE( iendsWith( "hello world", "WORLD" ) );
+		EXPECT_TRUE( iendsWith( "hello world", "World" ) );
+		EXPECT_TRUE( iendsWith( "HELLO WORLD", "world" ) );
+		EXPECT_TRUE( iendsWith( "Hello World", "WoRlD" ) );
+		EXPECT_FALSE( iendsWith( "hello world", "hello" ) );
+
+		// Edge cases
+		EXPECT_TRUE( iendsWith( "test", "" ) );	   // Empty suffix
+		EXPECT_TRUE( iendsWith( "test", "test" ) ); // Exact match
+		EXPECT_TRUE( iendsWith( "TEST", "test" ) ); // Exact match different case
+		EXPECT_FALSE( iendsWith( "", "test" ) );   // Empty string, non-empty suffix
+		EXPECT_TRUE( iendsWith( "", "" ) );		   // Both empty
+
+		// Suffix longer than string
+		EXPECT_FALSE( iendsWith( "hi", "hello" ) );
+
+		// Single characters
+		EXPECT_TRUE( iendsWith( "A", "a" ) );
+		EXPECT_FALSE( iendsWith( "a", "b" ) );
+
+		// Real-world use cases
+		EXPECT_TRUE( iendsWith( "file.TXT", ".txt" ) );		   // File extension
+		EXPECT_TRUE( iendsWith( "Document.PDF", ".pdf" ) );   // Case-insensitive extension
+		EXPECT_TRUE( iendsWith( "image.JPG", ".jpg" ) );	   // Image extension
+	}
+
+	TEST( StringOperations, IEndsWith_CharOverload )
+	{
+		// Basic functionality with char (case-insensitive)
+		EXPECT_TRUE( iendsWith( "hello world", 'd' ) );
+		EXPECT_TRUE( iendsWith( "hello world", 'D' ) );
+		EXPECT_TRUE( iendsWith( "Hello World", 'd' ) );
+		EXPECT_TRUE( iendsWith( "WORLD", 'd' ) );
+		EXPECT_FALSE( iendsWith( "hello world", 'h' ) );
+
+		// Edge cases
+		EXPECT_FALSE( iendsWith( "", 'a' ) ); // Empty string
+		EXPECT_TRUE( iendsWith( "a", 'A' ) ); // Single character match different case
+		EXPECT_TRUE( iendsWith( "A", 'a' ) ); // Single character match different case
+		EXPECT_FALSE( iendsWith( "a", 'b' ) ); // Single character no match
+
+		// Special characters
+		EXPECT_TRUE( iendsWith( "file.txt", 't' ) );
+		EXPECT_TRUE( iendsWith( "question?", '?' ) );
+	}
+
+	TEST( StringOperations, IEndsWith_CStringOverload )
+	{
+		// Basic functionality with const char* (case-insensitive)
+		EXPECT_TRUE( iendsWith( "hello world", "WORLD" ) );
+		EXPECT_TRUE( iendsWith( "TESTING", "ing" ) );
+		EXPECT_FALSE( iendsWith( "hello world", "HELLO" ) );
+
+		// Edge cases
+		EXPECT_TRUE( iendsWith( "test", "" ) );	   // Empty suffix
+		EXPECT_FALSE( iendsWith( "", "test" ) );   // Empty string
+		EXPECT_TRUE( iendsWith( "TEST", "test" ) ); // Exact match different case
+
+		// Literals
+		const char* suffix = "FIX";
+		EXPECT_TRUE( iendsWith( "suffix", suffix ) );
+		EXPECT_FALSE( iendsWith( "pretend", suffix ) );
+	}
+
+	TEST( StringOperations, IContains )
+	{
+		// Basic functionality (case-insensitive)
+		EXPECT_TRUE( icontains( "hello world", "HELLO" ) );
+		EXPECT_TRUE( icontains( "hello world", "WORLD" ) );
+		EXPECT_TRUE( icontains( "hello world", "O W" ) );
+		EXPECT_TRUE( icontains( "HELLO WORLD", "hello" ) );
+		EXPECT_TRUE( icontains( "Hello World", "LLo WoR" ) );
+		EXPECT_FALSE( icontains( "hello world", "xyz" ) );
+
+		// Edge cases
+		EXPECT_TRUE( icontains( "test", "" ) );	   // Empty substring
+		EXPECT_TRUE( icontains( "test", "TEST" ) ); // Exact match different case
+		EXPECT_FALSE( icontains( "", "test" ) );   // Empty string, non-empty substring
+		EXPECT_TRUE( icontains( "", "" ) );		   // Both empty
+
+		// Substring longer than string
+		EXPECT_FALSE( icontains( "hi", "hello" ) );
+
+		// Multiple occurrences
+		EXPECT_TRUE( icontains( "hello HELLO", "hello" ) );
+		EXPECT_TRUE( icontains( "AbCaBcAbC", "abc" ) );
+
+		// Real-world use cases
+		EXPECT_TRUE( icontains( "Content-Type: application/json", "TYPE" ) ); // HTTP headers
+		EXPECT_TRUE( icontains( "User-Agent: Mozilla", "agent" ) );
+		EXPECT_TRUE( icontains( "Search for KEYWORD in text", "keyword" ) ); // Search functionality
+	}
+
+	TEST( StringOperations, IContains_CharOverload )
+	{
+		// Basic functionality with char (case-insensitive)
+		EXPECT_TRUE( icontains( "hello world", 'H' ) );
+		EXPECT_TRUE( icontains( "hello world", 'O' ) );
+		EXPECT_TRUE( icontains( "hello world", 'D' ) );
+		EXPECT_TRUE( icontains( "HELLO WORLD", 'h' ) );
+		EXPECT_FALSE( icontains( "hello world", 'X' ) );
+
+		// Edge cases
+		EXPECT_FALSE( icontains( "", 'a' ) ); // Empty string
+		EXPECT_TRUE( icontains( "a", 'A' ) ); // Single character match different case
+		EXPECT_TRUE( icontains( "A", 'a' ) ); // Single character match different case
+		EXPECT_FALSE( icontains( "a", 'b' ) ); // Single character no match
+
+		// Special characters (case doesn't apply)
+		EXPECT_TRUE( icontains( "user@example.com", '@' ) );
+		EXPECT_TRUE( icontains( "path/to/file", '/' ) );
+
+		// Multiple occurrences
+		EXPECT_TRUE( icontains( "HeLLo", 'l' ) );
+		EXPECT_TRUE( icontains( "HeLLo", 'L' ) );
+	}
+
+	TEST( StringOperations, IContains_CStringOverload )
+	{
+		// Basic functionality with const char* (case-insensitive)
+		EXPECT_TRUE( icontains( "hello world", "HELLO" ) );
+		EXPECT_TRUE( icontains( "hello world", "WORLD" ) );
+		EXPECT_TRUE( icontains( "hello world", "O W" ) );
+		EXPECT_FALSE( icontains( "hello world", "XYZ" ) );
+
+		// Edge cases
+		EXPECT_TRUE( icontains( "test", "" ) );	   // Empty substring
+		EXPECT_FALSE( icontains( "", "test" ) );   // Empty string
+		EXPECT_TRUE( icontains( "TEST", "test" ) ); // Exact match different case
+
+		// Literals
+		const char* substring = "SUB";
+		EXPECT_TRUE( icontains( "substring", substring ) );
+		EXPECT_FALSE( icontains( "string", substring ) );
+
+		// Multiple occurrences
+		EXPECT_TRUE( icontains( "AbCaBcAbC", "abc" ) );
+		EXPECT_TRUE( icontains( "HELLO hello", "LLO" ) );
+	}
+
 	TEST( StringOperations, Equals )
 	{
 		// Basic functionality

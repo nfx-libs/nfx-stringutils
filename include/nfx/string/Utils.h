@@ -157,6 +157,39 @@ namespace nfx::string
 	[[nodiscard]] inline constexpr bool startsWith( std::string_view str, const char* prefix ) noexcept;
 
 	/**
+	 * @brief Case-insensitive check if string starts with prefix
+	 * @param str String to check
+	 * @param prefix Prefix to find (case-insensitive)
+	 * @return True if str starts with prefix (ignoring case)
+	 * @details Performs ASCII case-insensitive comparison. Useful for protocol detection, file extensions, etc.
+	 *          Example: istartsWith("Hello", "hel") returns true
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline bool istartsWith( std::string_view str, std::string_view prefix ) noexcept;
+
+	/**
+	 * @brief Case-insensitive check if string starts with character
+	 * @param str String to check
+	 * @param prefix Character to find (case-insensitive)
+	 * @return True if str starts with prefix (ignoring case)
+	 * @details Performs ASCII case-insensitive comparison.
+	 *          Example: istartsWith("Hello", 'h') returns true
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline bool istartsWith( std::string_view str, char prefix ) noexcept;
+
+	/**
+	 * @brief Case-insensitive check if string starts with C-string prefix
+	 * @param str String to check
+	 * @param prefix C-string prefix to find (case-insensitive)
+	 * @return True if str starts with prefix (ignoring case)
+	 * @details Performs ASCII case-insensitive comparison.
+	 *          Example: istartsWith("HTTPS://example.com", "http") returns true
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline bool istartsWith( std::string_view str, const char* prefix ) noexcept;
+
+	/**
 	 * @brief Fast check if string ends with suffix
 	 * @param str String to check
 	 * @param suffix Suffix to find
@@ -184,6 +217,39 @@ namespace nfx::string
 	[[nodiscard]] inline constexpr bool endsWith( std::string_view str, const char* suffix ) noexcept;
 
 	/**
+	 * @brief Case-insensitive check if string ends with suffix
+	 * @param str String to check
+	 * @param suffix Suffix to find (case-insensitive)
+	 * @return True if str ends with suffix (ignoring case)
+	 * @details Performs ASCII case-insensitive comparison. Useful for file extension checking.
+	 *          Example: iendsWith("file.TXT", ".txt") returns true
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline bool iendsWith( std::string_view str, std::string_view suffix ) noexcept;
+
+	/**
+	 * @brief Case-insensitive check if string ends with character
+	 * @param str String to check
+	 * @param suffix Character to find (case-insensitive)
+	 * @return True if str ends with suffix (ignoring case)
+	 * @details Performs ASCII case-insensitive comparison.
+	 *          Example: iendsWith("Test", 't') returns true
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline bool iendsWith( std::string_view str, char suffix ) noexcept;
+
+	/**
+	 * @brief Case-insensitive check if string ends with C-string suffix
+	 * @param str String to check
+	 * @param suffix C-string suffix to find (case-insensitive)
+	 * @return True if str ends with suffix (ignoring case)
+	 * @details Performs ASCII case-insensitive comparison.
+	 *          Example: iendsWith("Document.PDF", ".pdf") returns true
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline bool iendsWith( std::string_view str, const char* suffix ) noexcept;
+
+	/**
 	 * @brief Fast check if string contains substring
 	 * @param str String to check
 	 * @param substr Substring to find
@@ -209,6 +275,39 @@ namespace nfx::string
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr bool contains( std::string_view str, const char* substr ) noexcept;
+
+	/**
+	 * @brief Case-insensitive check if string contains substring
+	 * @param str String to check
+	 * @param substr Substring to find (case-insensitive)
+	 * @return True if str contains substr (ignoring case)
+	 * @details Performs ASCII case-insensitive search. Useful for search functionality, keyword matching.
+	 *          Example: icontains("Hello World", "WORLD") returns true
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline bool icontains( std::string_view str, std::string_view substr ) noexcept;
+
+	/**
+	 * @brief Case-insensitive check if string contains character
+	 * @param str String to check
+	 * @param ch Character to find (case-insensitive)
+	 * @return True if str contains ch (ignoring case)
+	 * @details Performs ASCII case-insensitive search.
+	 *          Example: icontains("Hello", 'L') returns true
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline bool icontains( std::string_view str, char ch ) noexcept;
+
+	/**
+	 * @brief Case-insensitive check if string contains C-string substring
+	 * @param str String to check
+	 * @param substr C-string substring to find (case-insensitive)
+	 * @return True if str contains substr (ignoring case)
+	 * @details Performs ASCII case-insensitive search.
+	 *          Example: icontains("Content-Type", "type") returns true
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline bool icontains( std::string_view str, const char* substr ) noexcept;
 
 	/**
 	 * @brief Fast case-sensitive string comparison
