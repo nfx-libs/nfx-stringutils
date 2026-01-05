@@ -38,135 +38,135 @@
 
 namespace nfx::string::benchmark
 {
-	//=====================================================================
-	// String transformation benchmarks
-	//=====================================================================
+    //=====================================================================
+    // String transformation benchmarks
+    //=====================================================================
 
-	//----------------------------------------------
-	// Test data
-	//----------------------------------------------
+    //----------------------------------------------
+    // Test data
+    //----------------------------------------------
 
-	static const std::string test_string = "The quick brown fox jumps over the lazy dog";
-	static const std::string whitespace_string = "   whitespace test   ";
+    static const std::string test_string = "The quick brown fox jumps over the lazy dog";
+    static const std::string whitespace_string = "   whitespace test   ";
 
-	//----------------------------------------------
-	// Trim operations
-	//----------------------------------------------
+    //----------------------------------------------
+    // Trim operations
+    //----------------------------------------------
 
-	static void BM_NFX_trim( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			auto result = nfx::string::trim( whitespace_string );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_NFX_trim( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            auto result = nfx::string::trim( whitespace_string );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 
-	static void BM_NFX_trimStart( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			auto result = nfx::string::trimStart( whitespace_string );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_NFX_trimStart( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            auto result = nfx::string::trimStart( whitespace_string );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 
-	static void BM_NFX_trimEnd( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			auto result = nfx::string::trimEnd( whitespace_string );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_NFX_trimEnd( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            auto result = nfx::string::trimEnd( whitespace_string );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 
-	//----------------------------------------------
-	// Case conversion operations
-	//----------------------------------------------
+    //----------------------------------------------
+    // Case conversion operations
+    //----------------------------------------------
 
-	static void BM_Manual_toLower( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			std::string result = test_string;
-			std::transform( result.begin(), result.end(), result.begin(),
-				[]( char c ) { return static_cast<char>( std::tolower( static_cast<unsigned char>( c ) ) ); } );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_Manual_toLower( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            std::string result = test_string;
+            std::transform( result.begin(), result.end(), result.begin(),
+                []( char c ) { return static_cast<char>( std::tolower( static_cast<unsigned char>( c ) ) ); } );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 
-	static void BM_NFX_toLower( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			auto result = nfx::string::toLower( test_string );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_NFX_toLower( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            auto result = nfx::string::toLower( test_string );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 
-	static void BM_Manual_toUpper( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			std::string result = test_string;
-			std::transform( result.begin(), result.end(), result.begin(),
-				[]( char c ) { return static_cast<char>( std::toupper( static_cast<unsigned char>( c ) ) ); } );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_Manual_toUpper( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            std::string result = test_string;
+            std::transform( result.begin(), result.end(), result.begin(),
+                []( char c ) { return static_cast<char>( std::toupper( static_cast<unsigned char>( c ) ) ); } );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 
-	static void BM_NFX_toUpper( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			auto result = nfx::string::toUpper( test_string );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_NFX_toUpper( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            auto result = nfx::string::toUpper( test_string );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 
-	//----------------------------------------------
-	// Substring extraction operations
-	//----------------------------------------------
+    //----------------------------------------------
+    // Substring extraction operations
+    //----------------------------------------------
 
-	static void BM_NFX_substringBefore( ::benchmark::State& state )
-	{
-		const std::string_view delimiter = "brown";
-		for ( auto _ : state )
-		{
-			auto result = nfx::string::substringBefore( test_string, delimiter );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_NFX_substringBefore( ::benchmark::State& state )
+    {
+        const std::string_view delimiter = "brown";
+        for ( auto _ : state )
+        {
+            auto result = nfx::string::substringBefore( test_string, delimiter );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 
-	static void BM_NFX_substringAfter( ::benchmark::State& state )
-	{
-		const std::string_view delimiter = "brown";
-		for ( auto _ : state )
-		{
-			auto result = nfx::string::substringAfter( test_string, delimiter );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_NFX_substringAfter( ::benchmark::State& state )
+    {
+        const std::string_view delimiter = "brown";
+        for ( auto _ : state )
+        {
+            auto result = nfx::string::substringAfter( test_string, delimiter );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 
-	static void BM_NFX_substringBeforeLast( ::benchmark::State& state )
-	{
-		const std::string_view delimiter = "o";
-		for ( auto _ : state )
-		{
-			auto result = nfx::string::substringBeforeLast( test_string, delimiter );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_NFX_substringBeforeLast( ::benchmark::State& state )
+    {
+        const std::string_view delimiter = "o";
+        for ( auto _ : state )
+        {
+            auto result = nfx::string::substringBeforeLast( test_string, delimiter );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 
-	static void BM_NFX_substringAfterLast( ::benchmark::State& state )
-	{
-		const std::string_view delimiter = "o";
-		for ( auto _ : state )
-		{
-			auto result = nfx::string::substringAfterLast( test_string, delimiter );
-			::benchmark::DoNotOptimize( result );
-		}
-	}
+    static void BM_NFX_substringAfterLast( ::benchmark::State& state )
+    {
+        const std::string_view delimiter = "o";
+        for ( auto _ : state )
+        {
+            auto result = nfx::string::substringAfterLast( test_string, delimiter );
+            ::benchmark::DoNotOptimize( result );
+        }
+    }
 } // namespace nfx::string::benchmark
 
 //=====================================================================
@@ -174,47 +174,47 @@ namespace nfx::string::benchmark
 //=====================================================================
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_trim )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_trimStart )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_trimEnd )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_Manual_toLower )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_toLower )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_Manual_toUpper )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_toUpper )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_substringBefore )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_substringAfter )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_substringBeforeLast )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_substringAfterLast )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK_MAIN();

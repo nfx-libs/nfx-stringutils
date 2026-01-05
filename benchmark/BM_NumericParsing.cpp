@@ -39,131 +39,131 @@
 
 namespace nfx::string::benchmark
 {
-	//=====================================================================
-	// Numeric parsing benchmarks
-	//=====================================================================
+    //=====================================================================
+    // Numeric parsing benchmarks
+    //=====================================================================
 
-	//----------------------------------------------
-	// Test data
-	//----------------------------------------------
+    //----------------------------------------------
+    // Test data
+    //----------------------------------------------
 
-	static const std::vector<std::string_view> int_test_strings = {
-		"0",
-		"42",
-		"-123",
-		"999999",
-		"-987654321",
-		"2147483647",
-		"-2147483648" };
+    static const std::vector<std::string_view> int_test_strings = {
+        "0",
+        "42",
+        "-123",
+        "999999",
+        "-987654321",
+        "2147483647",
+        "-2147483648" };
 
-	static const std::vector<std::string_view> double_test_strings = {
-		"0.0",
-		"3.14159",
-		"-2.71828",
-		"123.456",
-		"-999.999",
-		"1.23e10",
-		"-4.56e-7" };
+    static const std::vector<std::string_view> double_test_strings = {
+        "0.0",
+        "3.14159",
+        "-2.71828",
+        "123.456",
+        "-999.999",
+        "1.23e10",
+        "-4.56e-7" };
 
-	//----------------------------------------------
-	// Integer parsing
-	//----------------------------------------------
+    //----------------------------------------------
+    // Integer parsing
+    //----------------------------------------------
 
-	static void BM_Std_stoi( ::benchmark::State& state )
-	{
-		static const std::vector<std::string> int_test_strings_str = {
-			"0", "42", "-123", "999999", "-987654321", "2147483647", "-2147483648" };
+    static void BM_Std_stoi( ::benchmark::State& state )
+    {
+        static const std::vector<std::string> int_test_strings_str = {
+            "0", "42", "-123", "999999", "-987654321", "2147483647", "-2147483648" };
 
-		for ( auto _ : state )
-		{
-			for ( const auto& str : int_test_strings_str )
-			{
-				try
-				{
-					int result = std::stoi( str );
-					::benchmark::DoNotOptimize( result );
-				}
-				catch ( ... )
-				{
-				}
-			}
-		}
-	}
+        for ( auto _ : state )
+        {
+            for ( const auto& str : int_test_strings_str )
+            {
+                try
+                {
+                    int result = std::stoi( str );
+                    ::benchmark::DoNotOptimize( result );
+                }
+                catch ( ... )
+                {
+                }
+            }
+        }
+    }
 
-	static void BM_Std_from_chars_int( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( const auto& str : int_test_strings )
-			{
-				int result;
-				std::from_chars( str.data(), str.data() + str.size(), result );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_Std_from_chars_int( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( const auto& str : int_test_strings )
+            {
+                int result;
+                std::from_chars( str.data(), str.data() + str.size(), result );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	static void BM_NFX_fromString_int( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( const auto& str : int_test_strings )
-			{
-				auto result = nfx::string::fromString<int>( str );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_NFX_fromString_int( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( const auto& str : int_test_strings )
+            {
+                auto result = nfx::string::fromString<int>( str );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	//----------------------------------------------
-	// Double parsing
-	//----------------------------------------------
+    //----------------------------------------------
+    // Double parsing
+    //----------------------------------------------
 
-	static void BM_Std_stod( ::benchmark::State& state )
-	{
-		static const std::vector<std::string> double_test_strings_str = {
-			"0.0", "3.14159", "-2.71828", "123.456", "-999.999", "1.23e10", "-4.56e-7" };
+    static void BM_Std_stod( ::benchmark::State& state )
+    {
+        static const std::vector<std::string> double_test_strings_str = {
+            "0.0", "3.14159", "-2.71828", "123.456", "-999.999", "1.23e10", "-4.56e-7" };
 
-		for ( auto _ : state )
-		{
-			for ( const auto& str : double_test_strings_str )
-			{
-				try
-				{
-					double result = std::stod( str );
-					::benchmark::DoNotOptimize( result );
-				}
-				catch ( ... )
-				{
-				}
-			}
-		}
-	}
+        for ( auto _ : state )
+        {
+            for ( const auto& str : double_test_strings_str )
+            {
+                try
+                {
+                    double result = std::stod( str );
+                    ::benchmark::DoNotOptimize( result );
+                }
+                catch ( ... )
+                {
+                }
+            }
+        }
+    }
 
-	static void BM_Std_from_chars_double( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( const auto& str : double_test_strings )
-			{
-				double result;
-				std::from_chars( str.data(), str.data() + str.size(), result );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_Std_from_chars_double( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( const auto& str : double_test_strings )
+            {
+                double result;
+                std::from_chars( str.data(), str.data() + str.size(), result );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	static void BM_NFX_fromString_double( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( const auto& str : double_test_strings )
-			{
-				auto result = nfx::string::fromString<double>( str );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_NFX_fromString_double( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( const auto& str : double_test_strings )
+            {
+                auto result = nfx::string::fromString<double>( str );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 } // namespace nfx::string::benchmark
 
 //=====================================================================
@@ -171,27 +171,27 @@ namespace nfx::string::benchmark
 //=====================================================================
 
 BENCHMARK( nfx::string::benchmark::BM_Std_stoi )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_Std_from_chars_int )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_fromString_int )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_Std_stod )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_Std_from_chars_double )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_fromString_double )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK_MAIN();

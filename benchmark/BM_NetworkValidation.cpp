@@ -37,80 +37,80 @@
 
 namespace nfx::string::benchmark
 {
-	//=====================================================================
-	// Network validation benchmarks
-	//=====================================================================
+    //=====================================================================
+    // Network validation benchmarks
+    //=====================================================================
 
-	//----------------------------------------------
-	// Test data
-	//----------------------------------------------
+    //----------------------------------------------
+    // Test data
+    //----------------------------------------------
 
-	static const std::vector<char> uri_test_chars = {
-		'a', 'Z', '0', '9', '-', '.', '_', '~', // Unreserved
-		':', '/', '?', '#', '[', ']', '@',		// Gen-delims
-		'!', '$', '&', '\'', '(', ')', '*',		// Sub-delims part 1
-		'+', ',', ';', '=',						// Sub-delims part 2
-		'%', ' '								// Other
-	};
+    static const std::vector<char> uri_test_chars = {
+        'a', 'Z', '0', '9', '-', '.', '_', '~', // Unreserved
+        ':', '/', '?', '#', '[', ']', '@',      // Gen-delims
+        '!', '$', '&', '\'', '(', ')', '*',     // Sub-delims part 1
+        '+', ',', ';', '=',                     // Sub-delims part 2
+        '%', ' '                                // Other
+    };
 
-	//----------------------------------------------
-	// URI reserved character classification
-	//----------------------------------------------
+    //----------------------------------------------
+    // URI reserved character classification
+    //----------------------------------------------
 
-	static void BM_Manual_isUriReserved( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( char c : uri_test_chars )
-			{
-				bool result = ( c == ':' || c == '/' || c == '?' || c == '#' || c == '[' || c == ']' ||
-								c == '@' || c == '!' || c == '$' || c == '&' || c == '\'' || c == '(' ||
-								c == ')' || c == '*' || c == '+' || c == ',' || c == ';' || c == '=' );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_Manual_isUriReserved( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( char c : uri_test_chars )
+            {
+                bool result = ( c == ':' || c == '/' || c == '?' || c == '#' || c == '[' || c == ']' ||
+                                c == '@' || c == '!' || c == '$' || c == '&' || c == '\'' || c == '(' ||
+                                c == ')' || c == '*' || c == '+' || c == ',' || c == ';' || c == '=' );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	static void BM_NFX_isUriReserved( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( char c : uri_test_chars )
-			{
-				bool result = nfx::string::isUriReserved( c );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_NFX_isUriReserved( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( char c : uri_test_chars )
+            {
+                bool result = nfx::string::isUriReserved( c );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	//----------------------------------------------
-	// URI unreserved character classification
-	//----------------------------------------------
+    //----------------------------------------------
+    // URI unreserved character classification
+    //----------------------------------------------
 
-	static void BM_Manual_isUriUnreserved( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( char c : uri_test_chars )
-			{
-				bool result = ( ( c >= 'a' && c <= 'z' ) || ( c >= 'A' && c <= 'Z' ) ||
-								( c >= '0' && c <= '9' ) || c == '-' || c == '.' || c == '_' || c == '~' );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_Manual_isUriUnreserved( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( char c : uri_test_chars )
+            {
+                bool result = ( ( c >= 'a' && c <= 'z' ) || ( c >= 'A' && c <= 'Z' ) ||
+                                ( c >= '0' && c <= '9' ) || c == '-' || c == '.' || c == '_' || c == '~' );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	static void BM_NFX_isUriUnreserved( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( char c : uri_test_chars )
-			{
-				bool result = nfx::string::isUriUnreserved( c );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_NFX_isUriUnreserved( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( char c : uri_test_chars )
+            {
+                bool result = nfx::string::isUriUnreserved( c );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 } // namespace nfx::string::benchmark
 
 //=====================================================================
@@ -118,19 +118,19 @@ namespace nfx::string::benchmark
 //=====================================================================
 
 BENCHMARK( nfx::string::benchmark::BM_Manual_isUriReserved )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_isUriReserved )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_Manual_isUriUnreserved )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_isUriUnreserved )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK_MAIN();

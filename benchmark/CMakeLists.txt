@@ -7,8 +7,8 @@
 #----------------------------------------------
 
 if(NOT NFX_STRINGUTILS_BUILD_BENCHMARKS)
-	message(STATUS "Benchmarks disabled, skipping...")
-	return()
+    message(STATUS "Benchmarks disabled, skipping...")
+    return()
 endif()
 
 #----------------------------------------------
@@ -18,14 +18,14 @@ endif()
 set(benchmark_sources)
 
 list(APPEND benchmark_sources
-	BM_Splitter.cpp
-	BM_CharacterClassification.cpp
-	BM_StringValidation.cpp
-	BM_StringOperations.cpp
-	BM_StringTransform.cpp
-	BM_StringComparison.cpp
-	BM_NumericParsing.cpp
-	BM_NetworkValidation.cpp
+    BM_Splitter.cpp
+    BM_CharacterClassification.cpp
+    BM_StringValidation.cpp
+    BM_StringOperations.cpp
+    BM_StringTransform.cpp
+    BM_StringComparison.cpp
+    BM_NumericParsing.cpp
+    BM_NetworkValidation.cpp
 )
 
 #----------------------------------------------
@@ -33,32 +33,34 @@ list(APPEND benchmark_sources
 #----------------------------------------------
 
 foreach(benchmark_source ${benchmark_sources})
-	get_filename_component(benchmark_target_name ${benchmark_source} NAME_WE)
-	if(NOT TARGET ${benchmark_target_name})
-		add_executable(${benchmark_target_name} ${benchmark_source})
+    get_filename_component(benchmark_target_name ${benchmark_source} NAME_WE)
+    if(NOT TARGET ${benchmark_target_name})
+        add_executable(${benchmark_target_name} ${benchmark_source})
 
-		#----------------------------------------------
-		# Target linking
-		#----------------------------------------------
+        #----------------------------------------------
+        # Target linking
+        #----------------------------------------------
 
-		target_link_libraries(${benchmark_target_name} PRIVATE
-			nfx-stringutils::nfx-stringutils
-			benchmark::benchmark
-		)
+        target_link_libraries(${benchmark_target_name}
+            PRIVATE
+                nfx-stringutils::nfx-stringutils
+                benchmark::benchmark
+        )
 
-		#----------------------------------------------
-		# Properties
-		#----------------------------------------------
+        #----------------------------------------------
+        # Properties
+        #----------------------------------------------
 
-		set_target_properties(${benchmark_target_name} PROPERTIES
-			CXX_STANDARD 20
-			CXX_STANDARD_REQUIRED ON
-			CXX_EXTENSIONS OFF
-			POSITION_INDEPENDENT_CODE ON
-			DEBUG_POSTFIX "-d"
-			RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/benchmarks"
-			RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/benchmarks"
-			RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/benchmarks"
-		)
-	endif()
+        set_target_properties(${benchmark_target_name}
+            PROPERTIES
+                CXX_STANDARD 20
+                CXX_STANDARD_REQUIRED ON
+                CXX_EXTENSIONS OFF
+                POSITION_INDEPENDENT_CODE ON
+                DEBUG_POSTFIX "-d"
+                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/benchmarks"
+                RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/benchmarks"
+                RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/benchmarks"
+        )
+    endif()
 endforeach()

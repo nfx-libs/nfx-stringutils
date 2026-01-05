@@ -38,119 +38,119 @@
 
 namespace nfx::string::benchmark
 {
-	//=====================================================================
-	// String validation benchmarks
-	//=====================================================================
+    //=====================================================================
+    // String validation benchmarks
+    //=====================================================================
 
-	//----------------------------------------------
-	// Test data
-	//----------------------------------------------
+    //----------------------------------------------
+    // Test data
+    //----------------------------------------------
 
-	static const std::vector<std::string_view> test_strings = {
-		"",
-		"a",
-		"Hello",
-		"Hello World",
-		"The quick brown fox jumps over the lazy dog",
-		"   whitespace test   ",
-		"12345",
-		"abc123def",
-		"UPPERCASE",
-		"lowercase",
-		"MixedCase",
-		"https://example.com/path?query=value",
-		"true",
-		"false",
-		"123456789",
-		"-987654321",
-		"3.14159",
-		"not_a_number" };
+    static const std::vector<std::string_view> test_strings = {
+        "",
+        "a",
+        "Hello",
+        "Hello World",
+        "The quick brown fox jumps over the lazy dog",
+        "   whitespace test   ",
+        "12345",
+        "abc123def",
+        "UPPERCASE",
+        "lowercase",
+        "MixedCase",
+        "https://example.com/path?query=value",
+        "true",
+        "false",
+        "123456789",
+        "-987654321",
+        "3.14159",
+        "not_a_number" };
 
-	//----------------------------------------------
-	// Empty string validation
-	//----------------------------------------------
+    //----------------------------------------------
+    // Empty string validation
+    //----------------------------------------------
 
-	static void BM_Std_empty( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( const auto& str : test_strings )
-			{
-				bool result = str.empty();
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_Std_empty( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( const auto& str : test_strings )
+            {
+                bool result = str.empty();
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	static void BM_NFX_isEmpty( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( const auto& str : test_strings )
-			{
-				bool result = nfx::string::isEmpty( str );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_NFX_isEmpty( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( const auto& str : test_strings )
+            {
+                bool result = nfx::string::isEmpty( str );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	//----------------------------------------------
-	// Null or whitespace validation
-	//----------------------------------------------
+    //----------------------------------------------
+    // Null or whitespace validation
+    //----------------------------------------------
 
-	static void BM_Manual_isNullOrWhiteSpace( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( const auto& str : test_strings )
-			{
-				bool result = str.empty() || std::all_of( str.begin(), str.end(),
-												 []( char c ) { return std::isspace( static_cast<unsigned char>( c ) ); } );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_Manual_isNullOrWhiteSpace( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( const auto& str : test_strings )
+            {
+                bool result = str.empty() || std::all_of( str.begin(), str.end(),
+                                                 []( char c ) { return std::isspace( static_cast<unsigned char>( c ) ); } );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	static void BM_NFX_isNullOrWhiteSpace( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( const auto& str : test_strings )
-			{
-				bool result = nfx::string::isNullOrWhiteSpace( str );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_NFX_isNullOrWhiteSpace( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( const auto& str : test_strings )
+            {
+                bool result = nfx::string::isNullOrWhiteSpace( str );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	//----------------------------------------------
-	// All digits validation
-	//----------------------------------------------
+    //----------------------------------------------
+    // All digits validation
+    //----------------------------------------------
 
-	static void BM_Manual_isAllDigits( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( const auto& str : test_strings )
-			{
-				bool result = !str.empty() && std::all_of( str.begin(), str.end(),
-												  []( char c ) { return std::isdigit( static_cast<unsigned char>( c ) ); } );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_Manual_isAllDigits( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( const auto& str : test_strings )
+            {
+                bool result = !str.empty() && std::all_of( str.begin(), str.end(),
+                                                  []( char c ) { return std::isdigit( static_cast<unsigned char>( c ) ); } );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	static void BM_NFX_isAllDigits( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( const auto& str : test_strings )
-			{
-				bool result = nfx::string::isAllDigits( str );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_NFX_isAllDigits( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( const auto& str : test_strings )
+            {
+                bool result = nfx::string::isAllDigits( str );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 } // namespace nfx::string::benchmark
 
 //=====================================================================
@@ -158,27 +158,27 @@ namespace nfx::string::benchmark
 //=====================================================================
 
 BENCHMARK( nfx::string::benchmark::BM_Std_empty )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_isEmpty )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_Manual_isNullOrWhiteSpace )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_isNullOrWhiteSpace )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_Manual_isAllDigits )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_isAllDigits )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK_MAIN();

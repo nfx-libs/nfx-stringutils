@@ -36,100 +36,100 @@
 
 namespace nfx::string::benchmark
 {
-	//=====================================================================
-	// Character classification benchmarks
-	//=====================================================================
+    //=====================================================================
+    // Character classification benchmarks
+    //=====================================================================
 
-	//----------------------------------------------
-	// Test data
-	//----------------------------------------------
+    //----------------------------------------------
+    // Test data
+    //----------------------------------------------
 
-	static const std::vector<char> test_chars = {
-		'a', 'Z', '5', ' ', '\t', '\n', '!', '@', '#', '_', '-', '.', '~' };
+    static const std::vector<char> test_chars = {
+        'a', 'Z', '5', ' ', '\t', '\n', '!', '@', '#', '_', '-', '.', '~' };
 
-	//----------------------------------------------
-	// Whitespace classification
-	//----------------------------------------------
+    //----------------------------------------------
+    // Whitespace classification
+    //----------------------------------------------
 
-	static void BM_Std_isspace( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( char c : test_chars )
-			{
-				bool result = static_cast<bool>( std::isspace( static_cast<unsigned char>( c ) ) );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_Std_isspace( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( char c : test_chars )
+            {
+                bool result = static_cast<bool>( std::isspace( static_cast<unsigned char>( c ) ) );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	static void BM_NFX_isWhitespace( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( char c : test_chars )
-			{
-				bool result = nfx::string::isWhitespace( c );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_NFX_isWhitespace( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( char c : test_chars )
+            {
+                bool result = nfx::string::isWhitespace( c );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	//----------------------------------------------
-	// Digit classification
-	//----------------------------------------------
+    //----------------------------------------------
+    // Digit classification
+    //----------------------------------------------
 
-	static void BM_Std_isdigit( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( char c : test_chars )
-			{
-				bool result = static_cast<bool>( std::isdigit( static_cast<unsigned char>( c ) ) );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_Std_isdigit( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( char c : test_chars )
+            {
+                bool result = static_cast<bool>( std::isdigit( static_cast<unsigned char>( c ) ) );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	static void BM_NFX_isDigit( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( char c : test_chars )
-			{
-				bool result = nfx::string::isDigit( c );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_NFX_isDigit( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( char c : test_chars )
+            {
+                bool result = nfx::string::isDigit( c );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	//----------------------------------------------
-	// Alpha classification
-	//----------------------------------------------
+    //----------------------------------------------
+    // Alpha classification
+    //----------------------------------------------
 
-	static void BM_Std_isalpha( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( char c : test_chars )
-			{
-				bool result = static_cast<bool>( std::isalpha( static_cast<unsigned char>( c ) ) );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_Std_isalpha( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( char c : test_chars )
+            {
+                bool result = static_cast<bool>( std::isalpha( static_cast<unsigned char>( c ) ) );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 
-	static void BM_NFX_isAlpha( ::benchmark::State& state )
-	{
-		for ( auto _ : state )
-		{
-			for ( char c : test_chars )
-			{
-				bool result = nfx::string::isAlpha( c );
-				::benchmark::DoNotOptimize( result );
-			}
-		}
-	}
+    static void BM_NFX_isAlpha( ::benchmark::State& state )
+    {
+        for ( auto _ : state )
+        {
+            for ( char c : test_chars )
+            {
+                bool result = nfx::string::isAlpha( c );
+                ::benchmark::DoNotOptimize( result );
+            }
+        }
+    }
 } // namespace nfx::string::benchmark
 
 //=====================================================================
@@ -137,27 +137,27 @@ namespace nfx::string::benchmark
 //=====================================================================
 
 BENCHMARK( nfx::string::benchmark::BM_Std_isspace )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_isWhitespace )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_Std_isdigit )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_isDigit )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_Std_isalpha )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK( nfx::string::benchmark::BM_NFX_isAlpha )
-	->MinTime( 1.0 )
-	->Unit( benchmark::kNanosecond );
+    ->MinTime( 1.0 )
+    ->Unit( benchmark::kNanosecond );
 
 BENCHMARK_MAIN();

@@ -33,85 +33,85 @@
 
 namespace nfx::string::test
 {
-	//=====================================================================
-	// Character classification tests
-	//=====================================================================
+    //=====================================================================
+    // Character classification tests
+    //=====================================================================
 
-	TEST( CharacterClassification, IsWhitespace )
-	{
-		// Whitespace characters
-		EXPECT_TRUE( isWhitespace( ' ' ) );
-		EXPECT_TRUE( isWhitespace( '\t' ) );
-		EXPECT_TRUE( isWhitespace( '\n' ) );
-		EXPECT_TRUE( isWhitespace( '\r' ) );
-		EXPECT_TRUE( isWhitespace( '\f' ) );
-		EXPECT_TRUE( isWhitespace( '\v' ) );
+    TEST( CharacterClassification, IsWhitespace )
+    {
+        // Whitespace characters
+        EXPECT_TRUE( isWhitespace( ' ' ) );
+        EXPECT_TRUE( isWhitespace( '\t' ) );
+        EXPECT_TRUE( isWhitespace( '\n' ) );
+        EXPECT_TRUE( isWhitespace( '\r' ) );
+        EXPECT_TRUE( isWhitespace( '\f' ) );
+        EXPECT_TRUE( isWhitespace( '\v' ) );
 
-		// Non-whitespace characters
-		EXPECT_FALSE( isWhitespace( 'a' ) );
-		EXPECT_FALSE( isWhitespace( 'Z' ) );
-		EXPECT_FALSE( isWhitespace( '0' ) );
-		EXPECT_FALSE( isWhitespace( '9' ) );
-		EXPECT_FALSE( isWhitespace( '!' ) );
-		EXPECT_FALSE( isWhitespace( '@' ) );
-		EXPECT_FALSE( isWhitespace( '\0' ) );
-	}
+        // Non-whitespace characters
+        EXPECT_FALSE( isWhitespace( 'a' ) );
+        EXPECT_FALSE( isWhitespace( 'Z' ) );
+        EXPECT_FALSE( isWhitespace( '0' ) );
+        EXPECT_FALSE( isWhitespace( '9' ) );
+        EXPECT_FALSE( isWhitespace( '!' ) );
+        EXPECT_FALSE( isWhitespace( '@' ) );
+        EXPECT_FALSE( isWhitespace( '\0' ) );
+    }
 
-	TEST( CharacterClassification, IsDigit )
-	{
-		// Digits
-		EXPECT_TRUE( isDigit( '0' ) );
-		EXPECT_TRUE( isDigit( '1' ) );
-		EXPECT_TRUE( isDigit( '5' ) );
-		EXPECT_TRUE( isDigit( '9' ) );
+    TEST( CharacterClassification, IsDigit )
+    {
+        // Digits
+        EXPECT_TRUE( isDigit( '0' ) );
+        EXPECT_TRUE( isDigit( '1' ) );
+        EXPECT_TRUE( isDigit( '5' ) );
+        EXPECT_TRUE( isDigit( '9' ) );
 
-		// Non-digits
-		EXPECT_FALSE( isDigit( 'a' ) );
-		EXPECT_FALSE( isDigit( 'Z' ) );
-		EXPECT_FALSE( isDigit( ' ' ) );
-		EXPECT_FALSE( isDigit( '!' ) );
-		EXPECT_FALSE( isDigit( '\t' ) );
-		EXPECT_FALSE( isDigit( '\0' ) );
-	}
+        // Non-digits
+        EXPECT_FALSE( isDigit( 'a' ) );
+        EXPECT_FALSE( isDigit( 'Z' ) );
+        EXPECT_FALSE( isDigit( ' ' ) );
+        EXPECT_FALSE( isDigit( '!' ) );
+        EXPECT_FALSE( isDigit( '\t' ) );
+        EXPECT_FALSE( isDigit( '\0' ) );
+    }
 
-	TEST( CharacterClassification, IsAlpha )
-	{
-		// Lowercase letters
-		EXPECT_TRUE( isAlpha( 'a' ) );
-		EXPECT_TRUE( isAlpha( 'm' ) );
-		EXPECT_TRUE( isAlpha( 'z' ) );
+    TEST( CharacterClassification, IsAlpha )
+    {
+        // Lowercase letters
+        EXPECT_TRUE( isAlpha( 'a' ) );
+        EXPECT_TRUE( isAlpha( 'm' ) );
+        EXPECT_TRUE( isAlpha( 'z' ) );
 
-		// Uppercase letters
-		EXPECT_TRUE( isAlpha( 'A' ) );
-		EXPECT_TRUE( isAlpha( 'M' ) );
-		EXPECT_TRUE( isAlpha( 'Z' ) );
+        // Uppercase letters
+        EXPECT_TRUE( isAlpha( 'A' ) );
+        EXPECT_TRUE( isAlpha( 'M' ) );
+        EXPECT_TRUE( isAlpha( 'Z' ) );
 
-		// Non-alphabetic
-		EXPECT_FALSE( isAlpha( '0' ) );
-		EXPECT_FALSE( isAlpha( '9' ) );
-		EXPECT_FALSE( isAlpha( ' ' ) );
-		EXPECT_FALSE( isAlpha( '!' ) );
-		EXPECT_FALSE( isAlpha( '\t' ) );
-		EXPECT_FALSE( isAlpha( '\0' ) );
-	}
+        // Non-alphabetic
+        EXPECT_FALSE( isAlpha( '0' ) );
+        EXPECT_FALSE( isAlpha( '9' ) );
+        EXPECT_FALSE( isAlpha( ' ' ) );
+        EXPECT_FALSE( isAlpha( '!' ) );
+        EXPECT_FALSE( isAlpha( '\t' ) );
+        EXPECT_FALSE( isAlpha( '\0' ) );
+    }
 
-	TEST( CharacterClassification, IsAlphaNumeric )
-	{
-		// Letters
-		EXPECT_TRUE( isAlphaNumeric( 'a' ) );
-		EXPECT_TRUE( isAlphaNumeric( 'Z' ) );
-		EXPECT_TRUE( isAlphaNumeric( 'm' ) );
+    TEST( CharacterClassification, IsAlphaNumeric )
+    {
+        // Letters
+        EXPECT_TRUE( isAlphaNumeric( 'a' ) );
+        EXPECT_TRUE( isAlphaNumeric( 'Z' ) );
+        EXPECT_TRUE( isAlphaNumeric( 'm' ) );
 
-		// Digits
-		EXPECT_TRUE( isAlphaNumeric( '0' ) );
-		EXPECT_TRUE( isAlphaNumeric( '5' ) );
-		EXPECT_TRUE( isAlphaNumeric( '9' ) );
+        // Digits
+        EXPECT_TRUE( isAlphaNumeric( '0' ) );
+        EXPECT_TRUE( isAlphaNumeric( '5' ) );
+        EXPECT_TRUE( isAlphaNumeric( '9' ) );
 
-		// Non-alphanumeric
-		EXPECT_FALSE( isAlphaNumeric( ' ' ) );
-		EXPECT_FALSE( isAlphaNumeric( '!' ) );
-		EXPECT_FALSE( isAlphaNumeric( '@' ) );
-		EXPECT_FALSE( isAlphaNumeric( '\t' ) );
-		EXPECT_FALSE( isAlphaNumeric( '\0' ) );
-	}
+        // Non-alphanumeric
+        EXPECT_FALSE( isAlphaNumeric( ' ' ) );
+        EXPECT_FALSE( isAlphaNumeric( '!' ) );
+        EXPECT_FALSE( isAlphaNumeric( '@' ) );
+        EXPECT_FALSE( isAlphaNumeric( '\t' ) );
+        EXPECT_FALSE( isAlphaNumeric( '\0' ) );
+    }
 } // namespace nfx::string::test
