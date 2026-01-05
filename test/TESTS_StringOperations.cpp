@@ -59,6 +59,44 @@ namespace nfx::string::test
 		EXPECT_FALSE( endsWith( "a", "b" ) );
 	}
 
+	TEST( StringOperations, EndsWith_CharOverload )
+	{
+		// Basic functionality with char
+		EXPECT_TRUE( endsWith( "hello world", 'd' ) );
+		EXPECT_TRUE( endsWith( "test", 't' ) );
+		EXPECT_FALSE( endsWith( "hello world", 'h' ) );
+		EXPECT_FALSE( endsWith( "hello world", 'D' ) ); // Case sensitive
+
+		// Edge cases
+		EXPECT_FALSE( endsWith( "", 'a' ) );  // Empty string
+		EXPECT_TRUE( endsWith( "a", 'a' ) );  // Single character match
+		EXPECT_FALSE( endsWith( "a", 'b' ) ); // Single character no match
+
+		// Special characters
+		EXPECT_TRUE( endsWith( "file.txt", 't' ) );
+		EXPECT_TRUE( endsWith( "question?", '?' ) );
+		EXPECT_TRUE( endsWith( "exclaim!", '!' ) );
+	}
+
+	TEST( StringOperations, EndsWith_CStringOverload )
+	{
+		// Basic functionality with const char*
+		EXPECT_TRUE( endsWith( "hello world", "world" ) );
+		EXPECT_TRUE( endsWith( "testing", "ing" ) );
+		EXPECT_FALSE( endsWith( "hello world", "hello" ) );
+		EXPECT_FALSE( endsWith( "hello world", "World" ) ); // Case sensitive
+
+		// Edge cases
+		EXPECT_TRUE( endsWith( "test", "" ) );	   // Empty suffix
+		EXPECT_FALSE( endsWith( "", "test" ) );	   // Empty string
+		EXPECT_TRUE( endsWith( "test", "test" ) ); // Exact match
+
+		// Literals
+		const char* suffix = "fix";
+		EXPECT_TRUE( endsWith( "suffix", suffix ) );
+		EXPECT_FALSE( endsWith( "pretend", suffix ) );
+	}
+
 	TEST( StringOperations, StartsWith )
 	{
 		// Basic functionality
@@ -79,6 +117,44 @@ namespace nfx::string::test
 		// Single characters
 		EXPECT_TRUE( startsWith( "a", "a" ) );
 		EXPECT_FALSE( startsWith( "a", "b" ) );
+	}
+
+	TEST( StringOperations, StartsWith_CharOverload )
+	{
+		// Basic functionality with char
+		EXPECT_TRUE( startsWith( "hello world", 'h' ) );
+		EXPECT_TRUE( startsWith( "test", 't' ) );
+		EXPECT_FALSE( startsWith( "hello world", 'w' ) );
+		EXPECT_FALSE( startsWith( "hello world", 'H' ) ); // Case sensitive
+
+		// Edge cases
+		EXPECT_FALSE( startsWith( "", 'a' ) );	// Empty string
+		EXPECT_TRUE( startsWith( "a", 'a' ) );	// Single character match
+		EXPECT_FALSE( startsWith( "a", 'b' ) ); // Single character no match
+
+		// Special characters
+		EXPECT_TRUE( startsWith( "@mention", '@' ) );
+		EXPECT_TRUE( startsWith( "#hashtag", '#' ) );
+		EXPECT_TRUE( startsWith( " space", ' ' ) );
+	}
+
+	TEST( StringOperations, StartsWith_CStringOverload )
+	{
+		// Basic functionality with const char*
+		EXPECT_TRUE( startsWith( "hello world", "hello" ) );
+		EXPECT_TRUE( startsWith( "testing", "test" ) );
+		EXPECT_FALSE( startsWith( "hello world", "world" ) );
+		EXPECT_FALSE( startsWith( "hello world", "Hello" ) ); // Case sensitive
+
+		// Edge cases
+		EXPECT_TRUE( startsWith( "test", "" ) );	 // Empty prefix
+		EXPECT_FALSE( startsWith( "", "test" ) );	 // Empty string
+		EXPECT_TRUE( startsWith( "test", "test" ) ); // Exact match
+
+		// Literals
+		const char* prefix = "pre";
+		EXPECT_TRUE( startsWith( "prefix", prefix ) );
+		EXPECT_FALSE( startsWith( "suffix", prefix ) );
 	}
 
 	TEST( StringOperations, Contains )
@@ -103,6 +179,55 @@ namespace nfx::string::test
 		// Multiple occurrences
 		EXPECT_TRUE( contains( "hello hello", "hello" ) );
 		EXPECT_TRUE( contains( "abcabcabc", "abc" ) );
+	}
+
+	TEST( StringOperations, Contains_CharOverload )
+	{
+		// Basic functionality with char
+		EXPECT_TRUE( contains( "hello world", 'h' ) );
+		EXPECT_TRUE( contains( "hello world", 'o' ) );
+		EXPECT_TRUE( contains( "hello world", 'd' ) );
+		EXPECT_TRUE( contains( "hello world", ' ' ) );
+		EXPECT_FALSE( contains( "hello world", 'x' ) );
+		EXPECT_FALSE( contains( "hello world", 'H' ) ); // Case sensitive
+
+		// Edge cases
+		EXPECT_FALSE( contains( "", 'a' ) );  // Empty string
+		EXPECT_TRUE( contains( "a", 'a' ) );  // Single character match
+		EXPECT_FALSE( contains( "a", 'b' ) ); // Single character no match
+
+		// Special characters
+		EXPECT_TRUE( contains( "user@example.com", '@' ) );
+		EXPECT_TRUE( contains( "path/to/file", '/' ) );
+		EXPECT_TRUE( contains( "key=value", '=' ) );
+
+		// Multiple occurrences (finds first)
+		EXPECT_TRUE( contains( "hello", 'l' ) );
+		EXPECT_TRUE( contains( "aaa", 'a' ) );
+	}
+
+	TEST( StringOperations, Contains_CStringOverload )
+	{
+		// Basic functionality with const char*
+		EXPECT_TRUE( contains( "hello world", "hello" ) );
+		EXPECT_TRUE( contains( "hello world", "world" ) );
+		EXPECT_TRUE( contains( "hello world", "o w" ) );
+		EXPECT_FALSE( contains( "hello world", "Hello" ) ); // Case sensitive
+		EXPECT_FALSE( contains( "hello world", "xyz" ) );
+
+		// Edge cases
+		EXPECT_TRUE( contains( "test", "" ) );	   // Empty substring
+		EXPECT_FALSE( contains( "", "test" ) );	   // Empty string
+		EXPECT_TRUE( contains( "test", "test" ) ); // Exact match
+
+		// Literals
+		const char* substring = "sub";
+		EXPECT_TRUE( contains( "substring", substring ) );
+		EXPECT_FALSE( contains( "string", substring ) );
+
+		// Multiple occurrences
+		EXPECT_TRUE( contains( "abcabcabc", "abc" ) );
+		EXPECT_TRUE( contains( "hello hello", "llo" ) );
 	}
 
 	TEST( StringOperations, Equals )

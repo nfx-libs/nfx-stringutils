@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- NIL
+- **String Operations**: Additional overloads for improved API convenience
+  - `startsWith()` - Added overloads accepting `char` and `const char*` parameters
+  - `endsWith()` - Added overloads accepting `char` and `const char*` parameters
+  - `contains()` - Added overloads accepting `char` and `const char*` parameters
 
 ### Changed
 

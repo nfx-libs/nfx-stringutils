@@ -139,6 +139,24 @@ namespace nfx::string
 	[[nodiscard]] inline constexpr bool startsWith( std::string_view str, std::string_view prefix ) noexcept;
 
 	/**
+	 * @brief Fast check if string starts with character
+	 * @param str String to check
+	 * @param prefix Character to find
+	 * @return True if str starts with prefix
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool startsWith( std::string_view str, char prefix ) noexcept;
+
+	/**
+	 * @brief Fast check if string starts with C-string prefix
+	 * @param str String to check
+	 * @param prefix C-string prefix to find
+	 * @return True if str starts with prefix
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool startsWith( std::string_view str, const char* prefix ) noexcept;
+
+	/**
 	 * @brief Fast check if string ends with suffix
 	 * @param str String to check
 	 * @param suffix Suffix to find
@@ -148,6 +166,24 @@ namespace nfx::string
 	[[nodiscard]] inline constexpr bool endsWith( std::string_view str, std::string_view suffix ) noexcept;
 
 	/**
+	 * @brief Fast check if string ends with character
+	 * @param str String to check
+	 * @param suffix Character to find
+	 * @return True if str ends with suffix
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool endsWith( std::string_view str, char suffix ) noexcept;
+
+	/**
+	 * @brief Fast check if string ends with C-string suffix
+	 * @param str String to check
+	 * @param suffix C-string suffix to find
+	 * @return True if str ends with suffix
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool endsWith( std::string_view str, const char* suffix ) noexcept;
+
+	/**
 	 * @brief Fast check if string contains substring
 	 * @param str String to check
 	 * @param substr Substring to find
@@ -155,6 +191,24 @@ namespace nfx::string
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr bool contains( std::string_view str, std::string_view substr ) noexcept;
+
+	/**
+	 * @brief Fast check if string contains character
+	 * @param str String to check
+	 * @param ch Character to find
+	 * @return True if str contains ch
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool contains( std::string_view str, char ch ) noexcept;
+
+	/**
+	 * @brief Fast check if string contains C-string substring
+	 * @param str String to check
+	 * @param substr C-string substring to find
+	 * @return True if str contains substr
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr bool contains( std::string_view str, const char* substr ) noexcept;
 
 	/**
 	 * @brief Fast case-sensitive string comparison

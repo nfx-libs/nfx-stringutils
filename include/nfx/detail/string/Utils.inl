@@ -116,8 +116,32 @@ namespace nfx::string
 
 	inline constexpr bool startsWith( std::string_view str, std::string_view prefix ) noexcept
 	{
-		// Thin wrapper only
 		return str.starts_with( prefix );
+	}
+
+	inline constexpr bool startsWith( std::string_view str, char prefix ) noexcept
+	{
+		return str.starts_with( prefix );
+	}
+
+	inline constexpr bool startsWith( std::string_view str, const char* prefix ) noexcept
+	{
+		return str.starts_with( prefix );
+	}
+
+		inline constexpr bool endsWith( std::string_view str, std::string_view suffix ) noexcept
+	{
+		return str.ends_with( suffix );
+	}
+
+	inline constexpr bool endsWith( std::string_view str, char suffix ) noexcept
+	{
+		return str.ends_with( suffix );
+	}
+
+	inline constexpr bool endsWith( std::string_view str, const char* suffix ) noexcept
+	{
+		return str.ends_with( suffix );
 	}
 
 	inline constexpr bool contains( std::string_view str, std::string_view substr ) noexcept
@@ -125,10 +149,14 @@ namespace nfx::string
 		return str.find( substr ) != std::string_view::npos;
 	}
 
-	inline constexpr bool endsWith( std::string_view str, std::string_view suffix ) noexcept
+	inline constexpr bool contains( std::string_view str, char ch ) noexcept
 	{
-		// Thin wrapper only
-		return str.ends_with( suffix );
+		return str.find( ch ) != std::string_view::npos;
+	}
+
+	inline constexpr bool contains( std::string_view str, const char* substr ) noexcept
+	{
+		return str.find( substr ) != std::string_view::npos;
 	}
 
 	inline constexpr bool equals( std::string_view lhs, std::string_view rhs ) noexcept
