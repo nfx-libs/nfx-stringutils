@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `startsWith()` - Added overloads accepting `char` and `const char*` parameters
   - `endsWith()` - Added overloads accepting `char` and `const char*` parameters
   - `contains()` - Added overloads accepting `char` and `const char*` parameters
+  - `indexOf()` - Added overload accepting `char` parameter
+  - `lastIndexOf()` - Added overload accepting `char` parameter
+- **Substring Extraction**: Character delimiter support for zero-allocation operations
+  - `substringBefore()` - Added overload accepting `char` delimiter
+  - `substringAfter()` - Added overload accepting `char` delimiter
+  - `substringBeforeLast()` - Added overload accepting `char` delimiter
+  - `substringAfterLast()` - Added overload accepting `char` delimiter
 
 ### Changed
 

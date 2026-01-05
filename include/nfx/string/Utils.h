@@ -327,6 +327,17 @@ namespace nfx::string
 	[[nodiscard]] inline constexpr std::size_t indexOf( std::string_view str, std::string_view substr ) noexcept;
 
 	/**
+	 * @brief Find first occurrence of character
+	 * @param str String to search in
+	 * @param ch Character to find
+	 * @return Index of first occurrence, or std::string_view::npos if not found
+	 * @details Case-sensitive search.
+	 *          Example: indexOf("hello world", 'o') returns 4
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr std::size_t indexOf( std::string_view str, char ch ) noexcept;
+
+	/**
 	 * @brief Find last occurrence of substring
 	 * @param str String to search in
 	 * @param substr Substring to find
@@ -336,6 +347,17 @@ namespace nfx::string
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr std::size_t lastIndexOf( std::string_view str, std::string_view substr ) noexcept;
+
+	/**
+	 * @brief Find last occurrence of character
+	 * @param str String to search in
+	 * @param ch Character to find
+	 * @return Index of last occurrence, or std::string_view::npos if not found
+	 * @details Case-sensitive search.
+	 *          Example: lastIndexOf("hello", 'l') returns 3
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr std::size_t lastIndexOf( std::string_view str, char ch ) noexcept;
 
 	//----------------------------------------------
 	// String formatting and padding
@@ -400,6 +422,16 @@ namespace nfx::string
 	[[nodiscard]] inline constexpr std::string_view substringBefore( std::string_view str, std::string_view delimiter ) noexcept;
 
 	/**
+	 * @brief Extract substring before first occurrence of character delimiter
+	 * @param str String to search in
+	 * @param delimiter Character delimiter to search for
+	 * @return String view of portion before delimiter, or entire string if delimiter not found
+	 * @details Zero-allocation. Example: substringBefore("hello.world", '.') returns "hello"
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr std::string_view substringBefore( std::string_view str, char delimiter ) noexcept;
+
+	/**
 	 * @brief Extract substring after first occurrence of delimiter
 	 * @param str String to search in
 	 * @param delimiter Delimiter to search for
@@ -408,6 +440,16 @@ namespace nfx::string
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr std::string_view substringAfter( std::string_view str, std::string_view delimiter ) noexcept;
+
+	/**
+	 * @brief Extract substring after first occurrence of character delimiter
+	 * @param str String to search in
+	 * @param delimiter Character delimiter to search for
+	 * @return String view of portion after delimiter, or empty string if delimiter not found
+	 * @details Zero-allocation. Example: substringAfter("hello.world", '.') returns "world"
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr std::string_view substringAfter( std::string_view str, char delimiter ) noexcept;
 
 	/**
 	 * @brief Extract substring before last occurrence of delimiter
@@ -420,6 +462,16 @@ namespace nfx::string
 	[[nodiscard]] inline constexpr std::string_view substringBeforeLast( std::string_view str, std::string_view delimiter ) noexcept;
 
 	/**
+	 * @brief Extract substring before last occurrence of character delimiter
+	 * @param str String to search in
+	 * @param delimiter Character delimiter to search for
+	 * @return String view of portion before last delimiter, or entire string if delimiter not found
+	 * @details Zero-allocation. Example: substringBeforeLast("hello.world.txt", '.') returns "hello.world"
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr std::string_view substringBeforeLast( std::string_view str, char delimiter ) noexcept;
+
+	/**
 	 * @brief Extract substring after last occurrence of delimiter
 	 * @param str String to search in
 	 * @param delimiter Delimiter to search for
@@ -428,6 +480,16 @@ namespace nfx::string
 	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
 	 */
 	[[nodiscard]] inline constexpr std::string_view substringAfterLast( std::string_view str, std::string_view delimiter ) noexcept;
+
+	/**
+	 * @brief Extract substring after last occurrence of character delimiter
+	 * @param str String to search in
+	 * @param delimiter Character delimiter to search for
+	 * @return String view of portion after last delimiter, or empty string if delimiter not found
+	 * @details Zero-allocation. Example: substringAfterLast("hello.world.txt", '.') returns "txt"
+	 * @note This function is marked [[nodiscard]] - the return value should not be ignored
+	 */
+	[[nodiscard]] inline constexpr std::string_view substringAfterLast( std::string_view str, char delimiter ) noexcept;
 
 	/**
 	 * @brief Extract substring between start and end delimiters

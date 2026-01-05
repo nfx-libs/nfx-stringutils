@@ -291,4 +291,119 @@ namespace nfx::string::test
 		std::string_view step2 = removeSuffix( step1, "]]" );
 		EXPECT_EQ( "wrapped", step2 );
 	}
+
+	TEST( SubstringExtraction, SubstringBefore_CharOverload )
+	{
+		// Basic functionality
+		EXPECT_EQ( "hello", substringBefore( "hello.world", '.' ) );
+		EXPECT_EQ( "path", substringBefore( "path/to/file", '/' ) );
+		EXPECT_EQ( "user", substringBefore( "user@example.com", '@' ) );
+
+		// Character not found (returns entire string)
+		EXPECT_EQ( "hello world", substringBefore( "hello world", '.' ) );
+		EXPECT_EQ( "test", substringBefore( "test", '@' ) );
+
+		// Empty string
+		EXPECT_EQ( "", substringBefore( "", '.' ) );
+
+		// Character at start
+		EXPECT_EQ( "", substringBefore( ".hidden", '.' ) );
+
+		// Character at end
+		EXPECT_EQ( "test", substringBefore( "test.", '.' ) );
+
+		// Multiple occurrences (returns before first)
+		EXPECT_EQ( "hello", substringBefore( "hello.world.txt", '.' ) );
+		EXPECT_EQ( "", substringBefore( "/usr/local", '/' ) );
+
+		// Special characters
+		EXPECT_EQ( "key", substringBefore( "key=value", '=' ) );
+		EXPECT_EQ( "hello", substringBefore( "hello world", ' ' ) );
+	}
+
+	TEST( SubstringExtraction, SubstringAfter_CharOverload )
+	{
+		// Basic functionality
+		EXPECT_EQ( "world", substringAfter( "hello.world", '.' ) );
+		EXPECT_EQ( "to/file", substringAfter( "path/to/file", '/' ) );
+		EXPECT_EQ( "example.com", substringAfter( "user@example.com", '@' ) );
+
+		// Character not found (returns empty)
+		EXPECT_EQ( "", substringAfter( "hello world", '.' ) );
+		EXPECT_EQ( "", substringAfter( "test", '@' ) );
+
+		// Empty string
+		EXPECT_EQ( "", substringAfter( "", '.' ) );
+
+		// Character at start
+		EXPECT_EQ( "hidden", substringAfter( ".hidden", '.' ) );
+
+		// Character at end
+		EXPECT_EQ( "", substringAfter( "test.", '.' ) );
+
+		// Multiple occurrences (returns after first)
+		EXPECT_EQ( "world.txt", substringAfter( "hello.world.txt", '.' ) );
+		EXPECT_EQ( "usr/local", substringAfter( "/usr/local", '/' ) );
+
+		// Special characters
+		EXPECT_EQ( "value", substringAfter( "key=value", '=' ) );
+		EXPECT_EQ( "world", substringAfter( "hello world", ' ' ) );
+	}
+
+	TEST( SubstringExtraction, SubstringBeforeLast_CharOverload )
+	{
+		// Basic functionality
+		EXPECT_EQ( "hello.world", substringBeforeLast( "hello.world.txt", '.' ) );
+		EXPECT_EQ( "path/to", substringBeforeLast( "path/to/file", '/' ) );
+		EXPECT_EQ( "192.168.1", substringBeforeLast( "192.168.1.1", '.' ) );
+
+		// Character not found (returns entire string)
+		EXPECT_EQ( "hello world", substringBeforeLast( "hello world", '.' ) );
+		EXPECT_EQ( "test", substringBeforeLast( "test", '@' ) );
+
+		// Empty string
+		EXPECT_EQ( "", substringBeforeLast( "", '.' ) );
+
+		// Character at start (only occurrence)
+		EXPECT_EQ( "", substringBeforeLast( ".hidden", '.' ) );
+
+		// Character at end
+		EXPECT_EQ( "test", substringBeforeLast( "test.", '.' ) );
+
+		// Single occurrence
+		EXPECT_EQ( "hello", substringBeforeLast( "hello.world", '.' ) );
+
+		// Multiple occurrences (returns before last)
+		EXPECT_EQ( "file.backup", substringBeforeLast( "file.backup.txt", '.' ) );
+		EXPECT_EQ( "/usr/local", substringBeforeLast( "/usr/local/bin", '/' ) );
+	}
+
+	TEST( SubstringExtraction, SubstringAfterLast_CharOverload )
+	{
+		// Basic functionality
+		EXPECT_EQ( "txt", substringAfterLast( "hello.world.txt", '.' ) );
+		EXPECT_EQ( "file", substringAfterLast( "path/to/file", '/' ) );
+		EXPECT_EQ( "1", substringAfterLast( "192.168.1.1", '.' ) );
+
+		// Character not found (returns empty)
+		EXPECT_EQ( "", substringAfterLast( "hello world", '.' ) );
+		EXPECT_EQ( "", substringAfterLast( "test", '@' ) );
+
+		// Empty string
+		EXPECT_EQ( "", substringAfterLast( "", '.' ) );
+
+		// Character at start (only occurrence)
+		EXPECT_EQ( "hidden", substringAfterLast( ".hidden", '.' ) );
+
+		// Character at end
+		EXPECT_EQ( "", substringAfterLast( "test.", '.' ) );
+
+		// Single occurrence
+		EXPECT_EQ( "world", substringAfterLast( "hello.world", '.' ) );
+
+		// Multiple occurrences (returns after last)
+		EXPECT_EQ( "txt", substringAfterLast( "file.backup.txt", '.' ) );
+		EXPECT_EQ( "bin", substringAfterLast( "/usr/local/bin", '/' ) );
+		EXPECT_EQ( "com", substringAfterLast( "user@mail.example.com", '.' ) );
+	}
 } // namespace nfx::string::test

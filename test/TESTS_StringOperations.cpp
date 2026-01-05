@@ -695,6 +695,67 @@ namespace nfx::string::test
 		EXPECT_EQ( lastIndexOf( "192.168.1.1", "." ), 9 );			  // IP last octet
 	}
 
+	TEST( StringOperations, IndexOf_CharOverload )
+	{
+		constexpr auto npos = std::string_view::npos;
+
+		// Basic search with char
+		EXPECT_EQ( indexOf( "hello world", 'o' ), 4 );	// First 'o'
+		EXPECT_EQ( indexOf( "hello world", 'h' ), 0 );	// At start
+		EXPECT_EQ( indexOf( "hello world", 'd' ), 10 ); // At end
+
+		// Not found
+		EXPECT_EQ( indexOf( "hello world", 'x' ), npos );
+		EXPECT_EQ( indexOf( "hello world", 'H' ), npos ); // Case sensitive
+
+		// Empty string
+		EXPECT_EQ( indexOf( "", 'a' ), npos );
+
+		// Single character string
+		EXPECT_EQ( indexOf( "a", 'a' ), 0 );
+		EXPECT_EQ( indexOf( "a", 'b' ), npos );
+
+		// Special characters
+		EXPECT_EQ( indexOf( "user@example.com", '@' ), 4 );
+		EXPECT_EQ( indexOf( "path/to/file", '/' ), 4 );
+		EXPECT_EQ( indexOf( "key=value", '=' ), 3 );
+		EXPECT_EQ( indexOf( "hello world", ' ' ), 5 );
+
+		// Multiple occurrences (returns first)
+		EXPECT_EQ( indexOf( "hello", 'l' ), 2 );
+		EXPECT_EQ( indexOf( "aaa", 'a' ), 0 );
+	}
+
+	TEST( StringOperations, LastIndexOf_CharOverload )
+	{
+		constexpr auto npos = std::string_view::npos;
+
+		// Basic search with char (returns last)
+		EXPECT_EQ( lastIndexOf( "hello world", 'o' ), 7 );	// Last 'o'
+		EXPECT_EQ( lastIndexOf( "hello world", 'h' ), 0 );	// Only one
+		EXPECT_EQ( lastIndexOf( "hello world", 'd' ), 10 ); // At end
+
+		// Not found
+		EXPECT_EQ( lastIndexOf( "hello world", 'x' ), npos );
+		EXPECT_EQ( lastIndexOf( "hello world", 'H' ), npos ); // Case sensitive
+
+		// Empty string
+		EXPECT_EQ( lastIndexOf( "", 'a' ), npos );
+
+		// Single character string
+		EXPECT_EQ( lastIndexOf( "a", 'a' ), 0 );
+		EXPECT_EQ( lastIndexOf( "a", 'b' ), npos );
+
+		// Special characters
+		EXPECT_EQ( lastIndexOf( "file.backup.txt", '.' ), 11 );
+		EXPECT_EQ( lastIndexOf( "/usr/local/bin", '/' ), 10 );
+		EXPECT_EQ( lastIndexOf( "192.168.1.1", '.' ), 9 );
+
+		// Multiple occurrences
+		EXPECT_EQ( lastIndexOf( "hello", 'l' ), 3 );
+		EXPECT_EQ( lastIndexOf( "aaa", 'a' ), 2 );
+	}
+
 	//----------------------------------------------
 	// String trimming
 	//----------------------------------------------

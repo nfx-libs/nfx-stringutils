@@ -318,9 +318,19 @@ namespace nfx::string
 		return str.find( substr );
 	}
 
+	inline constexpr std::size_t indexOf( std::string_view str, char ch ) noexcept
+	{
+		return str.find( ch );
+	}
+
 	inline constexpr std::size_t lastIndexOf( std::string_view str, std::string_view substr ) noexcept
 	{
 		return str.rfind( substr );
+	}
+
+	inline constexpr std::size_t lastIndexOf( std::string_view str, char ch ) noexcept
+	{
+		return str.rfind( ch );
 	}
 
 	//----------------------------------------------
@@ -420,6 +430,17 @@ namespace nfx::string
 		return str.substr( 0, pos );
 	}
 
+	inline constexpr std::string_view substringBefore( std::string_view str, char delimiter ) noexcept
+	{
+		const std::size_t pos = str.find( delimiter );
+		if ( pos == std::string_view::npos )
+		{
+			return str;
+		}
+
+		return str.substr( 0, pos );
+	}
+
 	inline constexpr std::string_view substringAfter( std::string_view str, std::string_view delimiter ) noexcept
 	{
 		if ( delimiter.empty() )
@@ -436,6 +457,17 @@ namespace nfx::string
 		return str.substr( pos + delimiter.size() );
 	}
 
+	inline constexpr std::string_view substringAfter( std::string_view str, char delimiter ) noexcept
+	{
+		const std::size_t pos = str.find( delimiter );
+		if ( pos == std::string_view::npos )
+		{
+			return {};
+		}
+
+		return str.substr( pos + 1 );
+	}
+
 	inline constexpr std::string_view substringBeforeLast( std::string_view str, std::string_view delimiter ) noexcept
 	{
 		if ( delimiter.empty() )
@@ -443,6 +475,17 @@ namespace nfx::string
 			return str;
 		}
 
+		const std::size_t pos = str.rfind( delimiter );
+		if ( pos == std::string_view::npos )
+		{
+			return str;
+		}
+
+		return str.substr( 0, pos );
+	}
+
+	inline constexpr std::string_view substringBeforeLast( std::string_view str, char delimiter ) noexcept
+	{
 		const std::size_t pos = str.rfind( delimiter );
 		if ( pos == std::string_view::npos )
 		{
@@ -466,6 +509,17 @@ namespace nfx::string
 		}
 
 		return str.substr( pos + delimiter.size() );
+	}
+
+	inline constexpr std::string_view substringAfterLast( std::string_view str, char delimiter ) noexcept
+	{
+		const std::size_t pos = str.rfind( delimiter );
+		if ( pos == std::string_view::npos )
+		{
+			return {};
+		}
+
+		return str.substr( pos + 1 );
 	}
 
 	inline constexpr std::string_view extractBetween( std::string_view str, std::string_view start, std::string_view end ) noexcept
