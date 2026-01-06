@@ -2206,6 +2206,88 @@ namespace nfx::string
         return 0;
     }
 
+    inline constexpr int inaturalCompare( std::string_view lhs, std::string_view rhs ) noexcept
+    {
+        std::size_t i = 0, j = 0;
+
+        while ( i < lhs.size() && j < rhs.size() )
+        {
+            // Extract numeric sequences
+            if ( isDigit( lhs[i] ) && isDigit( rhs[j] ) )
+            {
+                // Skip leading zeros
+                while ( i < lhs.size() && lhs[i] == '0' )
+                {
+                    i++;
+                }
+                while ( j < rhs.size() && rhs[j] == '0' )
+                {
+                    j++;
+                }
+
+                // Extract numeric values
+                std::size_t numStartA = i, numStartB = j;
+                while ( i < lhs.size() && isDigit( lhs[i] ) )
+                {
+                    i++;
+                }
+                while ( j < rhs.size() && isDigit( rhs[j] ) )
+                {
+                    j++;
+                }
+
+                std::size_t numLenA = i - numStartA;
+                std::size_t numLenB = j - numStartB;
+
+                // Compare by length first (longer = bigger number)
+                if ( numLenA != numLenB )
+                {
+                    return numLenA < numLenB ? -1 : 1;
+                }
+
+                // Same length: compare lexicographically
+                int cmp = lhs.substr( numStartA, numLenA ).compare( rhs.substr( numStartB, numLenB ) );
+                if ( cmp != 0 )
+                {
+                    return cmp;
+                }
+            }
+            else
+            {
+                // Non-numeric: case-insensitive compare
+                char ca = toLower( lhs[i] );
+                char cb = toLower( rhs[j] );
+                if ( ca != cb )
+                {
+                    return ca < cb ? -1 : 1;
+                }
+                i++;
+                j++;
+            }
+        }
+
+        // Shorter string comes first
+        if ( lhs.size() < rhs.size() )
+        {
+            return -1;
+        }
+        if ( lhs.size() > rhs.size() )
+        {
+            return 1;
+        }
+        return 0;
+    }
+
+    inline constexpr bool naturalSort( std::string_view a, std::string_view b ) noexcept
+    {
+        return naturalCompare( a, b ) < 0;
+    }
+
+    inline constexpr bool inaturalSort( std::string_view a, std::string_view b ) noexcept
+    {
+        return inaturalCompare( a, b ) < 0;
+    }
+
     inline constexpr std::string_view commonPrefix( std::string_view lhs, std::string_view rhs ) noexcept
     {
         const size_t minLen = ( lhs.size() < rhs.size() ) ? lhs.size() : rhs.size();

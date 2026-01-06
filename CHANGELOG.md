@@ -9,12 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- NIL
-
+- **Case-Insensitive Natural Comparison**:
+  - `inaturalCompare()` - Case-insensitive natural comparison with embedded number handling (three-way comparison returning int)
+  - `inaturalSort()` - Case-insensitive natural sort predicate (returns bool, wrapper around `inaturalCompare() < 0`)
 
 ### Changed
 
-- NIL
+- `naturalSort()` - Now implemented as a wrapper around `naturalCompare() < 0`
 
 ### Deprecated
 

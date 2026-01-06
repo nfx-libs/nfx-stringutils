@@ -1104,6 +1104,45 @@ namespace nfx::string
     [[nodiscard]] inline constexpr int naturalCompare( std::string_view lhs, std::string_view rhs ) noexcept;
 
     /**
+     * @brief Case-insensitive natural sorting comparison (handles embedded numbers)
+     * @param lhs First string to compare
+     * @param rhs Second string to compare
+     * @return Negative if lhs < rhs, 0 if equal, positive if lhs > rhs
+     * @details Compares strings naturally with case-insensitive character comparison,
+     *          treating embedded numbers as integers. Leading zeros are ignored.
+     *          Example: "File2.txt" < "file10.txt" (case-insensitive).
+     *          Useful for user-friendly sorting of filenames, version numbers, etc.
+     * @note This function is marked [[nodiscard]] - the return value should not be ignored
+     */
+    [[nodiscard]] inline constexpr int inaturalCompare( std::string_view lhs, std::string_view rhs ) noexcept;
+
+    /**
+     * @brief Case-sensitive natural sort comparison predicate
+     * @param a First string to compare
+     * @param b Second string to compare
+     * @return True if a should come before b in natural sort order
+     * @details Case-sensitive natural ordering predicate for use with sort algorithms.
+     *          Wrapper around naturalCompare() < 0 for convenience.
+     *          Example: "file2.txt" < "file10.txt"
+     * @note This function is marked [[nodiscard]] - the return value should not be ignored
+     */
+    [[nodiscard]] inline constexpr bool naturalSort( std::string_view a, std::string_view b ) noexcept;
+
+    /**
+     * @brief Case-insensitive natural sort comparison predicate
+     * @param a First string to compare
+     * @param b Second string to compare
+     * @return True if a should come before b in natural sort order (case-insensitive)
+     * @details Case-insensitive natural ordering predicate for use with sort algorithms.
+     *          Wrapper around inaturalCompare() < 0 for convenience.
+     *          Example: "File2.txt" < "file10.txt" (case-insensitive)
+     *          Numeric sequences are compared by value (leading zeros ignored).
+     *          Non-numeric parts use case-insensitive comparison.
+     * @note This function is marked [[nodiscard]] - the return value should not be ignored
+     */
+    [[nodiscard]] inline constexpr bool inaturalSort( std::string_view a, std::string_view b ) noexcept;
+
+    /**
      * @brief Find longest common prefix of two strings
      * @param lhs First string
      * @param rhs Second string
