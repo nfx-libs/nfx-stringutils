@@ -49,13 +49,13 @@ jobs:
         run: |
           cmake -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DNFX_STRINGUTILS_BUILD_TESTS=OFF \
-            -DNFX_STRINGUTILS_BUILD_SAMPLES=OFF \
+            -DNFX_STRINGUTILS_BUILD_TESTS=ON \
+            -DNFX_STRINGUTILS_BUILD_SAMPLES=ON \
             -DNFX_STRINGUTILS_BUILD_BENCHMARKS=OFF \
             -DNFX_STRINGUTILS_BUILD_DOCUMENTATION=OFF
 
       - name: Build
-        run: cmake --build build --config Release
+        run: cmake --build build --config Release --parallel
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
