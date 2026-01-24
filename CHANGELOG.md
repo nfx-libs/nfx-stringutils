@@ -1,21 +1,14 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## [Unreleased]
 
 ### Added
 
-- **Case-Insensitive Natural Comparison**:
-  - `inaturalCompare()` - Case-insensitive natural comparison with embedded number handling (three-way comparison returning int)
-  - `inaturalSort()` - Case-insensitive natural sort predicate (returns bool, wrapper around `inaturalCompare() < 0`)
+- NIL
 
 ### Changed
 
-- `naturalSort()` - Now implemented as a wrapper around `naturalCompare() < 0`
+- NIL
 
 ### Deprecated
 
@@ -32,6 +25,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 - NIL
+  
+## [0.4.1] - 2026-01-24
+
+- **Case-Insensitive Natural Comparison**:
+  - `inaturalCompare()` - Case-insensitive natural comparison with embedded number handling (three-way comparison returning int)
+  - `inaturalSort()` - Case-insensitive natural sort predicate (returns bool, wrapper around `inaturalCompare() < 0`)
+
+### Changed
+
+- `naturalSort()` - Now implemented as a wrapper around `naturalCompare() < 0`
 
 ## [0.4.0] - 2026-01-06
 
