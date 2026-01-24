@@ -1239,7 +1239,9 @@ namespace nfx::string
         std::string result;
         result.reserve( str.size() ); // Decoded is always <= original
 
-        for ( std::size_t i = 0; i < str.size(); ++i )
+        // Use while loop instead of for loop because we need to skip characters (i increments vary)
+        std::size_t i = 0;
+        while ( i < str.size() )
         {
             if ( str[i] == '%' )
             {
@@ -1274,11 +1276,12 @@ namespace nfx::string
 
                 // Combine nibbles and add decoded character
                 result += static_cast<char>( ( high_val << 4 ) | low_val );
-                i += 2; // Skip the two hex digits
+                i += 3; // Skip '%' and the two hex digits
             }
             else
             {
                 result += str[i];
+                ++i; // Move to next character
             }
         }
 
@@ -2349,7 +2352,7 @@ namespace nfx::string
 
             if ( c == '.' )
             {
-                if ( digitCount == 0 || currentOctet > 255 )
+                if ( digitCount == 0 )
                 {
                     return false;
                 }
@@ -2379,7 +2382,7 @@ namespace nfx::string
         }
 
         // Must have exactly 3 dots (4 octets) and valid last octet
-        return octetCount == 3 && digitCount > 0 && currentOctet <= 255;
+        return octetCount == 3 && digitCount > 0;
     }
 
     inline constexpr bool isIpv6Address( std::string_view str ) noexcept
