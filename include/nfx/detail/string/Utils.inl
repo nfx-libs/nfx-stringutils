@@ -459,6 +459,20 @@ namespace nfx::string
     // String formatting and padding
     //----------------------------------------------
 
+    namespace
+    {
+        inline std::string createPaddedString( std::string_view str, std::size_t width,
+            char fillChar, std::size_t leftPad, std::size_t rightPad )
+        {
+            std::string result;
+            result.reserve( width );
+            result.append( leftPad, fillChar );
+            result.append( str );
+            result.append( rightPad, fillChar );
+            return result;
+        }
+    } // anonymous namespace
+
     inline std::string padLeft( std::string_view str, std::size_t width, char fillChar )
     {
         if ( str.size() >= width )
@@ -466,14 +480,8 @@ namespace nfx::string
             return std::string{ str };
         }
 
-        std::string result;
-        result.reserve( width );
-
-        std::size_t paddingSize = width - str.size();
-        result.append( paddingSize, fillChar );
-        result.append( str );
-
-        return result;
+        const std::size_t paddingSize = width - str.size();
+        return createPaddedString( str, width, fillChar, paddingSize, 0 );
     }
 
     inline std::string padRight( std::string_view str, std::size_t width, char fillChar )
@@ -483,14 +491,8 @@ namespace nfx::string
             return std::string{ str };
         }
 
-        std::string result;
-        result.reserve( width );
-
-        result.append( str );
-        std::size_t paddingSize = width - str.size();
-        result.append( paddingSize, fillChar );
-
-        return result;
+        const std::size_t paddingSize = width - str.size();
+        return createPaddedString( str, width, fillChar, 0, paddingSize );
     }
 
     inline std::string center( std::string_view str, std::size_t width, char fillChar )
@@ -500,18 +502,10 @@ namespace nfx::string
             return std::string{ str };
         }
 
-        std::string result;
-        result.reserve( width );
-
-        std::size_t totalPadding = width - str.size();
-        std::size_t leftPadding = totalPadding / 2;
-        std::size_t rightPadding = totalPadding - leftPadding; // Extra char goes right if odd
-
-        result.append( leftPadding, fillChar );
-        result.append( str );
-        result.append( rightPadding, fillChar );
-
-        return result;
+        const std::size_t totalPadding = width - str.size();
+        const std::size_t leftPadding = totalPadding / 2;
+        const std::size_t rightPadding = totalPadding - leftPadding; // Extra char goes right if odd
+        return createPaddedString( str, width, fillChar, leftPadding, rightPadding );
     }
 
     inline std::string repeat( std::string_view str, std::size_t count )
@@ -992,12 +986,27 @@ namespace nfx::string
     }
 
     //----------------------------------------------
-    // Parsing
+    // String parsing
     //----------------------------------------------
 
-    //----------------------------------------------
-    // Unified parsing API: fromString<T>
-    //----------------------------------------------
+    namespace
+    {
+        template <typename T>
+        inline bool parseNumericImpl( std::string_view str, T& result ) noexcept
+        {
+            if ( str.empty() )
+            {
+                result = T{};
+                return false;
+            }
+
+            const char* const begin = str.data();
+            const char* const end = std::next( begin, static_cast<std::ptrdiff_t>( str.size() ) );
+            const auto parseResult = std::from_chars( begin, end, result );
+
+            return parseResult.ec == std::errc{} && parseResult.ptr == end;
+        }
+    } // anonymous namespace
 
     template <typename T>
         requires(
@@ -1091,91 +1100,35 @@ namespace nfx::string
             result = false;
             return false;
         }
-        // Integer parsing: use std::from_chars for optimal performance
-        // Returns false if parsing fails or if there are trailing characters
+        // 32-bit signed integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, int> )
         {
-            if ( str.empty() )
-            {
-                result = 0;
-                return false;
-            }
-
-            const char* const begin = str.data();
-            const char* const end = std::next( begin, static_cast<std::ptrdiff_t>( str.length() ) );
-            const auto parseResult{ std::from_chars( begin, end, result ) };
-            // Ensure entire string was consumed (parseResult.ptr == end)
-            return parseResult.ec == std::errc{} && parseResult.ptr == end;
+            return parseNumericImpl( str, result );
         }
         // 64-bit signed integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, std::int64_t> )
         {
-            if ( str.empty() )
-            {
-                result = 0LL;
-                return false;
-            }
-
-            const char* const begin = str.data();
-            const char* const end = std::next( begin, static_cast<std::ptrdiff_t>( str.size() ) );
-            const auto parseResult{ std::from_chars( begin, end, result ) };
-            return parseResult.ec == std::errc{} && parseResult.ptr == end;
+            return parseNumericImpl( str, result );
         }
         // 32-bit unsigned integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, std::uint32_t> )
         {
-            if ( str.empty() )
-            {
-                result = 0u;
-                return false;
-            }
-
-            const char* const begin = str.data();
-            const char* const end = std::next( begin, static_cast<std::ptrdiff_t>( str.size() ) );
-            const auto parseResult{ std::from_chars( begin, end, result ) };
-            return parseResult.ec == std::errc{} && parseResult.ptr == end;
+            return parseNumericImpl( str, result );
         }
         // 64-bit unsigned integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, std::uint64_t> )
         {
-            if ( str.empty() )
-            {
-                result = 0ULL;
-                return false;
-            }
-
-            const char* const begin = str.data();
-            const char* const end = std::next( begin, static_cast<std::ptrdiff_t>( str.size() ) );
-            const auto parseResult{ std::from_chars( begin, end, result ) };
-            return parseResult.ec == std::errc{} && parseResult.ptr == end;
+            return parseNumericImpl( str, result );
         }
         // Float parsing: handles decimal, scientific notation, and special values (nan, inf)
         else if constexpr ( std::is_same_v<std::decay_t<T>, float> )
         {
-            if ( str.empty() )
-            {
-                result = 0.f;
-                return false;
-            }
-
-            const char* const begin = str.data();
-            const char* const end = std::next( begin, static_cast<std::ptrdiff_t>( str.size() ) );
-            const auto parseResult{ std::from_chars( begin, end, result ) };
-            return parseResult.ec == std::errc{} && parseResult.ptr == end;
+            return parseNumericImpl( str, result );
         }
         // Double parsing: handles decimal, scientific notation, and special values (nan, inf)
         else if constexpr ( std::is_same_v<std::decay_t<T>, double> )
         {
-            if ( str.empty() )
-            {
-                result = 0.0;
-                return false;
-            }
-
-            const char* const begin = str.data();
-            const char* const end = std::next( begin, static_cast<std::ptrdiff_t>( str.size() ) );
-            const auto parseResult{ std::from_chars( begin, end, result ) };
-            return parseResult.ec == std::errc{} && parseResult.ptr == end;
+            return parseNumericImpl( str, result );
         }
     }
 
