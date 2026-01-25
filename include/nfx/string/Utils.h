@@ -892,7 +892,40 @@ namespace nfx::string
     // String parsing
     //----------------------------------------------
 
-    // Note: fromString<T> templates are defined in Utils.inl
+    /**
+     * @brief Parse string to type T using output parameter
+     * @tparam T Target type (bool, int, uint32_t, int64_t, uint64_t, float, double)
+     * @param str String to parse
+     * @param result Output parameter to store parsed value
+     * @return True if parsing succeeded, false otherwise
+     */
+    template <typename T>
+        requires(
+            std::is_same_v<std::decay_t<T>, bool> ||
+            std::is_same_v<std::decay_t<T>, int> ||
+            std::is_same_v<std::decay_t<T>, std::uint32_t> ||
+            std::is_same_v<std::decay_t<T>, std::int64_t> ||
+            std::is_same_v<std::decay_t<T>, std::uint64_t> ||
+            std::is_same_v<std::decay_t<T>, float> ||
+            std::is_same_v<std::decay_t<T>, double> )
+    [[nodiscard]] inline bool fromString( std::string_view str, T& result ) noexcept;
+
+    /**
+     * @brief Parse string to type T using std::optional
+     * @tparam T Target type (bool, int, uint32_t, int64_t, uint64_t, float, double)
+     * @param str String to parse
+     * @return std::optional<T> containing parsed value, or std::nullopt on failure
+     */
+    template <typename T>
+        requires(
+            std::is_same_v<std::decay_t<T>, bool> ||
+            std::is_same_v<std::decay_t<T>, int> ||
+            std::is_same_v<std::decay_t<T>, std::uint32_t> ||
+            std::is_same_v<std::decay_t<T>, std::int64_t> ||
+            std::is_same_v<std::decay_t<T>, std::uint64_t> ||
+            std::is_same_v<std::decay_t<T>, float> ||
+            std::is_same_v<std::decay_t<T>, double> )
+    [[nodiscard]] inline std::optional<T> fromString( std::string_view str ) noexcept;
 
     //----------------------------------------------
     // Network and URI validation

@@ -999,18 +999,6 @@ namespace nfx::string
     // Unified parsing API: fromString<T>
     //----------------------------------------------
 
-    /**
-     * @brief Parse string to type T using output parameter
-     * @tparam T Target type (bool, int, uint32_t, int64_t, uint64_t, float, double)
-     * @param str String to parse
-     * @param result Output parameter to store parsed value
-     * @return True if parsing succeeded, false otherwise
-     * @details Zero-overhead parsing for performance-critical code.
-     *          Supports: bool, int, uint32_t, int64_t, uint64_t, float, double
-     *          For bool: "true"/"false", "1"/"0", "yes"/"no", "on"/"off", "t"/"f", "y"/"n" (case-insensitive)
-     *          For float/double: decimal, scientific notation, special values (nan, inf, infinity)
-     *          Example: int value; if (fromString("42", value)) { use(value); }
-     */
     template <typename T>
         requires(
             std::is_same_v<std::decay_t<T>, bool> ||
@@ -1022,6 +1010,12 @@ namespace nfx::string
             std::is_same_v<std::decay_t<T>, double> )
     [[nodiscard]] inline bool fromString( std::string_view str, T& result ) noexcept
     {
+        // Boolean parsing: supports multiple common representations (case-insensitive)
+        // - Single char: '1', 't', 'y' (true) or '0', 'f', 'n' (false)
+        // - Two chars: "on" (true) or "no" (false)
+        // - Three chars: "yes" (true) or "off" (false)
+        // - Four chars: "true" (true)
+        // - Five chars: "false" (false)
         if constexpr ( std::is_same_v<std::decay_t<T>, bool> )
         {
             if ( str.empty() )
@@ -1093,9 +1087,12 @@ namespace nfx::string
                 }
             }
 
+            // No valid boolean representation found
             result = false;
             return false;
         }
+        // Integer parsing: use std::from_chars for optimal performance
+        // Returns false if parsing fails or if there are trailing characters
         else if constexpr ( std::is_same_v<std::decay_t<T>, int> )
         {
             if ( str.empty() )
@@ -1107,8 +1104,10 @@ namespace nfx::string
             const char* const begin = str.data();
             const char* const end = std::next( begin, static_cast<std::ptrdiff_t>( str.length() ) );
             const auto parseResult{ std::from_chars( begin, end, result ) };
+            // Ensure entire string was consumed (parseResult.ptr == end)
             return parseResult.ec == std::errc{} && parseResult.ptr == end;
         }
+        // 64-bit signed integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, std::int64_t> )
         {
             if ( str.empty() )
@@ -1122,6 +1121,7 @@ namespace nfx::string
             const auto parseResult{ std::from_chars( begin, end, result ) };
             return parseResult.ec == std::errc{} && parseResult.ptr == end;
         }
+        // 32-bit unsigned integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, std::uint32_t> )
         {
             if ( str.empty() )
@@ -1135,6 +1135,7 @@ namespace nfx::string
             const auto parseResult{ std::from_chars( begin, end, result ) };
             return parseResult.ec == std::errc{} && parseResult.ptr == end;
         }
+        // 64-bit unsigned integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, std::uint64_t> )
         {
             if ( str.empty() )
@@ -1148,6 +1149,7 @@ namespace nfx::string
             const auto parseResult{ std::from_chars( begin, end, result ) };
             return parseResult.ec == std::errc{} && parseResult.ptr == end;
         }
+        // Float parsing: handles decimal, scientific notation, and special values (nan, inf)
         else if constexpr ( std::is_same_v<std::decay_t<T>, float> )
         {
             if ( str.empty() )
@@ -1161,6 +1163,7 @@ namespace nfx::string
             const auto parseResult{ std::from_chars( begin, end, result ) };
             return parseResult.ec == std::errc{} && parseResult.ptr == end;
         }
+        // Double parsing: handles decimal, scientific notation, and special values (nan, inf)
         else if constexpr ( std::is_same_v<std::decay_t<T>, double> )
         {
             if ( str.empty() )
@@ -1176,15 +1179,6 @@ namespace nfx::string
         }
     }
 
-    /**
-     * @brief Parse string to type T using modern std::optional interface
-     * @tparam T Target type (bool, int, uint32_t, int64_t, uint64_t, float, double)
-     * @param str String to parse
-     * @return std::optional<T> containing parsed value, or std::nullopt on failure
-     * @details Modern C++ interface for parsing. Returns empty optional on parse error.
-     *          Supports all fundamental types with zero overhead.
-     *          Example: if (auto val = fromString<int>("42")) { use(*val); }
-     */
     template <typename T>
         requires(
             std::is_same_v<std::decay_t<T>, bool> ||
