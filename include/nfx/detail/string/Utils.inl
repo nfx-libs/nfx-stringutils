@@ -1385,7 +1385,45 @@ namespace nfx::string
         std::string result;
         result.reserve( str.size() );
 
-        for ( std::size_t i = 0; i < str.size(); ++i )
+        auto parseUnicodeEscape = [&]( std::size_t pos ) -> bool {
+            if ( pos + 5 >= str.size() )
+            {
+                return false; // Not enough characters for \uXXXX
+            }
+
+            // Parse 4 hex digits
+            int value = 0;
+            for ( int j = 0; j < 4; ++j )
+            {
+                int digit = hexToInt( str[pos + 2 + j] );
+                if ( digit == -1 )
+                {
+                    return false; // Invalid hex digit
+                }
+                value = ( value << 4 ) | digit;
+            }
+
+            // Convert Unicode codepoint to UTF-8
+            if ( value <= 0x7F )
+            {
+                result += static_cast<char>( value );
+            }
+            else if ( value <= 0x7FF )
+            {
+                result += static_cast<char>( 0xC0 | ( value >> 6 ) );
+                result += static_cast<char>( 0x80 | ( value & 0x3F ) );
+            }
+            else
+            {
+                result += static_cast<char>( 0xE0 | ( value >> 12 ) );
+                result += static_cast<char>( 0x80 | ( ( value >> 6 ) & 0x3F ) );
+                result += static_cast<char>( 0x80 | ( value & 0x3F ) );
+            }
+            return true;
+        };
+
+        std::size_t i = 0;
+        while ( i < str.size() )
         {
             if ( str[i] == '\\' )
             {
@@ -1399,78 +1437,43 @@ namespace nfx::string
                 {
                     case '\"':
                         result += '\"';
-                        i++;
+                        i += 2;
                         break;
                     case '\\':
                         result += '\\';
-                        i++;
+                        i += 2;
                         break;
                     case '/':
                         result += '/';
-                        i++;
+                        i += 2;
                         break;
                     case 'b':
                         result += '\b';
-                        i++;
+                        i += 2;
                         break;
                     case 'f':
                         result += '\f';
-                        i++;
+                        i += 2;
                         break;
                     case 'n':
                         result += '\n';
-                        i++;
+                        i += 2;
                         break;
                     case 'r':
                         result += '\r';
-                        i++;
+                        i += 2;
                         break;
                     case 't':
                         result += '\t';
-                        i++;
+                        i += 2;
                         break;
                     case 'u':
-                    {
-                        // Unicode escape: \uXXXX
-                        if ( i + 5 >= str.size() )
+                        if ( !parseUnicodeEscape( i ) )
                         {
-                            return ""; // Invalid: not enough characters for \uXXXX
+                            return ""; // Invalid Unicode escape
                         }
-
-                        int value = 0;
-                        for ( int j = 0; j < 4; ++j )
-                        {
-                            int digit = hexToInt( str[i + 2 + j] );
-                            if ( digit == -1 )
-                            {
-                                return ""; // Invalid hex digit
-                            }
-                            value = ( value << 4 ) | digit;
-                        }
-
-                        // Convert Unicode codepoint to UTF-8
-                        if ( value <= 0x7F )
-                        {
-                            // 1-byte UTF-8
-                            result += static_cast<char>( value );
-                        }
-                        else if ( value <= 0x7FF )
-                        {
-                            // 2-byte UTF-8
-                            result += static_cast<char>( 0xC0 | ( value >> 6 ) );
-                            result += static_cast<char>( 0x80 | ( value & 0x3F ) );
-                        }
-                        else
-                        {
-                            // 3-byte UTF-8 (covers Basic Multilingual Plane)
-                            result += static_cast<char>( 0xE0 | ( value >> 12 ) );
-                            result += static_cast<char>( 0x80 | ( ( value >> 6 ) & 0x3F ) );
-                            result += static_cast<char>( 0x80 | ( value & 0x3F ) );
-                        }
-
-                        i += 5; // Skip \uXXXX
+                        i += 6; // Skip \uXXXX
                         break;
-                    }
                     default:
                         return ""; // Invalid escape sequence
                 }
@@ -1478,6 +1481,7 @@ namespace nfx::string
             else
             {
                 result += str[i];
+                ++i; // Move to next character
             }
         }
 
@@ -1526,7 +1530,8 @@ namespace nfx::string
         std::string result;
         result.reserve( str.size() ); // Result will be smaller or equal
 
-        for ( size_t i = 0; i < str.size(); ++i )
+        std::size_t i = 0;
+        while ( i < str.size() )
         {
             if ( str[i] == '&' )
             {
@@ -1612,7 +1617,7 @@ namespace nfx::string
                         return ""; // Invalid codepoint
                     }
 
-                    i = semi; // Skip the entire entity
+                    i = semi;
                 }
                 else if ( entity == "amp" )
                 {
@@ -1643,10 +1648,12 @@ namespace nfx::string
                 {
                     return ""; // Unknown entity
                 }
+                ++i;
             }
             else
             {
                 result += str[i];
+                ++i; // Move to next character
             }
         }
 
@@ -1724,7 +1731,8 @@ namespace nfx::string
         std::string result;
         result.reserve( str.size() ); // Result will be smaller or equal
 
-        for ( size_t i = 0; i < str.size(); ++i )
+        std::size_t i = 0;
+        while ( i < str.size() )
         {
             if ( str[i] == '\\' )
             {
@@ -1737,68 +1745,71 @@ namespace nfx::string
                 {
                     case 'n':
                         result += '\n';
-                        ++i;
+                        i += 2;
                         break;
                     case 't':
                         result += '\t';
-                        ++i;
+                        i += 2;
                         break;
                     case 'r':
                         result += '\r';
-                        ++i;
+                        i += 2;
                         break;
                     case '\\':
                         result += '\\';
-                        ++i;
+                        i += 2;
                         break;
                     case '"':
                         result += '"';
-                        ++i;
+                        i += 2;
                         break;
                     case '\'':
                         result += '\'';
-                        ++i;
+                        i += 2;
                         break;
                     case '0':
                         // Could be \0 or octal \NNN
                         if ( i + 2 < str.size() && isOctal( str[i + 2] ) )
                         {
-                            // Octal sequence \NNN
+                            // Octal sequence \NNN (up to 3 digits)
                             int value = 0;
                             size_t j = i + 1;
-                            for ( int count = 0; count < 3 && j < str.size() && isOctal( str[j] ); ++count, ++j )
+                            int count = 0;
+                            while ( count < 3 && j < str.size() && isOctal( str[j] ) )
                             {
                                 value = value * 8 + ( str[j] - '0' );
                                 if ( value > 255 )
                                 {
                                     return ""; // Octal value out of range
                                 }
+                                ++j;
+                                ++count;
                             }
                             result += static_cast<char>( value );
-                            i = j - 1;
+                            i = j; // Move past the octal sequence
                         }
                         else
                         {
                             // Just \0
                             result += '\0';
-                            ++i;
+                            i += 2;
                         }
                         break;
                     case 'b':
                         result += '\b';
-                        ++i;
+                        i += 2;
                         break;
                     case 'f':
                         result += '\f';
-                        ++i;
+                        i += 2;
                         break;
                     case 'v':
                         result += '\v';
-                        ++i;
+                        i += 2;
                         break;
                     case 'a':
                         result += '\a';
-                        ++i;
+                        i += 2;
                         break;
                     case 'x':
                     {
@@ -1817,26 +1828,29 @@ namespace nfx::string
                         }
 
                         result += static_cast<char>( ( high << 4 ) | low );
-                        i += 3;
+                        i += 4; // Skip \xHH
                         break;
                     }
                     default:
                         // Check if it's an octal sequence starting with 1-7
                         if ( isOctal( str[i + 1] ) )
                         {
-                            // Octal sequence \NNN
+                            // Octal sequence \NNN (up to 3 digits)
                             int value = 0;
                             size_t j = i + 1;
-                            for ( int count = 0; count < 3 && j < str.size() && isOctal( str[j] ); ++count, ++j )
+                            int count = 0;
+                            while ( count < 3 && j < str.size() && isOctal( str[j] ) )
                             {
                                 value = value * 8 + ( str[j] - '0' );
                                 if ( value > 255 )
                                 {
                                     return ""; // Octal value out of range
                                 }
+                                ++j;
+                                ++count;
                             }
                             result += static_cast<char>( value );
-                            i = j - 1;
+                            i = j; // Move past the octal sequence
                         }
                         else
                         {
@@ -1848,6 +1862,7 @@ namespace nfx::string
             else
             {
                 result += str[i];
+                ++i; // Move to next character
             }
         }
 
@@ -3368,7 +3383,8 @@ namespace nfx::string
         // prefix = ":" max-length
         // explode = "*"
 
-        for ( std::size_t i = 0; i < str.size(); ++i )
+        std::size_t i = 0;
+        while ( i < str.size() )
         {
             const char c = str[i];
 
@@ -3519,11 +3535,15 @@ namespace nfx::string
                     }
                 }
 
-                i = exprEnd; // Skip to end of expression
+                i = exprEnd + 1; // Skip past the closing brace of expression
             }
             else if ( c == '}' )
             {
                 return false; // Unmatched closing brace
+            }
+            else
+            {
+                ++i; // Regular character, move to next
             }
         }
 
@@ -3641,7 +3661,8 @@ namespace nfx::string
         }
 
         // Validate reference tokens
-        for ( std::size_t i = 1; i < str.size(); ++i )
+        std::size_t i = 1;
+        while ( i < str.size() )
         {
             const char c = str[i];
 
@@ -3658,7 +3679,11 @@ namespace nfx::string
                 {
                     return false;
                 }
-                ++i; // Skip the escaped character
+                i += 2; // Skip ~ and the escaped character
+            }
+            else
+            {
+                ++i; // Regular character or '/' starts new token
             }
             // '/' starts new token (always valid)
         }
