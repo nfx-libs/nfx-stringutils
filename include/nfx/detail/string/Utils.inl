@@ -31,8 +31,8 @@
 
 #include <algorithm>
 #include <cctype>
-#include <cmath>
 #include <charconv>
+#include <cmath>
 
 namespace nfx::string
 {
@@ -108,6 +108,11 @@ namespace nfx::string
     inline constexpr bool isHexDigit( char c ) noexcept
     {
         return isDigit( c ) || ( c >= 'a' && c <= 'f' ) || ( c >= 'A' && c <= 'F' );
+    }
+
+    constexpr bool isOctal( char c ) noexcept
+    {
+        return c >= '0' && c <= '7';
     }
 
     //----------------------------------------------
@@ -948,6 +953,45 @@ namespace nfx::string
     }
 
     //----------------------------------------------
+    // Character conversion
+    //----------------------------------------------
+
+    inline constexpr int hexToInt( char c ) noexcept
+    {
+        if ( c >= '0' && c <= '9' )
+        {
+            return c - '0';
+        }
+        if ( c >= 'A' && c <= 'F' )
+        {
+            return c - 'A' + 10;
+        }
+        if ( c >= 'a' && c <= 'f' )
+        {
+            return c - 'a' + 10;
+        }
+        return -1;
+    }
+
+    inline constexpr int octalToInt( char c ) noexcept
+    {
+        if ( c >= '0' && c <= '7' )
+        {
+            return c - '0';
+        }
+        return -1;
+    }
+
+    inline constexpr int digitToInt( char c ) noexcept
+    {
+        if ( c >= '0' && c <= '9' )
+        {
+            return c - '0';
+        }
+        return -1;
+    }
+
+    //----------------------------------------------
     // Parsing
     //----------------------------------------------
 
@@ -1239,7 +1283,6 @@ namespace nfx::string
         std::string result;
         result.reserve( str.size() ); // Decoded is always <= original
 
-        // Use while loop instead of for loop because we need to skip characters (i increments vary)
         std::size_t i = 0;
         while ( i < str.size() )
         {
@@ -1256,16 +1299,6 @@ namespace nfx::string
                 char low = str[i + 2];
 
                 // Convert hex digits to values
-                auto hexToInt = []( char c ) -> int {
-                    if ( c >= '0' && c <= '9' )
-                        return c - '0';
-                    if ( c >= 'A' && c <= 'F' )
-                        return c - 'A' + 10;
-                    if ( c >= 'a' && c <= 'f' )
-                        return c - 'a' + 10;
-                    return -1; // Invalid hex digit
-                };
-
                 int high_val = hexToInt( high );
                 int low_val = hexToInt( low );
 
@@ -1404,17 +1437,6 @@ namespace nfx::string
                             return ""; // Invalid: not enough characters for \uXXXX
                         }
 
-                        // Parse 4 hex digits
-                        auto hexToInt = []( char c ) -> int {
-                            if ( c >= '0' && c <= '9' )
-                                return c - '0';
-                            if ( c >= 'A' && c <= 'F' )
-                                return c - 'A' + 10;
-                            if ( c >= 'a' && c <= 'f' )
-                                return c - 'a' + 10;
-                            return -1;
-                        };
-
                         int value = 0;
                         for ( int j = 0; j < 4; ++j )
                         {
@@ -1503,17 +1525,6 @@ namespace nfx::string
     {
         std::string result;
         result.reserve( str.size() ); // Result will be smaller or equal
-
-        // Helper lambda to convert hex char to int
-        auto hexToInt = []( char c ) -> int {
-            if ( c >= '0' && c <= '9' )
-                return c - '0';
-            if ( c >= 'a' && c <= 'f' )
-                return c - 'a' + 10;
-            if ( c >= 'A' && c <= 'F' )
-                return c - 'A' + 10;
-            return -1;
-        };
 
         for ( size_t i = 0; i < str.size(); ++i )
         {
@@ -1712,22 +1723,6 @@ namespace nfx::string
     {
         std::string result;
         result.reserve( str.size() ); // Result will be smaller or equal
-
-        // Helper lambda to convert hex char to int
-        auto hexToInt = []( char c ) -> int {
-            if ( c >= '0' && c <= '9' )
-                return c - '0';
-            if ( c >= 'a' && c <= 'f' )
-                return c - 'a' + 10;
-            if ( c >= 'A' && c <= 'F' )
-                return c - 'A' + 10;
-            return -1;
-        };
-
-        // Helper lambda to check if char is octal digit
-        auto isOctal = []( char c ) -> bool {
-            return c >= '0' && c <= '7';
-        };
 
         for ( size_t i = 0; i < str.size(); ++i )
         {

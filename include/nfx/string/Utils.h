@@ -125,6 +125,14 @@ namespace nfx::string
      */
     [[nodiscard]] inline constexpr bool isHexDigit( char c ) noexcept;
 
+    /**
+     * @brief Check if character is ASCII octal digit
+     * @param c Character to check
+     * @return True if character is 0-7
+     * @note This function is marked [[nodiscard]] - the return value should not be ignored
+     */
+    [[nodiscard]] inline constexpr bool isOctal( char c ) noexcept;
+
     //----------------------------------------------
     // String operations
     //----------------------------------------------
@@ -849,6 +857,36 @@ namespace nfx::string
      * @note This function is marked [[nodiscard]] - the return value should not be ignored
      */
     [[nodiscard]] inline constexpr char toUpper( char c ) noexcept;
+
+    //----------------------------------------------
+    // Character conversion
+    //----------------------------------------------
+
+    /**
+     * @brief Convert a hexadecimal character to its integer value
+     * @param c The hexadecimal character to convert (0-9, A-F, a-f)
+     * @return The integer value (0-15) if valid, -1 otherwise
+     * @details Case-insensitive conversion. Returns -1 for invalid hex characters.
+     *          Example: hexToInt('A') == hexToInt('a') == 10
+     * @note This function is marked [[nodiscard]] - the return value should not be ignored
+     */
+    [[nodiscard]] inline constexpr int hexToInt( char c ) noexcept;
+
+    /**
+     * @brief Convert an octal character to its integer value
+     * @param c The octal character to convert (0-7)
+     * @return The integer value (0-7) if valid, -1 otherwise
+     * @note This function is marked [[nodiscard]] - the return value should not be ignored
+     */
+    [[nodiscard]] inline constexpr int octalToInt( char c ) noexcept;
+
+    /**
+     * @brief Convert a decimal digit character to its integer value
+     * @param c The digit character to convert (0-9)
+     * @return The integer value (0-9) if valid, -1 otherwise
+     * @note This function is marked [[nodiscard]] - the return value should not be ignored
+     */
+    [[nodiscard]] inline constexpr int digitToInt( char c ) noexcept;
 
     //----------------------------------------------
     // String parsing
