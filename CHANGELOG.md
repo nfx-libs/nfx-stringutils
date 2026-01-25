@@ -26,6 +26,28 @@
 
 - NIL
   
+## [0.5.0] - 2026-01-25
+
+### Added
+
+- **Character Classification**: Additional numeric base validation and conversion utilities
+  - `isOctal()` - Check if character is octal digit (0-7)
+  - `octalToInt()` - Convert octal character to integer value 
+  - `digitToInt()` - Convert decimal digit character to integer value
+  - `hexToInt()` - Convert hexadecimal character to integer value
+
+### Changed
+
+- **Internal Code Quality**: Reduced code duplication through private helper functions
+  - Refactored `fromString()` numeric parsing to use shared `parseNumericImpl()` template helper
+  - Refactored padding functions (`padLeft`, `padRight`, `center`) to use shared `createPaddedString()` helper
+  - Improved loop index management in escape/unescape functions
+
+### Fixed
+
+- **URL Decoding**: Improved validation logic for percent-encoded sequences
+- **IPv4 Validation**: Enhanced address parsing and boundary checking
+
 ## [0.4.1] - 2026-01-24
 
 - **Case-Insensitive Natural Comparison**:
