@@ -459,7 +459,7 @@ namespace nfx::string
     // String formatting and padding
     //----------------------------------------------
 
-    namespace
+    namespace detail
     {
         inline std::string createPaddedString( std::string_view str, std::size_t width,
             char fillChar, std::size_t leftPad, std::size_t rightPad )
@@ -471,7 +471,7 @@ namespace nfx::string
             result.append( rightPad, fillChar );
             return result;
         }
-    } // anonymous namespace
+    } // namespace detail
 
     inline std::string padLeft( std::string_view str, std::size_t width, char fillChar )
     {
@@ -481,7 +481,7 @@ namespace nfx::string
         }
 
         const std::size_t paddingSize = width - str.size();
-        return createPaddedString( str, width, fillChar, paddingSize, 0 );
+        return detail::createPaddedString( str, width, fillChar, paddingSize, 0 );
     }
 
     inline std::string padRight( std::string_view str, std::size_t width, char fillChar )
@@ -492,7 +492,7 @@ namespace nfx::string
         }
 
         const std::size_t paddingSize = width - str.size();
-        return createPaddedString( str, width, fillChar, 0, paddingSize );
+        return detail::createPaddedString( str, width, fillChar, 0, paddingSize );
     }
 
     inline std::string center( std::string_view str, std::size_t width, char fillChar )
@@ -505,7 +505,7 @@ namespace nfx::string
         const std::size_t totalPadding = width - str.size();
         const std::size_t leftPadding = totalPadding / 2;
         const std::size_t rightPadding = totalPadding - leftPadding; // Extra char goes right if odd
-        return createPaddedString( str, width, fillChar, leftPadding, rightPadding );
+        return detail::createPaddedString( str, width, fillChar, leftPadding, rightPadding );
     }
 
     inline std::string repeat( std::string_view str, std::size_t count )
@@ -989,7 +989,7 @@ namespace nfx::string
     // String parsing
     //----------------------------------------------
 
-    namespace
+    namespace detail
     {
         template <typename T>
         inline bool parseNumericImpl( std::string_view str, T& result ) noexcept
@@ -1006,7 +1006,7 @@ namespace nfx::string
 
             return parseResult.ec == std::errc{} && parseResult.ptr == end;
         }
-    } // anonymous namespace
+    } // namespace detail
 
     template <typename T>
         requires(
@@ -1103,32 +1103,32 @@ namespace nfx::string
         // 32-bit signed integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, int> )
         {
-            return parseNumericImpl( str, result );
+            return detail::parseNumericImpl( str, result );
         }
         // 64-bit signed integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, std::int64_t> )
         {
-            return parseNumericImpl( str, result );
+            return detail::parseNumericImpl( str, result );
         }
         // 32-bit unsigned integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, std::uint32_t> )
         {
-            return parseNumericImpl( str, result );
+            return detail::parseNumericImpl( str, result );
         }
         // 64-bit unsigned integer parsing
         else if constexpr ( std::is_same_v<std::decay_t<T>, std::uint64_t> )
         {
-            return parseNumericImpl( str, result );
+            return detail::parseNumericImpl( str, result );
         }
         // Float parsing: handles decimal, scientific notation, and special values (nan, inf)
         else if constexpr ( std::is_same_v<std::decay_t<T>, float> )
         {
-            return parseNumericImpl( str, result );
+            return detail::parseNumericImpl( str, result );
         }
         // Double parsing: handles decimal, scientific notation, and special values (nan, inf)
         else if constexpr ( std::is_same_v<std::decay_t<T>, double> )
         {
-            return parseNumericImpl( str, result );
+            return detail::parseNumericImpl( str, result );
         }
     }
 

@@ -8,7 +8,7 @@
 
 ### Changed
 
-- NIL
+  - Replaced anonymous namespaces with `detail` namespace for internal helper functions
 
 ### Deprecated
 
