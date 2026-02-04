@@ -8,7 +8,7 @@
 
 ### Changed
 
-  - Replaced anonymous namespaces with `detail` namespace for internal helper functions
+- NIL
 
 ### Deprecated
 
@@ -25,7 +25,13 @@
 ### Security
 
 - NIL
-  
+
+## [0.5.1] - 2026-04-02
+
+### Changed
+
+  - Replaced anonymous namespaces with `detail` namespace for internal helper functions
+
 ## [0.5.0] - 2026-01-25
 
 ### Added
