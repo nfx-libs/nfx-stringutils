@@ -1063,6 +1063,7 @@ namespace nfx::string
     /**
      * @brief Escape string for use in XML/HTML content
      * @param str String to escape
+     * @param escapeNonAscii If true, encode non-ASCII UTF-8 sequences as &#xHHHH; numeric character references (default: false)
      * @return XML-escaped string with special characters replaced by entities
      * @details Escapes the five predefined XML entities:
      *          & (ampersand) -> &amp;
@@ -1070,10 +1071,11 @@ namespace nfx::string
      *          > (greater-than) -> &gt;
      *          " (quote) -> &quot;
      *          ' (apostrophe) -> &apos;
+     *          When escapeNonAscii is true, also converts UTF-8 encoded characters to &#xHHHH; format.
      *          This function allocates a new std::string.
      * @note This function is marked [[nodiscard]] - the return value should not be ignored
      */
-    [[nodiscard]] inline std::string xmlEscape( std::string_view str );
+    [[nodiscard]] inline std::string xmlEscape( std::string_view str, bool escapeNonAscii = false );
 
     /**
      * @brief Unescape XML/HTML entity references

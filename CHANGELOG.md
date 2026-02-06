@@ -17,6 +17,11 @@
   - When enabled, converts UTF-8 characters to `\uXXXX` JSON escape sequences
   - `jsonUnescape()` - Now properly handles UTF-16 surrogate pairs for emoji and supplementary characters
 
+- **XML Escaping**: Enhanced Unicode support
+  - `xmlEscape()` - Added optional `escapeNonAscii` parameter (default: false)
+  - When enabled, converts UTF-8 characters to `&#xHHHH;` numeric character references
+  - Generates uppercase hexadecimal encoding (e.g., `&#x20AC;` for €)
+
 ### Deprecated
 
 - NIL

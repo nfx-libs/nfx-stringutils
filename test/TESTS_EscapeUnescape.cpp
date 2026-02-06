@@ -952,4 +952,50 @@ namespace nfx::string::test
             EXPECT_EQ( original, unescaped ) << "Failed for: " << original;
         }
     }
+
+    TEST( EscapeUnescape, XML_UnicodeEscaping )
+    {
+        // Test escapeNonAscii = false (default) - UTF-8 pass-through
+        EXPECT_EQ( "café", xmlEscape( "café", false ) );
+        EXPECT_EQ( "€100", xmlEscape( "€100", false ) );
+        EXPECT_EQ( "😀", xmlEscape( "😀", false ) );
+
+        // Test escapeNonAscii = true - numeric character references (uppercase hex)
+        EXPECT_EQ( "caf&#xE9;", xmlEscape( "café", true ) );
+        EXPECT_EQ( "&#x20AC;100", xmlEscape( "€100", true ) );
+        EXPECT_EQ( "&#x1F600;", xmlEscape( "😀", true ) );
+
+        // Mixed content with XML entities
+        EXPECT_EQ( "&lt;div&gt;Hello &#x4E2D;&#x56FD;&lt;/div&gt;",
+                   xmlEscape( "<div>Hello 中国</div>", true ) );
+
+        // Entities still work with escapeNonAscii = false
+        EXPECT_EQ( "&lt;café&gt;", xmlEscape( "<café>", false ) );
+    }
+
+    TEST( EscapeUnescape, XML_UnicodeRoundTrip )
+    {
+        // Test various Unicode strings
+        std::vector<std::string> testStrings = {
+            "café",
+            "€100",
+            "Hello 世界",
+            "😀🎉🚀",
+            "Привет",
+            "مرحبا",
+            "こんにちは" };
+
+        for ( const auto& original : testStrings )
+        {
+            // Round-trip with escapeNonAscii = true
+            std::string escaped = xmlEscape( original, true );
+            std::string unescaped = xmlUnescape( escaped );
+            EXPECT_EQ( original, unescaped ) << "Failed for: " << original;
+
+            // Round-trip with escapeNonAscii = false
+            escaped = xmlEscape( original, false );
+            unescaped = xmlUnescape( escaped );
+            EXPECT_EQ( original, unescaped ) << "Failed for: " << original;
+        }
+    }
 } // namespace nfx::string::test

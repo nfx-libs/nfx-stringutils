@@ -1644,13 +1644,36 @@ namespace nfx::string
     // XML/HTML escape/unescape
     //-----------------------------
 
-    inline std::string xmlEscape( std::string_view str )
+    inline std::string xmlEscape( std::string_view str, bool escapeNonAscii )
     {
         std::string result;
         result.reserve( str.size() ); // Minimum size needed
 
-        for ( char c : str )
+        for ( std::size_t i = 0; i < str.size(); )
         {
+            unsigned char c = static_cast<unsigned char>( str[i] );
+
+            // Check if this is a non-ASCII UTF-8 sequence that needs escaping
+            if ( escapeNonAscii && c > 0x7F )
+            {
+                uint32_t codepoint;
+                std::size_t oldPos = i;
+                if ( decodeUtf8Codepoint( str, i, codepoint ) )
+                {
+                    // Encode as &#xHHHH; numeric character reference
+                    result += "&#x";
+
+                    // Convert to hex string
+                    char hex[9]; // Max 8 hex digits + null terminator
+                    std::snprintf( hex, sizeof( hex ), "%X", codepoint );
+                    result += hex;
+                    result += ';';
+                    continue;
+                }
+                // If UTF-8 decoding failed, restore position and fall through to byte escape
+                i = oldPos;
+            }
+
             switch ( c )
             {
                 case '&':
@@ -1669,9 +1692,11 @@ namespace nfx::string
                     result += "&apos;";
                     break;
                 default:
-                    result += c;
+                    result += static_cast<char>( c );
                     break;
             }
+
+            ++i;
         }
 
         return result;
