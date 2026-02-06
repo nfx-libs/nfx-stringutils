@@ -1382,6 +1382,85 @@ namespace nfx::string
         }
     }
 
+    inline std::size_t utf8Length( std::string_view str ) noexcept
+    {
+        std::size_t count = 0;
+        std::size_t i = 0;
+        uint32_t codepoint = 0;
+
+        while ( i < str.size() )
+        {
+            if ( !decodeUtf8Codepoint( str, i, codepoint ) )
+            {
+                return 0; // Invalid UTF-8
+            }
+            ++count;
+        }
+
+        return count;
+    }
+
+    inline bool isValidUtf8( std::string_view str ) noexcept
+    {
+        std::size_t i = 0;
+        uint32_t codepoint = 0;
+
+        while ( i < str.size() )
+        {
+            if ( !decodeUtf8Codepoint( str, i, codepoint ) )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    inline std::string_view utf8Substring( std::string_view str,
+        std::size_t startCodepoint,
+        std::size_t codepointCount ) noexcept
+    {
+        std::size_t i = 0;
+        std::size_t currentCodepoint = 0;
+        std::size_t startBytePos = 0;
+        std::size_t endBytePos = 0;
+        uint32_t codepoint = 0;
+        bool foundStart = false;
+
+        while ( i < str.size() )
+        {
+            std::size_t charStart = i;
+
+            if ( !decodeUtf8Codepoint( str, i, codepoint ) )
+            {
+                return {}; // Invalid UTF-8
+            }
+
+            if ( currentCodepoint == startCodepoint )
+            {
+                startBytePos = charStart;
+                foundStart = true;
+            }
+
+            if ( foundStart && ( currentCodepoint - startCodepoint ) == codepointCount )
+            {
+                endBytePos = charStart;
+                return str.substr( startBytePos, endBytePos - startBytePos );
+            }
+
+            ++currentCodepoint;
+        }
+
+        // Handle cases where we reached the end
+        if ( !foundStart )
+        {
+            return {}; // startCodepoint beyond string length
+        }
+
+        // Return from start to end of string
+        return str.substr( startBytePos );
+    }
+
     //-----------------------------
     // JSON-specific utilities
     //-----------------------------

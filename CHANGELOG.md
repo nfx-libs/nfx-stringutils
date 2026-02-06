@@ -7,6 +7,9 @@
 - **UTF-8 Utilities**: Unicode codepoint encoding and decoding
   - `decodeUtf8Codepoint()` - Decode UTF-8 byte sequences to Unicode codepoints with full validation
   - `encodeUtf8Codepoint()` - Encode Unicode codepoints to UTF-8 byte sequences
+  - `utf8Length()` - Count Unicode codepoints in a UTF-8 string (not bytes)
+  - `isValidUtf8()` - Validate that a string contains valid UTF-8 encoding
+  - `utf8Substring()` - Extract substring by codepoint positions (zero-copy, returns `string_view`)
   - Supports all valid Unicode ranges (U+0000 to U+10FFFF)
   - Validates against overlong encodings, invalid surrogates, and out-of-range values
 

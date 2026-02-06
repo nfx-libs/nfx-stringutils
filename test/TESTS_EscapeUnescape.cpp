@@ -897,6 +897,168 @@ namespace nfx::string::test
         }
     }
 
+    TEST( UTF8, Utf8Length_ASCII )
+    {
+        EXPECT_EQ( 0, utf8Length( "" ) );
+        EXPECT_EQ( 5, utf8Length( "Hello" ) );
+        EXPECT_EQ( 13, utf8Length( "Hello, World!" ) );
+    }
+
+    TEST( UTF8, Utf8Length_MultibyteCharacters )
+    {
+        // 2-byte characters
+        EXPECT_EQ( 4, utf8Length( "café" ) );  // 5 bytes, 4 codepoints
+        EXPECT_EQ( 5, utf8Length( "Señor" ) ); // 6 bytes, 5 codepoints (S-e-ñ-o-r)
+
+        // 3-byte characters
+        EXPECT_EQ( 4, utf8Length( "€100" ) );       // 6 bytes, 4 codepoints
+        EXPECT_EQ( 2, utf8Length( "中国" ) );       // 6 bytes, 2 codepoints
+        EXPECT_EQ( 8, utf8Length( "Hello 世界" ) ); // 12 bytes, 8 codepoints
+
+        // 4-byte characters (emoji)
+        EXPECT_EQ( 1, utf8Length( "😀" ) );     // 4 bytes, 1 codepoint
+        EXPECT_EQ( 3, utf8Length( "😀🎉🚀" ) ); // 12 bytes, 3 codepoints
+    }
+
+    TEST( UTF8, Utf8Length_Mixed )
+    {
+        EXPECT_EQ( 6, utf8Length( "Привет" ) );     // Russian: П-р-и-в-е-т (6 codepoints)
+        EXPECT_EQ( 5, utf8Length( "مرحبا" ) );      // Arabic
+        EXPECT_EQ( 5, utf8Length( "こんにちは" ) ); // Japanese (Hiragana)
+    }
+
+    TEST( UTF8, Utf8Length_InvalidUtf8 )
+    {
+        // Invalid sequences should return 0
+        EXPECT_EQ( 0, utf8Length( "\x80" ) );         // Invalid continuation byte
+        EXPECT_EQ( 0, utf8Length( "\xC0\x80" ) );     // Overlong encoding
+        EXPECT_EQ( 0, utf8Length( "\xED\xA0\x80" ) ); // Surrogate
+        EXPECT_EQ( 0, utf8Length( "Hello\xFF" ) );    // Invalid byte
+    }
+
+    TEST( UTF8, IsValidUtf8_ValidStrings )
+    {
+        // ASCII
+        EXPECT_TRUE( isValidUtf8( "" ) );
+        EXPECT_TRUE( isValidUtf8( "Hello" ) );
+        EXPECT_TRUE( isValidUtf8( "Hello, World!" ) );
+
+        // 2-byte characters
+        EXPECT_TRUE( isValidUtf8( "café" ) );
+        EXPECT_TRUE( isValidUtf8( "Señor" ) );
+
+        // 3-byte characters
+        EXPECT_TRUE( isValidUtf8( "€100" ) );
+        EXPECT_TRUE( isValidUtf8( "中国" ) );
+        EXPECT_TRUE( isValidUtf8( "Hello 世界" ) );
+
+        // 4-byte characters
+        EXPECT_TRUE( isValidUtf8( "😀" ) );
+        EXPECT_TRUE( isValidUtf8( "😀🎉🚀" ) );
+
+        // Mixed
+        EXPECT_TRUE( isValidUtf8( "Привет" ) );
+        EXPECT_TRUE( isValidUtf8( "مرحبا" ) );
+        EXPECT_TRUE( isValidUtf8( "こんにちは" ) );
+    }
+
+    TEST( UTF8, IsValidUtf8_InvalidStrings )
+    {
+        // Invalid continuation bytes
+        EXPECT_FALSE( isValidUtf8( "\x80" ) );
+        EXPECT_FALSE( isValidUtf8( "\xBF" ) );
+
+        // Overlong encodings
+        EXPECT_FALSE( isValidUtf8( "\xC0\x80" ) );     // Overlong ASCII
+        EXPECT_FALSE( isValidUtf8( "\xE0\x80\x80" ) ); // Overlong 2-byte
+
+        // Surrogate pairs (U+D800 to U+DFFF)
+        EXPECT_FALSE( isValidUtf8( "\xED\xA0\x80" ) ); // U+D800
+        EXPECT_FALSE( isValidUtf8( "\xED\xBF\xBF" ) ); // U+DFFF
+
+        // Out of range
+        EXPECT_FALSE( isValidUtf8( "\xF4\x90\x80\x80" ) ); // > U+10FFFF
+
+        // Truncated sequences
+        EXPECT_FALSE( isValidUtf8( "\xC2" ) );         // Missing continuation
+        EXPECT_FALSE( isValidUtf8( "\xE0\x80" ) );     // Missing continuation
+        EXPECT_FALSE( isValidUtf8( "\xF0\x80\x80" ) ); // Missing continuation
+
+        // Invalid in middle of valid string
+        EXPECT_FALSE( isValidUtf8( "Hello\xFF" ) );
+        EXPECT_FALSE( isValidUtf8( "Hello\xC0\x80World" ) );
+    }
+
+    TEST( UTF8, Utf8Substring_ASCII )
+    {
+        std::string_view str = "Hello, World!";
+
+        EXPECT_EQ( "Hello", utf8Substring( str, 0, 5 ) );
+        EXPECT_EQ( "World", utf8Substring( str, 7, 5 ) );
+        EXPECT_EQ( ", ", utf8Substring( str, 5, 2 ) );
+        EXPECT_EQ( "World!", utf8Substring( str, 7 ) ); // To end
+        EXPECT_EQ( str, utf8Substring( str, 0 ) );      // Entire string
+    }
+
+    TEST( UTF8, Utf8Substring_MultibyteCharacters )
+    {
+        // 2-byte characters
+        EXPECT_EQ( "café", utf8Substring( "café", 0, 4 ) );
+        EXPECT_EQ( "é", utf8Substring( "café", 3, 1 ) );
+        EXPECT_EQ( "fé", utf8Substring( "café", 2, 2 ) );
+
+        // 3-byte characters
+        EXPECT_EQ( "世界", utf8Substring( "Hello 世界", 6, 2 ) );
+        EXPECT_EQ( "世", utf8Substring( "Hello 世界", 6, 1 ) );
+        EXPECT_EQ( "界", utf8Substring( "Hello 世界", 7, 1 ) );
+
+        // 4-byte characters (emoji)
+        EXPECT_EQ( "😀", utf8Substring( "😀🎉🚀", 0, 1 ) );
+        EXPECT_EQ( "🎉", utf8Substring( "😀🎉🚀", 1, 1 ) );
+        EXPECT_EQ( "🚀", utf8Substring( "😀🎉🚀", 2, 1 ) );
+        EXPECT_EQ( "🎉🚀", utf8Substring( "😀🎉🚀", 1, 2 ) );
+    }
+
+    TEST( UTF8, Utf8Substring_Mixed )
+    {
+        std::string_view str = "Hello 世界 😀";
+
+        EXPECT_EQ( "Hello", utf8Substring( str, 0, 5 ) );
+        EXPECT_EQ( " ", utf8Substring( str, 5, 1 ) );
+        EXPECT_EQ( "世界", utf8Substring( str, 6, 2 ) );
+        EXPECT_EQ( " ", utf8Substring( str, 8, 1 ) );
+        EXPECT_EQ( "😀", utf8Substring( str, 9, 1 ) );
+        EXPECT_EQ( "世界 😀", utf8Substring( str, 6 ) ); // To end
+    }
+
+    TEST( UTF8, Utf8Substring_EdgeCases )
+    {
+        std::string_view str = "Hello 世界";
+
+        // Empty results
+        EXPECT_EQ( "", utf8Substring( str, 0, 0 ) );
+        EXPECT_EQ( "", utf8Substring( str, 5, 0 ) );
+
+        // Beyond string length
+        EXPECT_EQ( "", utf8Substring( str, 100, 1 ) );
+        EXPECT_EQ( "", utf8Substring( str, 100 ) );
+
+        // Count exceeds remaining length
+        EXPECT_EQ( "世界", utf8Substring( str, 6, 100 ) );
+
+        // Empty string
+        EXPECT_EQ( "", utf8Substring( "", 0, 1 ) );
+        EXPECT_EQ( "", utf8Substring( "", 0 ) );
+    }
+
+    TEST( UTF8, Utf8Substring_InvalidUtf8 )
+    {
+        // Should return empty on invalid UTF-8
+        EXPECT_EQ( "", utf8Substring( "Hello\xFF", 0, 5 ) );
+        EXPECT_EQ( "", utf8Substring( "\xC0\x80", 0, 1 ) );
+        EXPECT_EQ( "", utf8Substring( "Hello\xED\xA0\x80", 0, 10 ) );
+    }
+
     TEST( EscapeUnescape, JSON_UnicodeEscaping )
     {
         // Test escapeNonAscii = false (default)
@@ -967,7 +1129,7 @@ namespace nfx::string::test
 
         // Mixed content with XML entities
         EXPECT_EQ( "&lt;div&gt;Hello &#x4E2D;&#x56FD;&lt;/div&gt;",
-                   xmlEscape( "<div>Hello 中国</div>", true ) );
+            xmlEscape( "<div>Hello 中国</div>", true ) );
 
         // Entities still work with escapeNonAscii = false
         EXPECT_EQ( "&lt;café&gt;", xmlEscape( "<café>", false ) );

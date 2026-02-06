@@ -920,6 +920,43 @@ namespace nfx::string
      */
     inline void encodeUtf8Codepoint( std::string& result, uint32_t codepoint ) noexcept;
 
+    /**
+     * @brief Count the number of Unicode codepoints in a UTF-8 string
+     * @param str UTF-8 encoded string
+     * @return Number of Unicode codepoints, or 0 if invalid UTF-8 is encountered
+     * @details Counts codepoints (not bytes). Returns 0 on first invalid UTF-8 sequence.
+     *          Example: "café" (5 bytes) returns 4, "Hello 世界" (12 bytes) returns 8
+     */
+    [[nodiscard]] inline std::size_t utf8Length( std::string_view str ) noexcept;
+
+    /**
+     * @brief Validate that a string contains valid UTF-8 encoding
+     * @param str String to validate
+     * @return true if the entire string is valid UTF-8, false otherwise
+     * @details Validates:
+     *          - Correct byte sequence patterns
+     *          - No overlong encodings
+     *          - No invalid surrogate pairs (U+D800 to U+DFFF)
+     *          - Valid Unicode range (U+0000 to U+10FFFF)
+     */
+    [[nodiscard]] inline bool isValidUtf8( std::string_view str ) noexcept;
+
+    /**
+     * @brief Extract a substring by Unicode codepoint positions
+     * @param str UTF-8 encoded string
+     * @param startCodepoint Starting codepoint index (0-based)
+     * @param codepointCount Number of codepoints to extract (default: npos = to end)
+     * @return String view of the requested substring, or empty view if invalid
+     * @details Operates on codepoint indices, not byte positions.
+     *          Returns empty string_view if:
+     *          - Invalid UTF-8 is encountered
+     *          - startCodepoint is beyond the string length
+     *          Example: utf8Substring("Hello 世界", 6, 2) returns "世界"
+     */
+    [[nodiscard]] inline std::string_view utf8Substring( std::string_view str,
+        std::size_t startCodepoint,
+        std::size_t codepointCount = std::string_view::npos ) noexcept;
+
     //----------------------------------------------
     // String parsing
     //----------------------------------------------
