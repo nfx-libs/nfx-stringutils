@@ -26,6 +26,7 @@ list(APPEND sample_sources
     Sample_StringEncoding.cpp
     Sample_StringFormatting.cpp
     Sample_StringComparison.cpp
+    Sample_Unicode.cpp
 )
 
 #----------------------------------------------
