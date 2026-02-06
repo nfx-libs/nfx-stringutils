@@ -8,10 +8,7 @@
 
 ### Changed
 
-- **JSON Escaping**: Forward slash escaping now optional (BREAKING CHANGE)
-  - `jsonEscape()` - Added optional `escapeForHtml` parameter (default: false)
-  - Forward slashes (`/`) are no longer escaped by default per RFC 8259 (optional escaping)
-  - Set `escapeForHtml=true` when embedding JSON in HTML to escape `/` as `\/` (prevents `</script>` and `</style>` tag issues)
+- NIL
 
 ### Deprecated
 
@@ -28,6 +25,15 @@
 ### Security
 
 - NIL
+
+## [0.6.1] - 2026-02-06
+
+### Changed
+
+- **JSON Escaping**: Forward slash escaping now optional (BREAKING CHANGE)
+  - `jsonEscape()` - Added optional `escapeForHtml` parameter (default: false)
+  - Forward slashes (`/`) are no longer escaped by default per RFC 8259 (optional escaping)
+  - Set `escapeForHtml=true` when embedding JSON in HTML to escape `/` as `\/` (prevents `</script>` and `</style>` tag issues)
 
 ## [0.6.0] - 2026-02-06
 
