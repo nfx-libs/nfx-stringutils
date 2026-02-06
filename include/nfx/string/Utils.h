@@ -889,6 +889,38 @@ namespace nfx::string
     [[nodiscard]] inline constexpr int digitToInt( char c ) noexcept;
 
     //----------------------------------------------
+    // UTF-8 utilities
+    //----------------------------------------------
+
+    /**
+     * @brief Decode a UTF-8 sequence starting at position i
+     * @param str Input string containing UTF-8 encoded data
+     * @param i Current position (will be updated to point after the decoded sequence)
+     * @param codepoint Output Unicode code point (U+0000 to U+10FFFF)
+     * @return true if valid UTF-8 sequence was decoded, false otherwise
+     * @details Validates UTF-8 encoding including:
+     *          - Correct byte sequence patterns (1-4 bytes)
+     *          - No overlong encodings
+     *          - No invalid surrogate pairs (U+D800 to U+DFFF)
+     *          - Valid Unicode range (U+0000 to U+10FFFF)
+     * @note This function is marked [[nodiscard]] - the return value should not be ignored
+     */
+    [[nodiscard]] inline bool decodeUtf8Codepoint( std::string_view str, std::size_t& i, uint32_t& codepoint ) noexcept;
+
+    /**
+     * @brief Encode a Unicode code point to UTF-8
+     * @param result Output string to append UTF-8 bytes to
+     * @param codepoint Unicode code point to encode (U+0000 to U+10FFFF)
+     * @details Encodes codepoint as 1-4 UTF-8 bytes:
+     *          - U+0000 to U+007F: 1 byte
+     *          - U+0080 to U+07FF: 2 bytes
+     *          - U+0800 to U+FFFF: 3 bytes
+     *          - U+10000 to U+10FFFF: 4 bytes
+     * @note Behavior is undefined for codepoints > U+10FFFF
+     */
+    inline void encodeUtf8Codepoint( std::string& result, uint32_t codepoint ) noexcept;
+
+    //----------------------------------------------
     // String parsing
     //----------------------------------------------
 
@@ -1002,19 +1034,22 @@ namespace nfx::string
     /**
      * @brief Escape string for use in JSON (RFC 8259)
      * @param str String to escape
+     * @param escapeNonAscii If true, encode non-ASCII UTF-8 sequences as \\uXXXX escape sequences (default: false)
      * @return JSON-escaped string with special characters properly escaped
      * @details Escapes: quote, backslash, slash, backspace, form-feed, newline, carriage-return, tab
      *          and control characters (U+0000 to U+001F) as \\uXXXX Unicode escape sequences.
+     *          When escapeNonAscii is true, also converts UTF-8 encoded characters to \\uXXXX format.
      *          This function allocates a new std::string.
      * @note This function is marked [[nodiscard]] - the return value should not be ignored
      */
-    [[nodiscard]] inline std::string jsonEscape( std::string_view str );
+    [[nodiscard]] inline std::string jsonEscape( std::string_view str, bool escapeNonAscii = false );
 
     /**
      * @brief Unescape JSON string literal (RFC 8259)
      * @param str Escaped JSON string to unescape
      * @return Unescaped string, or empty string if input contains invalid escape sequences
      * @details Unescapes all standard JSON escape sequences and \\uXXXX Unicode sequences.
+     *          Properly handles UTF-16 surrogate pairs (\\uD800\\uDC00 format) for codepoints > U+FFFF.
      *          Returns empty string if malformed escape sequences are detected.
      *          This function allocates a new std::string.
      * @note This function is marked [[nodiscard]] - the return value should not be ignored

@@ -4,11 +4,18 @@
 
 ### Added
 
-- NIL
+- **UTF-8 Utilities**: Unicode codepoint encoding and decoding
+  - `decodeUtf8Codepoint()` - Decode UTF-8 byte sequences to Unicode codepoints with full validation
+  - `encodeUtf8Codepoint()` - Encode Unicode codepoints to UTF-8 byte sequences
+  - Supports all valid Unicode ranges (U+0000 to U+10FFFF)
+  - Validates against overlong encodings, invalid surrogates, and out-of-range values
 
 ### Changed
 
-- NIL
+- **JSON Escaping**: Enhanced Unicode support
+  - `jsonEscape()` - Added optional `escapeNonAscii` parameter (default: false)
+  - When enabled, converts UTF-8 characters to `\uXXXX` JSON escape sequences
+  - `jsonUnescape()` - Now properly handles UTF-16 surrogate pairs for emoji and supplementary characters
 
 ### Deprecated
 

@@ -739,4 +739,217 @@ namespace nfx::string::test
         std::string escaped_newlines = cppEscape( long_newlines );
         EXPECT_EQ( long_newlines, cppUnescape( escaped_newlines ) );
     }
+
+    //=====================================================================
+    // UTF-8 Utilities
+    //=====================================================================
+
+    TEST( UTF8, DecodeCodepoint_ASCII )
+    {
+        std::string_view str = "Hello";
+        std::size_t i = 0;
+        uint32_t codepoint = 0;
+
+        // 'H'
+        EXPECT_TRUE( decodeUtf8Codepoint( str, i, codepoint ) );
+        EXPECT_EQ( 'H', codepoint );
+        EXPECT_EQ( 1, i );
+
+        // 'e'
+        EXPECT_TRUE( decodeUtf8Codepoint( str, i, codepoint ) );
+        EXPECT_EQ( 'e', codepoint );
+        EXPECT_EQ( 2, i );
+    }
+
+    TEST( UTF8, DecodeCodepoint_TwoByte )
+    {
+        // Latin Small Letter E with Acute (é) - U+00E9
+        std::string_view str = "café";
+        std::size_t i = 3; // Position of é
+        uint32_t codepoint = 0;
+
+        EXPECT_TRUE( decodeUtf8Codepoint( str, i, codepoint ) );
+        EXPECT_EQ( 0x00E9, codepoint );
+        EXPECT_EQ( 5, i ); // Moved 2 bytes forward
+    }
+
+    TEST( UTF8, DecodeCodepoint_ThreeByte )
+    {
+        // Euro Sign (€) - U+20AC
+        std::string_view str = "100€";
+        std::size_t i = 3;
+        uint32_t codepoint = 0;
+
+        EXPECT_TRUE( decodeUtf8Codepoint( str, i, codepoint ) );
+        EXPECT_EQ( 0x20AC, codepoint );
+        EXPECT_EQ( 6, i );
+    }
+
+    TEST( UTF8, DecodeCodepoint_FourByte )
+    {
+        // Emoji (😀) - U+1F600
+        std::string_view str = "😀";
+        std::size_t i = 0;
+        uint32_t codepoint = 0;
+
+        EXPECT_TRUE( decodeUtf8Codepoint( str, i, codepoint ) );
+        EXPECT_EQ( 0x1F600, codepoint );
+        EXPECT_EQ( 4, i );
+    }
+
+    TEST( UTF8, DecodeCodepoint_InvalidSequences )
+    {
+        std::size_t i = 0;
+        uint32_t codepoint = 0;
+
+        // Truncated sequence
+        std::string_view truncated = "\xC3"; // Missing second byte
+        i = 0;
+        EXPECT_FALSE( decodeUtf8Codepoint( truncated, i, codepoint ) );
+
+        // Invalid continuation byte
+        std::string_view invalid = "\xC3\x00";
+        i = 0;
+        EXPECT_FALSE( decodeUtf8Codepoint( invalid, i, codepoint ) );
+
+        // Overlong encoding (U+0000 encoded as 2 bytes)
+        std::string_view overlong = "\xC0\x80";
+        i = 0;
+        EXPECT_FALSE( decodeUtf8Codepoint( overlong, i, codepoint ) );
+
+        // Surrogate pair (U+D800)
+        std::string_view surrogate = "\xED\xA0\x80";
+        i = 0;
+        EXPECT_FALSE( decodeUtf8Codepoint( surrogate, i, codepoint ) );
+
+        // Out of range (> U+10FFFF)
+        std::string_view outofrange = "\xF4\x90\x80\x80";
+        i = 0;
+        EXPECT_FALSE( decodeUtf8Codepoint( outofrange, i, codepoint ) );
+    }
+
+    TEST( UTF8, EncodeCodepoint_ASCII )
+    {
+        std::string result;
+        encodeUtf8Codepoint( result, 'A' );
+        EXPECT_EQ( "A", result );
+
+        result.clear();
+        encodeUtf8Codepoint( result, 0x00 );
+        EXPECT_EQ( std::string( 1, '\0' ), result );
+    }
+
+    TEST( UTF8, EncodeCodepoint_TwoByte )
+    {
+        std::string result;
+        encodeUtf8Codepoint( result, 0x00E9 ); // é
+        EXPECT_EQ( "é", result );
+
+        result.clear();
+        encodeUtf8Codepoint( result, 0x00A9 ); // ©
+        EXPECT_EQ( "©", result );
+    }
+
+    TEST( UTF8, EncodeCodepoint_ThreeByte )
+    {
+        std::string result;
+        encodeUtf8Codepoint( result, 0x20AC ); // €
+        EXPECT_EQ( "€", result );
+
+        result.clear();
+        encodeUtf8Codepoint( result, 0x4E2D ); // 中
+        EXPECT_EQ( "中", result );
+    }
+
+    TEST( UTF8, EncodeCodepoint_FourByte )
+    {
+        std::string result;
+        encodeUtf8Codepoint( result, 0x1F600 ); // 😀
+        EXPECT_EQ( "😀", result );
+
+        result.clear();
+        encodeUtf8Codepoint( result, 0x1F4A9 ); // 💩
+        EXPECT_EQ( "💩", result );
+    }
+
+    TEST( UTF8, RoundTrip )
+    {
+        // Test various codepoints
+        std::vector<uint32_t> codepoints = {
+            0x0041,  // A
+            0x00E9,  // é
+            0x20AC,  // €
+            0x1F600, // 😀
+            0x10000, // First supplementary character
+            0x10FFFF // Last valid Unicode codepoint
+        };
+
+        for ( uint32_t original : codepoints )
+        {
+            std::string encoded;
+            encodeUtf8Codepoint( encoded, original );
+
+            std::size_t i = 0;
+            uint32_t decoded = 0;
+            EXPECT_TRUE( decodeUtf8Codepoint( encoded, i, decoded ) );
+            EXPECT_EQ( original, decoded );
+            EXPECT_EQ( encoded.size(), i ); // Should have consumed entire string
+        }
+    }
+
+    TEST( EscapeUnescape, JSON_UnicodeEscaping )
+    {
+        // Test escapeNonAscii = false (default)
+        EXPECT_EQ( "café", jsonEscape( "café", false ) );
+        EXPECT_EQ( "€100", jsonEscape( "€100", false ) );
+        EXPECT_EQ( "😀", jsonEscape( "😀", false ) );
+
+        // Test escapeNonAscii = true
+        EXPECT_EQ( "caf\\u00e9", jsonEscape( "café", true ) );
+        EXPECT_EQ( "\\u20ac100", jsonEscape( "€100", true ) );
+
+        // Emoji requires surrogate pair
+        EXPECT_EQ( "\\ud83d\\ude00", jsonEscape( "😀", true ) );
+
+        // Mixed content
+        EXPECT_EQ( "Hello \\u4e2d\\u56fd", jsonEscape( "Hello 中国", true ) );
+    }
+
+    TEST( EscapeUnescape, JSON_UnicodeSurrogatePairs )
+    {
+        // Test unescaping surrogate pairs
+        EXPECT_EQ( "😀", jsonUnescape( "\\ud83d\\ude00" ) );
+        EXPECT_EQ( "💩", jsonUnescape( "\\ud83d\\udca9" ) );
+
+        // Test invalid surrogates
+        EXPECT_EQ( "", jsonUnescape( "\\ud83d" ) );        // High surrogate alone
+        EXPECT_EQ( "", jsonUnescape( "\\ud83d\\u0041" ) ); // High + non-surrogate
+        EXPECT_EQ( "", jsonUnescape( "\\ude00" ) );        // Low surrogate alone
+    }
+
+    TEST( EscapeUnescape, JSON_UnicodeRoundTrip )
+    {
+        // Test various Unicode strings
+        std::vector<std::string> testStrings = {
+            "café",
+            "€100",
+            "Hello 世界",
+            "😀🎉🚀",
+            "Привет",
+            "مرحبا",
+            "こんにちは" };
+
+        for ( const auto& original : testStrings )
+        {
+            // Round-trip with escapeNonAscii = true
+            std::string escaped = jsonEscape( original, true );
+            std::string unescaped = jsonUnescape( escaped );
+            EXPECT_EQ( original, unescaped ) << "Failed for: " << original;
+
+            // Round-trip with escapeNonAscii = false
+            escaped = jsonEscape( original, false );
+            unescaped = jsonUnescape( escaped );
+            EXPECT_EQ( original, unescaped ) << "Failed for: " << original;
+        }
+    }
 } // namespace nfx::string::test

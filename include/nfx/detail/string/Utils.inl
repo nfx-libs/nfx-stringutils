@@ -1272,7 +1272,165 @@ namespace nfx::string
     // JSON escape/unescape
     //-----------------------------
 
-    inline std::string jsonEscape( std::string_view str )
+    //-----------------------------
+    // UTF-8 utilities
+    //-----------------------------
+
+    /**
+     * @brief Decode a UTF-8 sequence starting at position i
+     * @param str Input string
+     * @param i Current position (will be updated to point after the sequence)
+     * @param codepoint Output Unicode code point
+     * @return true if valid UTF-8 sequence was decoded, false otherwise
+     */
+    inline bool decodeUtf8Codepoint( std::string_view str, std::size_t& i, uint32_t& codepoint ) noexcept
+    {
+        if ( i >= str.size() )
+            return false;
+
+        unsigned char c0 = static_cast<unsigned char>( str[i] );
+
+        // 1-byte sequence (ASCII): 0xxxxxxx
+        if ( c0 <= 0x7F )
+        {
+            codepoint = c0;
+            ++i;
+            return true;
+        }
+
+        // 2-byte sequence: 110xxxxx 10xxxxxx
+        if ( ( c0 & 0xE0 ) == 0xC0 )
+        {
+            if ( i + 1 >= str.size() )
+                return false;
+            unsigned char c1 = static_cast<unsigned char>( str[i + 1] );
+            if ( ( c1 & 0xC0 ) != 0x80 )
+                return false;
+
+            codepoint = ( ( c0 & 0x1F ) << 6 ) | ( c1 & 0x3F );
+            i += 2;
+            return codepoint >= 0x80; // Check for overlong encoding
+        }
+
+        // 3-byte sequence: 1110xxxx 10xxxxxx 10xxxxxx
+        if ( ( c0 & 0xF0 ) == 0xE0 )
+        {
+            if ( i + 2 >= str.size() )
+                return false;
+            unsigned char c1 = static_cast<unsigned char>( str[i + 1] );
+            unsigned char c2 = static_cast<unsigned char>( str[i + 2] );
+            if ( ( c1 & 0xC0 ) != 0x80 || ( c2 & 0xC0 ) != 0x80 )
+                return false;
+
+            codepoint = ( ( c0 & 0x0F ) << 12 ) | ( ( c1 & 0x3F ) << 6 ) | ( c2 & 0x3F );
+            i += 3;
+            return codepoint >= 0x800 && ( codepoint < 0xD800 || codepoint > 0xDFFF ); // Check overlong and surrogates
+        }
+
+        // 4-byte sequence: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+        if ( ( c0 & 0xF8 ) == 0xF0 )
+        {
+            if ( i + 3 >= str.size() )
+                return false;
+            unsigned char c1 = static_cast<unsigned char>( str[i + 1] );
+            unsigned char c2 = static_cast<unsigned char>( str[i + 2] );
+            unsigned char c3 = static_cast<unsigned char>( str[i + 3] );
+            if ( ( c1 & 0xC0 ) != 0x80 || ( c2 & 0xC0 ) != 0x80 || ( c3 & 0xC0 ) != 0x80 )
+                return false;
+
+            codepoint = ( ( c0 & 0x07 ) << 18 ) | ( ( c1 & 0x3F ) << 12 ) | ( ( c2 & 0x3F ) << 6 ) | ( c3 & 0x3F );
+            i += 4;
+            return codepoint >= 0x10000 && codepoint <= 0x10FFFF; // Check overlong and valid range
+        }
+
+        // Invalid UTF-8 sequence
+        return false;
+    }
+
+    /**
+     * @brief Encode a Unicode code point to UTF-8
+     * @param result Output string to append UTF-8 bytes
+     * @param codepoint Unicode code point to encode
+     */
+    inline void encodeUtf8Codepoint( std::string& result, uint32_t codepoint ) noexcept
+    {
+        if ( codepoint <= 0x7F )
+        {
+            // 1-byte UTF-8
+            result += static_cast<char>( codepoint );
+        }
+        else if ( codepoint <= 0x7FF )
+        {
+            // 2-byte UTF-8
+            result += static_cast<char>( 0xC0 | ( codepoint >> 6 ) );
+            result += static_cast<char>( 0x80 | ( codepoint & 0x3F ) );
+        }
+        else if ( codepoint <= 0xFFFF )
+        {
+            // 3-byte UTF-8
+            result += static_cast<char>( 0xE0 | ( codepoint >> 12 ) );
+            result += static_cast<char>( 0x80 | ( ( codepoint >> 6 ) & 0x3F ) );
+            result += static_cast<char>( 0x80 | ( codepoint & 0x3F ) );
+        }
+        else if ( codepoint <= 0x10FFFF )
+        {
+            // 4-byte UTF-8
+            result += static_cast<char>( 0xF0 | ( codepoint >> 18 ) );
+            result += static_cast<char>( 0x80 | ( ( codepoint >> 12 ) & 0x3F ) );
+            result += static_cast<char>( 0x80 | ( ( codepoint >> 6 ) & 0x3F ) );
+            result += static_cast<char>( 0x80 | ( codepoint & 0x3F ) );
+        }
+    }
+
+    //-----------------------------
+    // JSON-specific utilities
+    //-----------------------------
+
+    namespace detail
+    {
+        /**
+         * @brief Encode a Unicode code point as JSON escape sequence
+         * @param result Output string
+         * @param codepoint Unicode code point to encode
+         */
+        inline void encodeJsonEscapeSequence( std::string& result, uint32_t codepoint ) noexcept
+        {
+            constexpr char hex[] = "0123456789abcdef";
+
+            if ( codepoint <= 0xFFFF )
+            {
+                // Basic Multilingual Plane: encode as \uXXXX
+                result += "\\u";
+                result += hex[( codepoint >> 12 ) & 0xF];
+                result += hex[( codepoint >> 8 ) & 0xF];
+                result += hex[( codepoint >> 4 ) & 0xF];
+                result += hex[codepoint & 0xF];
+            }
+            else
+            {
+                // Supplementary plane: encode as UTF-16 surrogate pair \uXXXX\uXXXX
+                codepoint -= 0x10000;
+                uint32_t high = 0xD800 + ( ( codepoint >> 10 ) & 0x3FF );
+                uint32_t low = 0xDC00 + ( codepoint & 0x3FF );
+
+                // High surrogate
+                result += "\\u";
+                result += hex[( high >> 12 ) & 0xF];
+                result += hex[( high >> 8 ) & 0xF];
+                result += hex[( high >> 4 ) & 0xF];
+                result += hex[high & 0xF];
+
+                // Low surrogate
+                result += "\\u";
+                result += hex[( low >> 12 ) & 0xF];
+                result += hex[( low >> 8 ) & 0xF];
+                result += hex[( low >> 4 ) & 0xF];
+                result += hex[low & 0xF];
+            }
+        }
+    } // namespace detail
+
+    inline std::string jsonEscape( std::string_view str, bool escapeNonAscii )
     {
         std::string result;
         result.reserve( str.size() * 2 ); // Reserve for common case
@@ -1280,8 +1438,24 @@ namespace nfx::string
         // Hex digits for Unicode escape sequences
         constexpr char hex_digits[] = "0123456789ABCDEF";
 
-        for ( unsigned char c : str )
+        for ( std::size_t i = 0; i < str.size(); )
         {
+            unsigned char c = static_cast<unsigned char>( str[i] );
+
+            // Check if this is a non-ASCII UTF-8 sequence that needs escaping
+            if ( escapeNonAscii && c > 0x7F )
+            {
+                uint32_t codepoint;
+                std::size_t oldPos = i;
+                if ( decodeUtf8Codepoint( str, i, codepoint ) )
+                {
+                    detail::encodeJsonEscapeSequence( result, codepoint );
+                    continue;
+                }
+                // If UTF-8 decoding failed, restore position and fall through to byte escape
+                i = oldPos;
+            }
+
             switch ( c )
             {
                 case '\"':
@@ -1322,6 +1496,8 @@ namespace nfx::string
                     }
                     break;
             }
+
+            ++i;
         }
 
         return result;
@@ -1332,40 +1508,69 @@ namespace nfx::string
         std::string result;
         result.reserve( str.size() );
 
-        auto parseUnicodeEscape = [&]( std::size_t pos ) -> bool {
-            if ( pos + 5 >= str.size() )
+        auto parseUnicodeEscape = [&]( std::size_t& i ) -> bool {
+            if ( i + 5 >= str.size() )
             {
                 return false; // Not enough characters for \uXXXX
             }
 
             // Parse 4 hex digits
-            int value = 0;
+            uint32_t value = 0;
             for ( int j = 0; j < 4; ++j )
             {
-                int digit = hexToInt( str[pos + 2 + j] );
+                int digit = hexToInt( str[i + 2 + j] );
                 if ( digit == -1 )
                 {
                     return false; // Invalid hex digit
                 }
-                value = ( value << 4 ) | digit;
+                value = ( value << 4 ) | static_cast<uint32_t>( digit );
             }
 
-            // Convert Unicode codepoint to UTF-8
-            if ( value <= 0x7F )
+            i += 6; // Skip \uXXXX
+
+            // Check for UTF-16 surrogate pair
+            if ( value >= 0xD800 && value <= 0xDBFF )
             {
-                result += static_cast<char>( value );
+                // High surrogate - expect low surrogate to follow
+                if ( i + 5 >= str.size() || str[i] != '\\' || str[i + 1] != 'u' )
+                {
+                    return false; // Invalid surrogate pair
+                }
+
+                // Parse low surrogate
+                uint32_t lowSurrogate = 0;
+                for ( int j = 0; j < 4; ++j )
+                {
+                    int digit = hexToInt( str[i + 2 + j] );
+                    if ( digit == -1 )
+                    {
+                        return false;
+                    }
+                    lowSurrogate = ( lowSurrogate << 4 ) | static_cast<uint32_t>( digit );
+                }
+
+                if ( lowSurrogate < 0xDC00 || lowSurrogate > 0xDFFF )
+                {
+                    return false; // Invalid low surrogate
+                }
+
+                i += 6; // Skip second \uXXXX
+
+                // Combine surrogates to get codepoint
+                uint32_t codepoint = 0x10000 + ( ( ( value - 0xD800 ) << 10 ) | ( lowSurrogate - 0xDC00 ) );
+                encodeUtf8Codepoint( result, codepoint );
             }
-            else if ( value <= 0x7FF )
+            else if ( value >= 0xDC00 && value <= 0xDFFF )
             {
-                result += static_cast<char>( 0xC0 | ( value >> 6 ) );
-                result += static_cast<char>( 0x80 | ( value & 0x3F ) );
+                // Unexpected low surrogate
+                return false;
             }
             else
             {
-                result += static_cast<char>( 0xE0 | ( value >> 12 ) );
-                result += static_cast<char>( 0x80 | ( ( value >> 6 ) & 0x3F ) );
-                result += static_cast<char>( 0x80 | ( value & 0x3F ) );
+                // Regular BMP codepoint
+                encodeUtf8Codepoint( result, value );
             }
+
             return true;
         };
 
@@ -1419,7 +1624,7 @@ namespace nfx::string
                         {
                             return ""; // Invalid Unicode escape
                         }
-                        i += 6; // Skip \uXXXX
+                        // i is already advanced by parseUnicodeEscape
                         break;
                     default:
                         return ""; // Invalid escape sequence
