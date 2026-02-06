@@ -4,6 +4,32 @@
 
 ### Added
 
+- NIL
+
+### Changed
+
+- NIL
+
+### Deprecated
+
+- NIL
+
+### Removed
+
+- NIL
+
+### Fixed
+
+- NIL
+
+### Security
+
+- NIL
+
+## [0.6.0] - 2026-04-06
+
+### Added
+
 - **UTF-8 Utilities**: Unicode codepoint encoding and decoding
   - `decodeUtf8Codepoint()` - Decode UTF-8 byte sequences to Unicode codepoints with full validation
   - `encodeUtf8Codepoint()` - Encode Unicode codepoints to UTF-8 byte sequences
@@ -24,22 +50,6 @@
   - `xmlEscape()` - Added optional `escapeNonAscii` parameter (default: false)
   - When enabled, converts UTF-8 characters to `&#xHHHH;` numeric character references
   - Generates uppercase hexadecimal encoding (e.g., `&#x20AC;` for €)
-
-### Deprecated
-
-- NIL
-
-### Removed
-
-- NIL
-
-### Fixed
-
-- NIL
-
-### Security
-
-- NIL
 
 ## [0.5.1] - 2026-04-02
 
