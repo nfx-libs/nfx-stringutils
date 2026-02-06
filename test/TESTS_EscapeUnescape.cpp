@@ -52,8 +52,13 @@ namespace nfx::string::test
         EXPECT_EQ( "\\\\", jsonEscape( "\\" ) );
         EXPECT_EQ( "path\\\\to\\\\file", jsonEscape( "path\\to\\file" ) );
 
-        // Forward slash escaping
-        EXPECT_EQ( "path\\/to\\/file", jsonEscape( "path/to/file" ) );
+        // Forward slash - NOT escaped by default (RFC 8259: optional)
+        EXPECT_EQ( "path/to/file", jsonEscape( "path/to/file" ) );
+
+        // Forward slash - escaped when escapeForHtml is true (for HTML safety)
+        EXPECT_EQ( "path\\/to\\/file", jsonEscape( "path/to/file", false, true ) );
+        EXPECT_EQ( "<\\/script>", jsonEscape( "</script>", false, true ) );
+        EXPECT_EQ( "<\\/style>", jsonEscape( "</style>", false, true ) );
     }
 
     TEST( EscapeUnescape, JSON_ControlCharacters )

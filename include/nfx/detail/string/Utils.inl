@@ -1509,7 +1509,7 @@ namespace nfx::string
         }
     } // namespace detail
 
-    inline std::string jsonEscape( std::string_view str, bool escapeNonAscii )
+    inline std::string jsonEscape( std::string_view str, bool escapeNonAscii, bool escapeForHtml )
     {
         std::string result;
         result.reserve( str.size() * 2 ); // Reserve for common case
@@ -1544,7 +1544,14 @@ namespace nfx::string
                     result += "\\\\";
                     break;
                 case '/':
-                    result += "\\/";
+                    if ( escapeForHtml )
+                    {
+                        result += "\\/";
+                    }
+                    else
+                    {
+                        result += '/';
+                    }
                     break;
                 case '\b':
                     result += "\\b";

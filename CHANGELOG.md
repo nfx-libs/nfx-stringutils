@@ -8,7 +8,10 @@
 
 ### Changed
 
-- NIL
+- **JSON Escaping**: Forward slash escaping now optional (BREAKING CHANGE)
+  - `jsonEscape()` - Added optional `escapeForHtml` parameter (default: false)
+  - Forward slashes (`/`) are no longer escaped by default per RFC 8259 (optional escaping)
+  - Set `escapeForHtml=true` when embedding JSON in HTML to escape `/` as `\/` (prevents `</script>` and `</style>` tag issues)
 
 ### Deprecated
 
@@ -26,7 +29,7 @@
 
 - NIL
 
-## [0.6.0] - 2026-04-06
+## [0.6.0] - 2026-02-06
 
 ### Added
 
@@ -51,7 +54,7 @@
   - When enabled, converts UTF-8 characters to `&#xHHHH;` numeric character references
   - Generates uppercase hexadecimal encoding (e.g., `&#x20AC;` for €)
 
-## [0.5.1] - 2026-04-02
+## [0.5.1] - 2026-02-02
 
 ### Changed
 

@@ -1072,14 +1072,16 @@ namespace nfx::string
      * @brief Escape string for use in JSON (RFC 8259)
      * @param str String to escape
      * @param escapeNonAscii If true, encode non-ASCII UTF-8 sequences as \\uXXXX escape sequences (default: false)
+     * @param escapeForHtml If true, escape forward slashes to prevent script/style tag issues in HTML (default: false)
      * @return JSON-escaped string with special characters properly escaped
-     * @details Escapes: quote, backslash, slash, backspace, form-feed, newline, carriage-return, tab
+     * @details Escapes: quote, backslash, backspace, form-feed, newline, carriage-return, tab
      *          and control characters (U+0000 to U+001F) as \\uXXXX Unicode escape sequences.
      *          When escapeNonAscii is true, also converts UTF-8 encoded characters to \\uXXXX format.
+     *          When escapeForHtml is true, also escapes forward slashes (/) as \\/ for safe HTML embedding.
      *          This function allocates a new std::string.
      * @note This function is marked [[nodiscard]] - the return value should not be ignored
      */
-    [[nodiscard]] inline std::string jsonEscape( std::string_view str, bool escapeNonAscii = false );
+    [[nodiscard]] inline std::string jsonEscape( std::string_view str, bool escapeNonAscii = false, bool escapeForHtml = false );
 
     /**
      * @brief Unescape JSON string literal (RFC 8259)
