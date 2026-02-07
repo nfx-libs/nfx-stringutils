@@ -61,15 +61,7 @@ namespace nfx::string
             return true;
         }
 
-        for ( const char c : str )
-        {
-            // Check for standard whitespace characters: space, tab, newline, carriage return, form feed, vertical tab
-            if ( c != ' ' && c != '\t' && c != '\n' && c != '\r' && c != '\f' && c != '\v' )
-            {
-                return false;
-            }
-        }
-        return true;
+        return std::all_of( str.begin(), str.end(), isWhitespace );
     }
 
     inline constexpr bool isAllDigits( std::string_view str ) noexcept
