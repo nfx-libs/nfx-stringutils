@@ -19,7 +19,7 @@ set(CMAKE_FIND_QUIETLY      ON      )
 #----------------------------------------------
 
 set(NFX_DEPS_GOOGLETEST_VERSION "1.17.0")
-set(NFX_DEPS_BENCHMARK_VERSION  "1.9.4" )
+set(NFX_DEPS_BENCHMARK_VERSION  "1.9.5" )
 
 #----------------------------------------------
 # FetchContent dependencies
