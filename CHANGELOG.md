@@ -26,6 +26,13 @@
 
 - NIL
 
+## [0.6.2] - 2026-02-11
+
+### Changed
+
+- Refactored `isNullOrWhiteSpace()` implementation to use `std::all_of` for improved readability
+- Updated Google Benchmark dependency from 1.9.4 to 1.9.5
+
 ## [0.6.1] - 2026-02-06
 
 ### Changed
