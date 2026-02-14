@@ -96,7 +96,7 @@ namespace nfx::string::benchmark
         {
             for ( const auto& str : int_test_strings )
             {
-                int result;
+                int result{ 0 };
                 std::from_chars( str.data(), str.data() + str.size(), result );
                 ::benchmark::DoNotOptimize( result );
             }
@@ -146,7 +146,7 @@ namespace nfx::string::benchmark
         {
             for ( const auto& str : double_test_strings )
             {
-                double result;
+                double result{ 0.0 };
                 std::from_chars( str.data(), str.data() + str.size(), result );
                 ::benchmark::DoNotOptimize( result );
             }
