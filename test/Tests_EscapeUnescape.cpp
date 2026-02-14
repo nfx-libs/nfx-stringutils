@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_EscapeUnescape.cpp
+ * @file Tests_EscapeUnescape.cpp
  * @brief Unit tests for StringUtils string library
  */
 

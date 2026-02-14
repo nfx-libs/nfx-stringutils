@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_SubstringExtraction.cpp
+ * @file Tests_SubstringExtraction.cpp
  * @brief Unit tests for StringUtils string library
  */
 

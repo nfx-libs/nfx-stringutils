@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_CharacterClassification.cpp
+ * @file Tests_CharacterClassification.cpp
  * @brief Unit tests for StringUtils string library
  */
 

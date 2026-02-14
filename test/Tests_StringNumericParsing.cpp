@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_StringNumericParsing.cpp
+ * @file Tests_StringNumericParsing.cpp
  * @brief Unit tests for StringUtils string library
  */
 

@@ -7,7 +7,6 @@
 #----------------------------------------------
 
 if(NOT NFX_STRINGUTILS_BUILD_SAMPLES)
-    message(STATUS "Samples disabled, skipping...")
     return()
 endif()
 
@@ -58,9 +57,9 @@ foreach(sample_source ${sample_sources})
             CXX_EXTENSIONS OFF
             POSITION_INDEPENDENT_CODE ON
             DEBUG_POSTFIX "-d"
-            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/samples"
-            RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/samples"
-            RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/samples"
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+            RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+            RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
         )
     endif()
 endforeach()

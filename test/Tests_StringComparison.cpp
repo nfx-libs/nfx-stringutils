@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_StringComparison.cpp
+ * @file Tests_StringComparison.cpp
  * @brief Unit tests for StringUtils string library
  */
 

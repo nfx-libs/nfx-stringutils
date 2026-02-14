@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_NetworkValidation.cpp
+ * @file Tests_NetworkValidation.cpp
  * @brief Unit tests for StringUtils string library
  */
 

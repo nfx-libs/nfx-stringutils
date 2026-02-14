@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_UrlEncoding.cpp
+ * @file Tests_UrlEncoding.cpp
  * @brief Unit tests for StringUtils string library
  */
 

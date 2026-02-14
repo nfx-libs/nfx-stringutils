@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_FormatValidation.cpp
+ * @file Tests_FormatValidation.cpp
  * @brief Unit tests for StringUtils string library
  */
 

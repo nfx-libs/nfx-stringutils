@@ -26,6 +26,21 @@
 
 - NIL
 
+## [0.6.3] - 2026-02-14
+
+### Added
+
+- Strict compiler warning options: `/W4 /WX` for MSVC and `-Wall -Wextra -Werror` for GCC/Clang
+
+### Changed
+
+- Refactored `PredicateOperations` tests to use `std::string_view` instead of `std::string`
+
+### Fixed
+
+- Initialized result variables in numeric parsing benchmarks to avoid potential undefined behavior warnings
+- Corrected variable naming in Unicode sample language greeting loop to avoid shadowing
+
 ## [0.6.2] - 2026-02-11
 
 ### Changed

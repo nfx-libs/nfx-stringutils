@@ -7,7 +7,6 @@
 #----------------------------------------------
 
 if(NOT NFX_STRINGUTILS_BUILD_BENCHMARKS)
-    message(STATUS "Benchmarks disabled, skipping...")
     return()
 endif()
 
@@ -58,9 +57,9 @@ foreach(benchmark_source ${benchmark_sources})
                 CXX_EXTENSIONS OFF
                 POSITION_INDEPENDENT_CODE ON
                 DEBUG_POSTFIX "-d"
-                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/benchmarks"
-                RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/benchmarks"
-                RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/benchmarks"
+                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+                RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+                RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
         )
     endif()
 endforeach()

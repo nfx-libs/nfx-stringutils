@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_StringSplitter.cpp
+ * @file Tests_StringSplitter.cpp
  * @brief Unit tests for StringUtils string library
  */
 

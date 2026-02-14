@@ -7,7 +7,6 @@
 #----------------------------------------------
 
 if(NOT NFX_STRINGUTILS_BUILD_TESTS)
-    message(STATUS "Tests disabled, skipping...")
     return()
 endif()
 
@@ -38,21 +37,21 @@ endif()
 set(test_sources)
 
 list(APPEND test_sources
-    TESTS_CharacterClassification.cpp
-    TESTS_CharacterRemoval.cpp
-    TESTS_EdgeCases.cpp
-    TESTS_EscapeUnescape.cpp
-    TESTS_FormatValidation.cpp
-    TESTS_NetworkValidation.cpp
-    TESTS_PredicateOperations.cpp
-    TESTS_StringComparison.cpp
-    TESTS_StringFormatting.cpp
-    TESTS_StringNumericParsing.cpp
-    TESTS_StringOperations.cpp
-    TESTS_StringSplitter.cpp
-    TESTS_StringValidation.cpp
-    TESTS_SubstringExtraction.cpp
-    TESTS_UrlEncoding.cpp
+    Tests_CharacterClassification.cpp
+    Tests_CharacterRemoval.cpp
+    Tests_EdgeCases.cpp
+    Tests_EscapeUnescape.cpp
+    Tests_FormatValidation.cpp
+    Tests_NetworkValidation.cpp
+    Tests_PredicateOperations.cpp
+    Tests_StringComparison.cpp
+    Tests_StringFormatting.cpp
+    Tests_StringNumericParsing.cpp
+    Tests_StringOperations.cpp
+    Tests_StringSplitter.cpp
+    Tests_StringValidation.cpp
+    Tests_SubstringExtraction.cpp
+    Tests_UrlEncoding.cpp
 )
 
 #----------------------------------------------
@@ -86,9 +85,9 @@ foreach(test_source ${test_sources})
             CXX_EXTENSIONS OFF
             POSITION_INDEPENDENT_CODE ON
             DEBUG_POSTFIX "-d"
-            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests"
-            RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests"
-            RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests"
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+            RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+            RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
         )
 
         #----------------------------------------------

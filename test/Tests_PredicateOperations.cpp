@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_PredicateOperations.cpp
+ * @file Tests_PredicateOperations.cpp
  * @brief Unit tests for StringUtils string library
  */
 

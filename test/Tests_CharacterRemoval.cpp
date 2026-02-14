@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_CharacterRemoval.cpp
+ * @file Tests_CharacterRemoval.cpp
  * @brief Unit tests for StringUtils string library
  */
 

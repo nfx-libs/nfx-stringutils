@@ -23,7 +23,7 @@
  */
 
 /**
- * @file TESTS_EdgeCases.cpp
+ * @file Tests_EdgeCases.cpp
  * @brief Unit tests for StringUtils string library
  */
 

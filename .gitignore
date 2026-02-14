@@ -88,4 +88,4 @@ coverage/
 # Project-specific build artifacts
 nfx-stringutils*/
 lib/
-tests/TESTS_*[1]_*
+TMP
