@@ -280,7 +280,7 @@ namespace nfx::string::test
         EXPECT_EQ( 4, findIf( "hello world", is_target ) );
 
         // Multiple operations chained
-        std::string text = "  123abc456  ";
+        std::string_view text = "  123abc456  ";
         auto trimmed = trimIf( text, isWhitespace );
         auto digit_count = countIf( trimmed, isDigit );
         auto first_alpha = findIf( trimmed, isAlpha );
