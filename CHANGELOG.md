@@ -26,6 +26,12 @@
 
 - NIL
 
+## [0.6.4] - 2026-02-14
+
+### Changed
+
+- **Critical**: Removed strict compiler warnings from library INTERFACE target
+
 ## [0.6.3] - 2026-02-14
 
 ### Added

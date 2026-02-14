@@ -27,10 +27,3 @@ target_compile_features(${PROJECT_NAME}
     INTERFACE
         cxx_std_20
 )
-
-# --- Compiler warnings ---
-target_compile_options(${PROJECT_NAME}
-    INTERFACE
-        $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-        $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Werror>
-)

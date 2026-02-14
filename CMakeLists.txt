@@ -9,7 +9,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(nfx-stringutils
-    VERSION 0.6.3
+    VERSION 0.6.4
     DESCRIPTION "Modern C++20 header-only library providing high-performance string utilities and zero-allocation splitting"
     HOMEPAGE_URL "https://github.com/nfx-libs/nfx-stringutils"
     LANGUAGES CXX
