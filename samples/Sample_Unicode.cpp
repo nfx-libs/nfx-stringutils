@@ -174,9 +174,9 @@ int main()
             { "Russian: Привет мир", "Russian" },
             { "Arabic: مرحبا العالم", "Arabic" } };
 
-        for ( const auto& [text, lang] : languages )
+        for ( const auto& [lang_text, lang] : languages )
         {
-            auto greeting{ utf8Substring( text, 0, 20 ) };
+            auto greeting{ utf8Substring( lang_text, 0, 20 ) };
             std::cout << "  " << lang << " (" << utf8Length( greeting ) << " chars): \"" << greeting << "\"\n";
         }
 
